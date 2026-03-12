@@ -1,0 +1,21 @@
+packages:
+  "framer-motion": "For page transitions, list animations, and interactive feedback"
+  "recharts": "For rendering progress heatmaps and user statistics"
+  "katex": "Core library for rendering LaTeX mathematics for AI formulas"
+  "highlight.js": "For syntax highlighting of Python and PyTorch code blocks"
+  "clsx": "Utility for constructing className strings conditionally"
+  "tailwind-merge": "Utility to resolve tailwind class conflicts"
+  "date-fns": "For formatting progress timestamps and streaks"
+
+images:
+  - path: "artifacts/ai-learning-platform/public/images/dashboard-hero.png"
+    description: "Abstract geometric representation of a neural network with glowing nodes and mathematical symbols in deep indigo and violet colors, dark academic aesthetic"
+    aspect_ratio: "16:9"
+  - path: "artifacts/ai-learning-platform/public/images/avatar.png"
+    description: "A minimal, flat design vector illustration of an academic scholar profile, using a dark palette with muted blue accents"
+    aspect_ratio: "1:1"
+
+notes:
+  - "App assumes the backend API is served at /api based on the OpenAPI spec."
+  - "Using generated orval hooks from @workspace/api-client-react."
+  - "Theme is 'Dark Academic' - utilizing serif fonts for content and monospace for code."
