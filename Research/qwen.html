@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced AI Learning Hub Curriculum</title>
+
+  <!-- Essential CDN Libraries -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: 'hsl(210, 75%, 95%)',
+              100: 'hsl(210, 75%, 85%)',
+              200: 'hsl(210, 75%, 75%)',
+              300: 'hsl(210, 75%, 65%)',
+              400: 'hsl(210, 75%, 55%)',
+              500: 'hsl(210, 75%, 40%)',
+              600: 'hsl(210, 75%, 35%)',
+              700: 'hsl(210, 75%, 25%)',
+              800: 'hsl(210, 75%, 15%)',
+              900: 'hsl(210, 75%, 10%)'
+            },
+            accent: {
+              50: 'hsl(270, 70%, 95%)',
+              100: 'hsl(270, 70%, 85%)',
+              200: 'hsl(270, 70%, 75%)',
+              300: 'hsl(270, 70%, 65%)',
+              400: 'hsl(270, 70%, 60%)',
+              500: 'hsl(270, 70%, 55%)',
+              600: 'hsl(270, 70%, 50%)',
+              700: 'hsl(270, 70%, 40%)',
+              800: 'hsl(270, 70%, 30%)',
+              900: 'hsl(270, 70%, 20%)'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+
+  <!-- Preline UI Components -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/preline@2.0.3/dist/preline.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/preline@2.0.3/dist/preline.js"></script>
+
+  <!-- Custom Styles -->
+  <style>
+    html { scroll-behavior: smooth; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      html { scroll-behavior: auto; }
+    }
+
+    .btn-interactive {
+      transition: all 0.2s ease-out;
+    }
+    
+    .btn-interactive:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .btn-interactive:active {
+      transform: scale(0.95);
+    }
+
+    .card-interactive {
+      transition: all 0.3s ease-out;
+      border: 1px solid transparent;
+      --border-lightness: 40%;
+    }
+
+    .dark .card-interactive {
+      --border-lightness: 60%;
+    }
+
+    .card-interactive:hover {
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      filter: brightness(0.98);
+    }
+    
+    /* Primary colored cards */
+    .card-interactive[class*="primary"]:hover,
+    .card-interactive[class*="white"]:hover,
+    .card-interactive[class*="gray-"]:hover {
+      border-color: hsl(210, 75%, var(--border-lightness));
+    }
+    
+    /* Accent colored cards */
+    .card-interactive[class*="accent"]:hover {
+      border-color: hsl(270, 70%, var(--border-lightness));
+    }
+
+    .dark .card-interactive:hover {
+      filter: brightness(1.05);
+    }
+  </style>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      document.getElementById('sunIcon').style.display = isDark ? 'block' : 'none';
+      document.getElementById('moonIcon').style.display = isDark ? 'none' : 'block';
+    }
+  </script>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+  <!-- Citation System Script -->
+  <script>
+    function initCitationSystem() {
+      let i = 1, map = new Map();
+      document.querySelectorAll('[data-ref]').forEach(el => {
+        if (el.dataset.citationProcessed) return;
+        const raw = (el.getAttribute('data-ref')||'').trim();
+        if (!raw) return;
+
+        const parts = raw.split('|');
+        const url = parts[0].trim();
+        const idx = (parts[1]||'').trim() || map.get(raw) || (map.set(raw, String(i)), String(i++));
+
+        if (!el.textContent || !el.textContent.trim()) { el.dataset.citationProcessed = 'true'; return; }
+
+        const btn = document.createElement('sup'); btn.textContent = String(idx);
+        Object.assign(btn.style, { fontSize:'8px', color:'#fff', cursor:'pointer', top: '1px', fontWeight:'bold', backgroundColor:'#0284c7', borderRadius:'50%', transition:'all .15s', userSelect:'none', minWidth:'19px', height:'19px', marginLeft:'6px', display:'inline-flex', alignItems:'center', justifyContent:'center', boxShadow:'0 1px 3px rgba(0,0,0,.2)', lineHeight:'1'});
+        btn.addEventListener('mouseenter', ()=> Object.assign(btn.style, { backgroundColor:'#0369a1', transform:'scale(1.12)' }));
+        btn.addEventListener('mouseleave', ()=> Object.assign(btn.style, { backgroundColor:'#0284c7', transform:'scale(1)' }));
+        btn.addEventListener('click', e=>{ e.preventDefault(); e.stopPropagation(); window.open(url, '_blank'); });
+
+        el.appendChild(btn); el.dataset.citationProcessed = 'true';
+      });
+    }
+  </script>
+
+  <!-- Progress Bar -->
+  <div class="fixed top-0 left-0 h-1 bg-primary-500 dark:bg-primary-400 z-[60] transition-all duration-300 ease-out" id="progressBar"></div>
+
+  <!-- Floating Header -->
+  <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur bg-gray-50/90 dark:bg-gray-900/90 border-b border-primary-500/20 dark:border-primary-600/20">
+    <nav class="max-w-7xl mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <h1 class="text-xl font-bold text-primary-700 dark:text-primary-300">AI Learning Hub Curriculum</h1>
+        
+        <div class="flex items-center gap-4">
+          <a href="#home" class="btn-interactive px-3 py-1.5 text-sm rounded-lg bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-700 transition-all">Home</a>
+          <a href="#foundations" class="btn-interactive px-3 py-1.5 text-sm rounded-lg bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-700 transition-all">Foundations</a>
+          <a href="#deep-learning" class="btn-interactive px-3 py-1.5 text-sm rounded-lg bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-700 transition-all">Deep Learning</a>
+          <a href="#nlp-cv" class="btn-interactive px-3 py-1.5 text-sm rounded-lg bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-700 transition-all">NLP &amp; CV</a>
+          <a href="#optimization" class="btn-interactive px-3 py-1.5 text-sm rounded-lg bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-700 transition-all">Optimization</a>
+          <a href="#mlops" class="btn-interactive px-3 py-1.5 text-sm rounded-lg bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-700 transition-all">MLOps</a>
+          <a href="#challenges" class="btn-interactive px-3 py-1.5 text-sm rounded-lg bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-700 transition-all">Challenges</a>
+          <a href="#conclusion" class="btn-interactive px-3 py-1.5 text-sm rounded-lg bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-700 transition-all">Conclusion</a>
+          
+          <button onclick="toggleDarkMode()" class="btn-interactive p-2 rounded-lg bg-primary-100 dark:bg-primary-800 text-primary-600 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-700 transition-all">
+            <i data-lucide="sun" id="sunIcon" class="w-5 h-5" style="display:none;"></i>
+            <i data-lucide="moon" id="moonIcon" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="min-h-screen">
+    <!-- Hero Section -->
+    <section id="home" class="py-40 bg-primary-50/50 dark:bg-gray-900" data-aos="fade-up">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="text-center space-y-6">
+          <h2 class="text-5xl font-bold text-primary-700 dark:text-primary-300 leading-tight">
+            Graduate-Level AI Learning Hub Curriculum
+          </h2>
+          <p class="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
+            A comprehensive, guided linear progression balancing theoretical foundations with applied implementation across advanced AI and ML subfields
+          </p>
+          <div class="flex justify-center gap-4 pt-4">
+            <div class="card-interactive px-6 py-3 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+              <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">10+</div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">Core Subfields</div>
+            </div>
+            <div class="card-interactive px-6 py-3 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+              <div class="text-3xl font-bold text-accent-600 dark:text-accent-400">20+</div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">Advanced Topics</div>
+            </div>
+            <div class="card-interactive px-6 py-3 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+              <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">Linear</div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">Progression</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Foundational Concepts Section -->
+    <section id="foundations" class="py-20 bg-white/80 dark:bg-gray-900" data-aos="fade-up">
+      <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-4xl font-bold mb-8 text-primary-700 dark:text-primary-300 text-center">
+          Foundational Concepts &amp; Mathematical Underpinnings
+        </h2>
+        <p class="text-center text-gray-700 dark:text-gray-300 mb-12 text-lg max-w-4xl mx-auto">
+          Establishing a rigorous mathematical foundation essential for advanced AI research and development
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+          <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
+                <i data-lucide="calculator" class="w-6 h-6 text-primary-600 dark:text-primary-400"></i>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-xl font-semibold text-primary-700 dark:text-primary-300 mb-3" data-ref="https://www.scribd.com/document/809051139/COMPUTSCI-2024-09-26-20-33-55|23">Linear Algebra &amp; Statistics Prerequisites</h3>
+                <p class="text-gray-700 dark:text-gray-300">
+                  Students will work with computational and mathematical models requiring strong foundations in linear algebra, statistics, and programming fundamentals through CS106B, plus graduate-level coursework.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-12 h-12 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center">
+                <i data-lucide="activity" class="w-6 h-6 text-accent-600 dark:text-accent-400"></i>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-xl font-semibold text-accent-700 dark:text-accent-300 mb-3" data-ref="https://www.mdpi.com/2227-7390/13/13/2210|139">Statistical Machine Learning</h3>
+                <p class="text-gray-700 dark:text-gray-300">
+                  Statistical machine learning is an essential tool for data analysis, estimation, prediction, and automation in agriculture and farming, forming the backbone of modern AI systems.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-interactive p-6 bg-primary-50/50 dark:bg-gray-800 rounded-xl shadow-md mb-8">
+          <h3 class="text-2xl font-semibold text-primary-700 dark:text-primary-300 mb-4" data-ref="https://hal.science/hal-03345681/file/cours_optim_ML_Cotonou2021.pdf|81">Numerical Optimization Fundamentals</h3>
+          <p class="text-gray-700 dark:text-gray-300 mb-4">
+            The course provides basic concepts for numerical optimization for an audience interested in machine learning with a background corresponding to undergraduate-level mathematics.
+          </p>
+          <div class="pl-4 pr-3 py-3 border-l-4 border-primary-500 bg-primary-50/40 dark:bg-primary-900/30 rounded-r-lg">
+            <p class="text-sm font-medium text-primary-900 dark:text-primary-100 leading-relaxed" data-ref="https://d2l.ai/chapter_optimization/convexity.html|1">
+              <i data-lucide="info" class="inline-block w-4 h-4 mr-1.5 -mt-0.5"></i>
+              Convexity plays a vital role in the design of optimization algorithms. This is largely due to the fact that it is much easier to analyze and test algorithms.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="card-interactive p-5 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+            <h4 class="font-semibold text-primary-700 dark:text-primary-300 mb-2" data-ref="https://www.nature.com/articles/s41598-024-56706-x|61">Evaluation Metrics</h4>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Our aim here is to introduce the most common metrics for binary and multi-class classification, regression, image segmentation, and object detection.
+            </p>
+          </div>
+          <div class="card-interactive p-5 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+            <h4 class="font-semibold text-primary-700 dark:text-primary-300 mb-2" data-ref="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0279435|64">Statistical Tests</h4>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              This study explores the existing statistical tests that can be used to identify a significant difference between classical and machine learning models.
+            </p>
+          </div>
+          <div class="card-interactive p-5 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+            <h4 class="font-semibold text-primary-700 dark:text-primary-300 mb-2" data-ref="https://link.springer.com/article/10.1186/s13321-017-0226-y|286">Non-Parametric Tests</h4>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Statistical analysis using Wilcoxon paired rank test are shown in Table 3, with confidence interval
+              <span class="mx-1 px-1.5 py-0.5 rounded-md bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 font-semibold text-sm">99%</span>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Deep Learning Theory Section -->
+    <section id="deep-learning" class="py-20 bg-primary-50/50 dark:bg-gray-800" data-aos="fade-up">
+      <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-4xl font-bold mb-8 text-primary-700 dark:text-primary-300 text-center">
+          Deep Learning Theory &amp; Architectures
+        </h2>
+        <p class="text-center text-gray-700 dark:text-gray-300 mb-12 text-lg max-w-4xl mx-auto">
+          Comprehensive coverage of deep learning fundamentals, from historical developments to modern transformer architectures
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-8 items-center mb-12">
+          <div class="space-y-6">
+            <h3 class="text-2xl font-semibold text-primary-700 dark:text-primary-300" data-ref="https://www.sciencedirect.com/science/article/pii/S1568494625006891|28">Historical Evolution of Deep Learning</h3>
+            <p class="text-gray-700 dark:text-gray-300">
+              This study aims to provide a historical narrative of deep learning, tracing its origins from the cybernetic era to its current state-of-the-art status.
+            </p>
+            <p class="text-gray-700 dark:text-gray-300" data-ref="https://blog.csdn.net/leread/article/details/146799331|107">
+              Stanford University CS230 course is Andrew Ng's deep learning course, focusing on neural networks, optimization techniques and their applications in computer vision, natural language processing and other domains.
+            </p>
+          </div>
+          <img
+            src="https://cdn.qwenlm.ai/3436cb00-060c-4718-8184-e3333f9cb4c7/6c10e36f-1e96-4890-8b31-f7c233c33899/f5b8ae77-2631-41f6-8638-058b2fc20022.png?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZXNvdXJjZV91c2VyX2lkIjoiMzQzNmNiMDAtMDYwYy00NzE4LTgxODQtZTMzMzNmOWNiNGM3IiwicmVzb3VyY2VfaWQiOiI2YzEwZTM2Zi0xZTk2LTQ4OTAtOGIzMS1mN2MyMzNjMzM4OTkiLCJyZXNvdXJjZV9jaGF0X2lkIjpudWxsfQ.PUQYGCMbGmmFnxgXxdNzxXAL4ykatPgIw9n4BFwep7Y"
+            alt="Timeline visualization showing the historical evolution of deep learning from the 1940s to present. The timeline features a horizontal arrow in dark blue (#1a73b3) progressing from left to right. Five key milestones are marked as circular nodes along the arrow: '1943 McCulloch-Pitts Neuron' (small blue circle), '1958 Perceptron' (medium blue circle), '1986 Backpropagation' (larger blue circle), '2012 AlexNet Breakthrough' (large blue circle), and '2017 Transformer Revolution' (extra-large blue circle). Each node connects to a small rectangular label below containing the year and milestone name in white sans-serif font. Between nodes, curved upward arrows in light blue (#6366f1) indicate progress. The background is a gradient from light gray (#f5f5f5) at the top to off-white (#fafafa) at the bottom, creating subtle depth. The overall composition is clean and minimal, emphasizing the chronological progression of deep learning innovations."
+            class="w-full rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300"
+          />
+        </div>
+
+        <div class="hs-accordion-group space-y-4 mb-12">
+          <div class="hs-accordion card-interactive bg-white/80 backdrop-blur-sm dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <button class="hs-accordion-toggle w-full flex justify-between items-center p-4 text-left hover:bg-primary-50 dark:hover:bg-gray-700/50 transition-colors rounded-xl" id="hs-architecture-1">
+              <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0 w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
+                  <i data-lucide="layers" class="w-6 h-6 text-primary-600 dark:text-primary-400"></i>
+                </div>
+                <span class="font-semibold text-lg text-primary-700 dark:text-primary-300">Transformer Architecture</span>
+              </div>
+              <i data-lucide="chevron-down" class="hs-accordion-active:rotate-180 transition-transform duration-300 w-5 h-5 text-primary-600 dark:text-primary-400"></i>
+            </button>
+            <div id="hs-collapse-architecture-1" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" aria-labelledby="hs-architecture-1">
+              <div class="p-6 pt-0 space-y-4">
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://link.springer.com/article/10.1007/s43621-025-00815-8|57">
+                  The Transformer architecture introduced in 2017 enabled parallel training on multiple GPUs via self-attention mechanisms, becoming the foundation for modern LLMs.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://link.springer.com/article/10.1007/s40593-025-00457-x|54">
+                  Large Language Models (LLMs) like GPT-4 and Llama are based on deep neural networks with transformer architectures, containing hundreds of millions to billions of parameters and pre-trained on vast quantities of text data.
+                </p>
+                <div class="pl-4 pr-3 py-3 border-l-4 border-primary-500 bg-primary-50/40 dark:bg-primary-900/30 rounded-r-lg">
+                  <p class="text-sm font-medium text-primary-900 dark:text-primary-100 leading-relaxed" data-ref="https://link.springer.com/article/10.1007/s43621-025-00815-8|57">
+                    <i data-lucide="trending-up" class="inline-block w-4 h-4 mr-1.5 -mt-0.5"></i>
+                    Key milestones include GPT-1 (2018), GPT-3 with 175 billion parameters (2020), and the use of Reinforcement Learning with Human Feedback (RLHF) in InstructGPT.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hs-accordion card-interactive bg-white/80 backdrop-blur-sm dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <button class="hs-accordion-toggle w-full flex justify-between items-center p-4 text-left hover:bg-primary-50 dark:hover:bg-gray-700/50 transition-colors rounded-xl" id="hs-architecture-2">
+              <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0 w-12 h-12 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center">
+                  <i data-lucide="brain" class="w-6 h-6 text-accent-600 dark:text-accent-400"></i>
+                </div>
+                <span class="font-semibold text-lg text-accent-700 dark:text-accent-300">BERT &amp; Bidirectional Models</span>
+              </div>
+              <i data-lucide="chevron-down" class="hs-accordion-active:rotate-180 transition-transform duration-300 w-5 h-5 text-accent-600 dark:text-accent-400"></i>
+            </button>
+            <div id="hs-collapse-architecture-2" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" aria-labelledby="hs-architecture-2">
+              <div class="p-6 pt-0 space-y-4">
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://link.springer.com/article/10.1007/s43621-025-00815-8|57">
+                  BERT (Bidirectional Encoder Representation from Transformers) uses bidirectional masking (MLM) and next-sentence prediction (NSP) during pre-training to understand context from both past and future words.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://aclanthology.org/people/nathan-schneider/|101">
+                  A line of work on Transformer-based language models such as BERT has significantly advanced natural language understanding capabilities.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="hs-accordion card-interactive bg-white/80 backdrop-blur-sm dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <button class="hs-accordion-toggle w-full flex justify-between items-center p-4 text-left hover:bg-primary-50 dark:hover:bg-gray-700/50 transition-colors rounded-xl" id="hs-architecture-3">
+              <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0 w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
+                  <i data-lucide="git-branch" class="w-6 h-6 text-primary-600 dark:text-primary-400"></i>
+                </div>
+                <span class="font-semibold text-lg text-primary-700 dark:text-primary-300">Modern Architectures</span>
+              </div>
+              <i data-lucide="chevron-down" class="hs-accordion-active:rotate-180 transition-transform duration-300 w-5 h-5 text-primary-600 dark:text-primary-400"></i>
+            </button>
+            <div id="hs-collapse-architecture-3" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" aria-labelledby="hs-architecture-3">
+              <div class="p-6 pt-0 space-y-4">
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://link.springer.com/article/10.1007/s43621-025-00815-8|57">
+                  XLNet is an autoregressive model that overcomes limitations of sequential processing by analyzing all possible permutations of input sequences, allowing it to capture relationships in both directions.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://link.springer.com/article/10.1007/s43621-025-00815-8|57">
+                  T5 (Text-to-Text Transfer Transformer) is framed as a text-to-text problem, where any NLP task is converted into a format of 'input text -&gt; output text', simplifying the model's application across diverse tasks.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://link.springer.com/article/10.1007/s43621-025-00815-8|57">
+                  CTRL (Conditional Transformer Language Model) is a model designed for controllable generation, where user-provided control codes dictate the style or content of the generated text.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+          <h3 class="text-2xl font-semibold text-primary-700 dark:text-primary-300 mb-4" data-ref="https://arxiv.org/html/2601.19107v2|78">Hands-On Implementation</h3>
+          <p class="text-gray-700 dark:text-gray-300 mb-4">
+            TinyTorch serves as the hands-on implementation companion to the Machine Learning Systems textbook, providing practical experience building ML systems from first principles.
+          </p>
+          <p class="text-gray-700 dark:text-gray-300" data-ref="https://deepnote.com/blog/ultimate-guide-to-pytorch-library-in-python|60">
+            The library is primarily used for building and training neural networks for applications such as computer vision, natural language processing (NLP), and other domains.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- NLP & Computer Vision Section -->
+    <section id="nlp-cv" class="py-20 bg-white/80 dark:bg-gray-900" data-aos="fade-up">
+      <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-4xl font-bold mb-8 text-primary-700 dark:text-primary-300 text-center">
+          Natural Language Processing &amp; Computer Vision
+        </h2>
+        <p class="text-center text-gray-700 dark:text-gray-300 mb-12 text-lg max-w-4xl mx-auto">
+          Advanced techniques and applications in two cornerstone AI domains
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+          <div class="space-y-6">
+            <div class="card-interactive p-6 bg-primary-50/50 dark:bg-gray-800 rounded-xl shadow-md">
+              <h3 class="text-xl font-semibold text-primary-700 dark:text-primary-300 mb-4" data-ref="https://www.scribd.com/document/658734730/Natural-Language-Processing-in-the-Real-World-Text-Processing-Analytics-and-Classification|16">NLP Fundamentals &amp; Applications</h3>
+              <p class="text-gray-700 dark:text-gray-300 mb-3">
+                This book covers the basic concepts behind NLP and text processing and discusses the applications across
+                <span class="mx-1 px-1.5 py-0.5 rounded-md bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 font-semibold text-sm">15 industry verticals</span>.
+              </p>
+              <p class="text-gray-700 dark:text-gray-300" data-ref="https://www.sciencedirect.com/science/article/abs/pii/S0925231224016928|35">
+                The present survey provides an extensive overview of text classification techniques that leverage PLMs.
+              </p>
+            </div>
+
+            <div class="card-interactive p-6 bg-accent-50/50 dark:bg-gray-800 rounded-xl shadow-md">
+              <h3 class="text-xl font-semibold text-accent-700 dark:text-accent-300 mb-4" data-ref="https://www.researchgate.net/publication/381434888_Developing_and_Deploying_AI_Applications_on_NVIDIA_Jetson_Orin_NX_A_Comprehensive_Guide|122">Computer Vision Excellence</h3>
+              <p class="text-gray-700 dark:text-gray-300 mb-3">
+                Modern machine learning models for computer vision exceed humans in accuracy on specific visual recognition tasks, notably on datasets like ImageNet.
+              </p>
+              <p class="text-gray-700 dark:text-gray-300" data-ref="https://www.mdpi.com/2076-3417/15/14/7626|263">
+                In computer vision, food images are categorized as fine-grained data due to their inherent complexity. These images typically exhibit small inter-class variations.
+              </p>
+            </div>
+          </div>
+
+          <img
+            src="https://cdn.qwenlm.ai/3436cb00-060c-4718-8184-e3333f9cb4c7/6c10e36f-1e96-4890-8b31-f7c233c33899/9167cccb-8567-490a-97d0-63f4bfac644e.png?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZXNvdXJjZV91c2VyX2lkIjoiMzQzNmNiMDAtMDYwYy00NzE4LTgxODQtZTMzMzNmOWNiNGM3IiwicmVzb3VyY2VfaWQiOiI2YzEwZTM2Zi0xZTk2LTQ4OTAtOGIzMS1mN2MyMzNjMzM4OTkiLCJyZXNvdXJjZV9jaGF0X2lkIjpudWxsfQ.PUQYGCMbGmmFnxgXxdNzxXAL4ykatPgIw9n4BFwep7Y"
+            alt="Side-by-side comparison visualization showing two distinct AI domains. Left panel displays Natural Language Processing (NLP) represented by a flowing text stream in dark blue (#1a73b3) with highlighted keywords in yellow (#fbbf24) floating upward. The text stream emerges from a stylized book icon in navy blue (#1e3a8a) with open pages showing lines of text. Right panel displays Computer Vision (CV) represented by a grid of image thumbnails in varying shades of purple (#6366f1 to #8b5cf6) arranged in a 3x3 matrix. Each thumbnail shows simplified icons: a face, a cat, a car, a flower, a house, a tree, a bird, a dog, and a person. Between the two panels, a central dividing line in medium blue (#3b82f6) contains small connecting arrows pointing both ways. The background is a soft gradient from light gray (#f5f5f5) on the left to light lavender (#f3e8ff) on the right. Both panels have subtle drop shadows and rounded corners, creating a balanced and harmonious composition that emphasizes the complementary nature of NLP and CV in AI."
+            class="w-full rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300"
+          />
+        </div>
+
+        <div class="hs-accordion-group space-y-4">
+          <div class="hs-accordion card-interactive bg-white/80 backdrop-blur-sm dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <button class="hs-accordion-toggle w-full flex justify-between items-center p-4 text-left hover:bg-primary-50 dark:hover:bg-gray-700/50 transition-colors rounded-xl" id="hs-nlp-1">
+              <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0 w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
+                  <i data-lucide="message-square" class="w-6 h-6 text-primary-600 dark:text-primary-400"></i>
+                </div>
+                <span class="font-semibold text-lg text-primary-700 dark:text-primary-300">Text Classification &amp; Embeddings</span>
+              </div>
+              <i data-lucide="chevron-down" class="hs-accordion-active:rotate-180 transition-transform duration-300 w-5 h-5 text-primary-600 dark:text-primary-400"></i>
+            </button>
+            <div id="hs-collapse-nlp-1" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" aria-labelledby="hs-nlp-1">
+              <div class="p-6 pt-0 space-y-4">
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://www.sciencedirect.com/science/article/abs/pii/S0925231224016928|35">
+                  The present survey provides an extensive overview of text classification techniques that leverage PLMs.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://arxiv.org/pdf/2410.05099|38">
+                  Various proposals have emerged regarding its potential representations to facilitate linguistic research and support NLP. One widely adopted approach is the use of contextual embeddings.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://link.springer.com/article/10.1007/s10579-024-09744-w|37">
+                  In this paper, we provide a comprehensive review on the existing resources and methodologies for Cantonese Natural Language Processing.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="hs-accordion card-interactive bg-white/80 backdrop-blur-sm dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <button class="hs-accordion-toggle w-full flex justify-between items-center p-4 text-left hover:bg-primary-50 dark:hover:bg-gray-700/50 transition-colors rounded-xl" id="hs-cv-1">
+              <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0 w-12 h-12 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center">
+                  <i data-lucide="camera" class="w-6 h-6 text-accent-600 dark:text-accent-400"></i>
+                </div>
+                <span class="font-semibold text-lg text-accent-700 dark:text-accent-300">Vision Transformers &amp; Deep Learning</span>
+              </div>
+              <i data-lucide="chevron-down" class="hs-accordion-active:rotate-180 transition-transform duration-300 w-5 h-5 text-accent-600 dark:text-accent-400"></i>
+            </button>
+            <div id="hs-collapse-cv-1" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" aria-labelledby="hs-cv-1">
+              <div class="p-6 pt-0 space-y-4">
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://arxiv.org/pdf/2209.13232|206">
+                  In this paper, we present a comprehensive review of GNNs and graph Transformers in computer vision from a task-oriented perspective. Specifically, we divide applications into classification, detection, segmentation, and generation tasks.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://www.sciencedirect.com/science/article/pii/S294985542300045X|205">
+                  This paper investigates the progress on the threat of deep learning and the techniques that can enhance the model robustness in computer vision.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://ieeexplore.ieee.org/iel8/6287639/10820123/11075586.pdf|202">
+                  Geometric Deep Learning techniques have become a transformative force in the field of Computer-Aided Design (CAD), and have the potential to revolutionize design processes.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="hs-accordion card-interactive bg-white/80 backdrop-blur-sm dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <button class="hs-accordion-toggle w-full flex justify-between items-center p-4 text-left hover:bg-primary-50 dark:hover:bg-gray-700/50 transition-colors rounded-xl" id="hs-multimodal-1">
+              <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0 w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
+                  <i data-lucide="layout-grid" class="w-6 h-6 text-primary-600 dark:text-primary-400"></i>
+                </div>
+                <span class="font-semibold text-lg text-primary-700 dark:text-primary-300">Multimodal Learning</span>
+              </div>
+              <i data-lucide="chevron-down" class="hs-accordion-active:rotate-180 transition-transform duration-300 w-5 h-5 text-primary-600 dark:text-primary-400"></i>
+            </button>
+            <div id="hs-collapse-multimodal-1" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" aria-labelledby="hs-multimodal-1">
+              <div class="p-6 pt-0 space-y-4">
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://arxiv.org/html/2210.02884v2|207">
+                  In this paper, we present a survey on multimodal machine learning from a novel perspective considering not only the purely technical aspects but also the data-centric challenges.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://arxiv.org/html/2509.25373v1|155">
+                  It surveys the landscape of cutting-edge methods designed to address these challenges, spanning from techniques that enhance low-level visual representations to high-level reasoning.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Optimization Methods Section -->
+    <section id="optimization" class="py-20 bg-primary-50/50 dark:bg-gray-800" data-aos="fade-up">
+      <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-4xl font-bold mb-8 text-primary-700 dark:text-primary-300 text-center">
+          Advanced Optimization Methods
+        </h2>
+        <p class="text-center text-gray-700 dark:text-gray-300 mb-12 text-lg max-w-4xl mx-auto">
+          Mathematical optimization techniques essential for training and deploying effective AI models
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+          <div class="space-y-6">
+            <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+              <h3 class="text-xl font-semibold text-primary-700 dark:text-primary-300 mb-4" data-ref="https://d2l.ai/chapter_optimization/convexity.html|1">Convex Optimization</h3>
+              <p class="text-gray-700 dark:text-gray-300 mb-3">
+                Convexity plays a vital role in the design of optimization algorithms. This is largely due to the fact that it is much easier to analyze and test algorithms.
+              </p>
+              <p class="text-gray-700 dark:text-gray-300" data-ref="http://faculty.bicmr.pku.edu.cn/~wenzw/opt2015/01_intro_new.pdf|2">
+                Convex approximation: min. W,E. kWk∗ + µkEk1, s.t. W + E = M. This approach simplifies complex problems by approximating them with convex formulations.
+              </p>
+            </div>
+
+            <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+              <h3 class="text-xl font-semibold text-accent-700 dark:text-accent-300 mb-4" data-ref="https://www.digitalocean.com/community/tutorials/intro-to-optimization-in-deep-learning-gradient-descent|27">Gradient Descent Variants</h3>
+              <p class="text-gray-700 dark:text-gray-300 mb-3">
+                An in-depth explanation of Gradient Descent and how to avoid the problems of local minima and saddle points through momentum-based methods and adaptive learning rates.
+              </p>
+              <p class="text-gray-700 dark:text-gray-300" data-ref="https://www.linkedin.com/posts/murugesan-n_%3F%3F-%3F%3F%3F%3F%3F%3F%3F%3F%3F%3F-%3F-continuing-activity-7419988539662266369-VggB|5">
+                Why Do "Inferior" Optimizers Dominate Deep Learning? When I started with deep learning, optimization was the only part that felt familiar.
+              </p>
+            </div>
+          </div>
+
+          <div class="space-y-6">
+            <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+              <h3 class="text-xl font-semibold text-primary-700 dark:text-primary-300 mb-4" data-ref="https://theses.hal.science/tel-04439527v1/file/132249_WU_2023_archivage.pdf|4">Nonlinear Optimization</h3>
+              <p class="text-gray-700 dark:text-gray-300 mb-3">
+                This thesis considers four types of nonlinear optimization problems, namely bimatrix games, nonlinear projection equations (NPEs), nonsmooth optimization, and constrained optimization.
+              </p>
+              <p class="text-gray-700 dark:text-gray-300" data-ref="https://www.researchgate.net/publication/356632429_NCVX_A_User-Friendly_and_Scalable_Package_for_Nonconvex_Optimization_in_Machine_Learning|190">
+                Optimizing nonconvex (NCVX) problems, especially those nonsmooth (NSMT) and constrained (CSTR), is an essential part of machine learning and signal processing.
+              </p>
+            </div>
+
+            <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+              <h3 class="text-xl font-semibold text-accent-700 dark:text-accent-300 mb-4" data-ref="https://dl.acm.org/doi/10.5555/3454287.3455145|3">Differentiable Optimization</h3>
+              <p class="text-gray-700 dark:text-gray-300">
+                In this paper, we propose an approach to differentiating through disciplined convex programs, a subclass of convex optimization problems used by domain-specific solvers.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md mb-8">
+          <h3 class="text-2xl font-semibold text-primary-700 dark:text-primary-300 mb-4" data-ref="https://web.eecs.umich.edu/~dvorkin/courses/eecs559/|6">Large-Scale Optimization Methods</h3>
+          <p class="text-gray-700 dark:text-gray-300 mb-4">
+            This graduate-level course introduces optimization methods that are suitable for large-scale problems arising in data science and machine learning applications.
+          </p>
+          <div class="pl-4 pr-3 py-3 border-l-4 border-amber-500 bg-amber-50/40 dark:bg-amber-900/30 rounded-r-lg">
+            <p class="text-sm font-medium text-amber-900 dark:text-amber-100 leading-relaxed" data-ref="https://www.mdpi.com/2078-2489/16/6|77">
+              <i data-lucide="alert-triangle" class="inline-block w-4 h-4 mr-1.5 -mt-0.5"></i>
+              Non-smooth, non-convex optimization problems frequently arise in modern machine learning applications, yet solving them efficiently remains a challenge.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="card-interactive p-5 bg-primary-50/50 dark:bg-gray-800 rounded-xl shadow-md">
+            <h4 class="font-semibold text-primary-700 dark:text-primary-300 mb-2" data-ref="https://www.researchgate.net/publication/400072378_Learning_to_Optimize_by_Differentiable_Programming|141">Differentiable Programming</h4>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              This paper surveys the recent attempts at leveraging machine learning to solve constrained optimization problems through differentiable programming.
+            </p>
+          </div>
+          <div class="card-interactive p-5 bg-primary-50/50 dark:bg-gray-800 rounded-xl shadow-md">
+            <h4 class="font-semibold text-primary-700 dark:text-primary-300 mb-2" data-ref="https://arxiv.org/html/2507.16717v1|192">Multi-Objective Optimization</h4>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              We introduce a benchmark framework for multi-objective portfolio optimization (MPO) using gradient descent with automatic differentiation.
+            </p>
+          </div>
+          <div class="card-interactive p-5 bg-primary-50/50 dark:bg-gray-800 rounded-xl shadow-md">
+            <h4 class="font-semibold text-primary-700 dark:text-primary-300 mb-2" data-ref="https://ieeexplore.ieee.org/iel8/6287639/10820123/10945774.pdf|199">Power Flow Optimization</h4>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              It finds the best way to minimize or maximize objective functions while still meeting PF constraints and other operational limits, such as voltage limits.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MLOps & Deployment Section -->
+    <section id="mlops" class="py-20 bg-white/80 dark:bg-gray-900" data-aos="fade-up">
+      <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-4xl font-bold mb-8 text-primary-700 dark:text-primary-300 text-center">
+          MLOps &amp; Production Deployment
+        </h2>
+        <p class="text-center text-gray-700 dark:text-gray-300 mb-12 text-lg max-w-4xl mx-auto">
+          Best practices for deploying, monitoring, and maintaining machine learning models in production environments
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+          <div class="card-interactive p-6 bg-primary-50/50 dark:bg-gray-800 rounded-xl shadow-md">
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
+                <i data-lucide="package" class="w-6 h-6 text-primary-600 dark:text-primary-400"></i>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-xl font-semibold text-primary-700 dark:text-primary-300 mb-3" data-ref="https://www.linkedin.com/posts/shantanuladhwe_in-2025-mlops-is-the-backbone-of-real-world-activity-7337750788917592064-5u4L|31">MLOps Foundation</h3>
+                <p class="text-gray-700 dark:text-gray-300">
+                  In 2025, MLOps is the backbone of real-world AI/ML. Building RAGs, LLM apps, or ML pipelines? You need this. Most skip it - this roadmap won't let you.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-interactive p-6 bg-accent-50/50 dark:bg-gray-800 rounded-xl shadow-md">
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-12 h-12 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center">
+                <i data-lucide="git-merge" class="w-6 h-6 text-accent-600 dark:text-accent-400"></i>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-xl font-semibold text-accent-700 dark:text-accent-300 mb-3" data-ref="https://arxiv.org/html/2503.15577v1|86">Unified Lifecycle Framework</h3>
+                <p class="text-gray-700 dark:text-gray-300">
+                  This paper introduces a unified MLOps lifecycle framework, further incorporating Large Language Model Operations (LLMOps), to address the operational challenges in AI deployment.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hs-accordion-group space-y-4 mb-12">
+          <div class="hs-accordion card-interactive bg-white/80 backdrop-blur-sm dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <button class="hs-accordion-toggle w-full flex justify-between items-center p-4 text-left hover:bg-primary-50 dark:hover:bg-gray-700/50 transition-colors rounded-xl" id="hs-mlops-1">
+              <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0 w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
+                  <i data-lucide="database" class="w-6 h-6 text-primary-600 dark:text-primary-400"></i>
+                </div>
+                <span class="font-semibold text-lg text-primary-700 dark:text-primary-300">Data Management &amp; Versioning</span>
+              </div>
+              <i data-lucide="chevron-down" class="hs-accordion-active:rotate-180 transition-transform duration-300 w-5 h-5 text-primary-600 dark:text-primary-400"></i>
+            </button>
+            <div id="hs-collapse-mlops-1" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" aria-labelledby="hs-mlops-1">
+              <div class="p-6 pt-0 space-y-4">
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://www.coursera.org/resources/mlops-learning-roadmap|189">
+                  Data versioning is the practice of capturing, labeling, and retrieving specific states of datasets and models for reproducibility and governance.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://arxiv.org/pdf/2410.21346|84">
+                  Robust DataOps practices ensure data quality and reliability by employing data cleansing techniques to eliminate inconsistencies and inaccuracies.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://ieeexplore.ieee.org/iel8/6287639/10820123/11126113.pdf|148">
+                  Efficient data management in an MLOps framework guarantees that data is reliably accessible, appropriately structured, and safely maintained to optimize the workflow.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="hs-accordion card-interactive bg-white/80 backdrop-blur-sm dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <button class="hs-accordion-toggle w-full flex justify-between items-center p-4 text-left hover:bg-primary-50 dark:hover:bg-gray-700/50 transition-colors rounded-xl" id="hs-mlops-2">
+              <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0 w-12 h-12 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center">
+                  <i data-lucide="shield-check" class="w-6 h-6 text-accent-600 dark:text-accent-400"></i>
+                </div>
+                <span class="font-semibold text-lg text-accent-700 dark:text-accent-300">Model Monitoring &amp; Security</span>
+              </div>
+              <i data-lucide="chevron-down" class="hs-accordion-active:rotate-180 transition-transform duration-300 w-5 h-5 text-accent-600 dark:text-accent-400"></i>
+            </button>
+            <div id="hs-collapse-mlops-2" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" aria-labelledby="hs-mlops-2">
+              <div class="p-6 pt-0 space-y-4">
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://www.researchgate.net/publication/388187259_Data_drift_detection_and_mitigation_A_comprehensive_MLOps_approach_for_real-time_systems|147">
+                  Therein, we propose an end-to-end MLOps solution for handling the drift and using automated drift detection, retraining techniques and adaptive models for resilience.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://arxiv.org/html/2506.02032v1|89">
+                  Our paper presents a comprehensive strategy that combines established cybersecurity standards with focused attack identification and mitigation strategies for secure MLOps.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://www.edpb.europa.eu/system/files/2025-06/spe-training-on-ai-and-data-protection-technical_en.pdf|149">
+                  AI systems need to be resilient to disruptions, such as denial-of-service (DoS) attacks or hardware failures that could render an AI model or system unusable.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="hs-accordion card-interactive bg-white/80 backdrop-blur-sm dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <button class="hs-accordion-toggle w-full flex justify-between items-center p-4 text-left hover:bg-primary-50 dark:hover:bg-gray-700/50 transition-colors rounded-xl" id="hs-mlops-3">
+              <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0 w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
+                  <i data-lucide="zap" class="w-6 h-6 text-primary-600 dark:text-primary-400"></i>
+                </div>
+                <span class="font-semibold text-lg text-primary-700 dark:text-primary-300">Automated Pipelines</span>
+              </div>
+              <i data-lucide="chevron-down" class="hs-accordion-active:rotate-180 transition-transform duration-300 w-5 h-5 text-primary-600 dark:text-primary-400"></i>
+            </button>
+            <div id="hs-collapse-mlops-3" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" aria-labelledby="hs-mlops-3">
+              <div class="p-6 pt-0 space-y-4">
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://arxiv.org/html/2406.09737v2|87">
+                  Some benefits of automation include more rapid development and deployment and easier management of the infrastructure to which ML models are deployed.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://dl.acm.org/doi/10.1145/3770501.3771304|188">
+                  Key features include dataset access, isolated environments, GPU support, model versioning, reproducibility, and seamless delivery to production.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://www.sciencedirect.com/science/article/pii/S0167739X24004631|88">
+                  This article details the development of an end-to-end MLOps workflow, meticulously integrating land cover classification models that employ Big Data strategies.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+          <h3 class="text-2xl font-semibold text-primary-700 dark:text-primary-300 mb-4" data-ref="https://psitron.s3.ap-southeast-1.amazonaws.com/mlops-course/MLOps+Specialization+Course.pdf|182">Market Growth &amp; Career Prospects</h3>
+          <p class="text-gray-700 dark:text-gray-300 mb-4">
+            The MLOps market was valued at USD
+            <span class="mx-1 px-1.5 py-0.5 rounded-md bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 font-semibold text-sm">720 million</span>
+            in 2022 and is projected to reach USD
+            <span class="mx-1 px-1.5 py-0.5 rounded-md bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 font-semibold text-sm">13.32 billion</span>
+            by 2030, with a CAGR of
+            <span class="mx-1 px-1.5 py-0.5 rounded-md bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 font-semibold text-sm">43.5%</span>.
+          </p>
+          <div class="pl-4 pr-3 py-3 border-l-4 border-primary-500 bg-primary-50/40 dark:bg-primary-900/30 rounded-r-lg">
+            <p class="text-sm font-medium text-primary-900 dark:text-primary-100 leading-relaxed" data-ref="https://www.linkedin.com/posts/aravindai_aravindraghuanthan-ai-ml-activity-7404560026150830080-IjeE|268">
+              <i data-lucide="info" class="inline-block w-4 h-4 mr-1.5 -mt-0.5"></i>
+              MLOps is a set of practices that aims to deploy and maintain machine learning models reliably and efficiently. It can be seen as an extension of the DevOps methodology.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Real-World Challenges Section -->
+    <section id="challenges" class="py-20 bg-primary-50/50 dark:bg-gray-800" data-aos="fade-up">
+      <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-4xl font-bold mb-8 text-primary-700 dark:text-primary-300 text-center">
+          Handling Real-World Data Challenges
+        </h2>
+        <p class="text-center text-gray-700 dark:text-gray-300 mb-12 text-lg max-w-4xl mx-auto">
+          Advanced strategies for addressing imbalanced data, missing values, concept drift, and ethical considerations
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+          <div class="space-y-6">
+            <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+              <h3 class="text-xl font-semibold text-primary-700 dark:text-primary-300 mb-4" data-ref="https://www.researchgate.net/publication/380462451_A_survey_on_imbalanced_learning_latest_research_applications_and_future_directions|126">Imbalanced Data Solutions</h3>
+              <p class="text-gray-700 dark:text-gray-300 mb-3">
+                Addressing both concept drift and class imbalance problems in streaming data, Lu et al. (2019) proposed an adaptive chunk-based dynamic weighted approach.
+              </p>
+              <p class="text-gray-700 dark:text-gray-300" data-ref="https://link.springer.com/article/10.1007/s10462-024-10759-6|215">
+                Data-level approaches to the problem of class imbalance involve techniques and methods that directly modify the training data. These approaches include oversampling, undersampling, and synthetic data generation.
+              </p>
+            </div>
+
+            <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+              <h3 class="text-xl font-semibold text-accent-700 dark:text-accent-300 mb-4" data-ref="https://www.researchgate.net/publication/352496921_A_Survey_On_Missing_Data_in_Machine_Learning|128">Missing Data Handling</h3>
+              <p class="text-gray-700 dark:text-gray-300">
+                In this paper we aggregate some of the literature on missing data particularly focusing on machine learning techniques for imputation, deletion, and model-based approaches.
+              </p>
+            </div>
+          </div>
+
+          <div class="space-y-6">
+            <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+              <h3 class="text-xl font-semibold text-primary-700 dark:text-primary-300 mb-4" data-ref="https://www.mdpi.com/2076-3417/15/16/8859|217">Concept Drift Management</h3>
+              <p class="text-gray-700 dark:text-gray-300 mb-3">
+                The comparison between the previous studies highlights the lack of studies that focus on resolving missing values, adversarial attacks, and concept drift simultaneously.
+              </p>
+              <p class="text-gray-700 dark:text-gray-300" data-ref="https://dl.acm.org/doi/abs/10.1145/3708497|220">
+                Concept drift detection in data stream mining: A literature review. Learning from streaming data with concept drift and imbalance: An overview.
+              </p>
+            </div>
+
+            <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+              <h3 class="text-xl font-semibold text-accent-700 dark:text-accent-300 mb-4" data-ref="https://www.sciencedirect.com/science/article/pii/S0031320323000481|261">Data Augmentation</h3>
+              <p class="text-gray-700 dark:text-gray-300">
+                In this study, we perform a comprehensive survey of image augmentation for deep learning using a novel informative taxonomy. To examine the basic objective of augmentation techniques.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md mb-8">
+          <h3 class="text-2xl font-semibold text-primary-700 dark:text-primary-300 mb-4" data-ref="https://dl.acm.org/doi/10.1145/3626234|210">Responsible AI &amp; Ethics</h3>
+          <p class="text-gray-700 dark:text-gray-300 mb-4">
+            The eight AI ethics principles include human, societal, and environmental wellbeing; human-centered values; fairness; privacy protection and security; transparency; accountability; sustainability; and human agency.
+          </p>
+          <div class="pl-4 pr-3 py-3 border-l-4 border-amber-500 bg-amber-50/40 dark:bg-amber-900/30 rounded-r-lg">
+            <p class="text-sm font-medium text-amber-900 dark:text-amber-100 leading-relaxed" data-ref="https://www.researchgate.net/publication/387275777_Ethical_Considerations_in_AI-Driven_Education|298">
+              <i data-lucide="alert-triangle" class="inline-block w-4 h-4 mr-1.5 -mt-0.5"></i>
+              Critical ethical implications of AI-driven education include data privacy and security, algorithmic bias, transparency, accountability, and the potential for over-reliance on AI systems.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="card-interactive p-5 bg-primary-50/50 dark:bg-gray-800 rounded-xl shadow-md">
+            <h4 class="font-semibold text-primary-700 dark:text-primary-300 mb-2" data-ref="https://link.springer.com/article/10.1007/s13042-023-02083-2|197">Fairness in ML</h4>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Our paper presents a systematic approach for exploring existing literature by aligning their discoveries with predetermined inquiries and a comprehensive framework.
+            </p>
+          </div>
+          <div class="card-interactive p-5 bg-primary-50/50 dark:bg-gray-800 rounded-xl shadow-md">
+            <h4 class="font-semibold text-primary-700 dark:text-primary-300 mb-2" data-ref="https://www.sciencedirect.com/science/article/pii/S1566253524000794|93">Explainable AI</h4>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              This paper highlights the advancements in XAI and its application in real-world scenarios and addresses the ongoing challenges within XAI for transparency.
+            </p>
+          </div>
+          <div class="card-interactive p-5 bg-primary-50/50 dark:bg-gray-800 rounded-xl shadow-md">
+            <h4 class="font-semibold text-primary-700 dark:text-primary-300 mb-2" data-ref="https://www.researchgate.net/profile/Khan-Muhammad-5/publication/370111593_Explainable_Artificial_Intelligence_XAI_What_we_know_and_what_is_left_to_attain_Trustworthy_Artificial_Intelligence/links/64427c7c64d7bb5ae10f2733/Explainable-Artificial-Intelligence-XAI-What-we-know-and-what-is-left-to-attain-Trustworthy-Artificial-Intelligence.pdf|95">Supervised XAI</h4>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              The review starts by explaining the background of XAI, common definitions, and summarizing recently proposed techniques in XAI for supervised machine learning.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Conclusion Section -->
+    <section id="conclusion" class="py-20 bg-white/80 dark:bg-gray-900" data-aos="fade-up">
+      <div class="max-w-5xl mx-auto px-6">
+        <h2 class="text-4xl font-bold mb-8 text-primary-700 dark:text-primary-300 text-center">
+          Conclusion &amp; Future Directions
+        </h2>
+        
+        <div class="card-interactive p-8 bg-primary-50/50 dark:bg-gray-800 rounded-xl shadow-md mb-8">
+          <p class="text-lg text-gray-700 dark:text-gray-300 mb-6 leading-relaxed" data-ref="https://www.researchgate.net/publication/397818919_Artificial_Intelligence_in_Curriculum_Development_A_Global_Systematic_Review_of_Trends_Challenges_and_Strategic_Directions|7">
+            Artificial Intelligence (AI) is reshaping curriculum development by enabling more personalised, efficient, and responsive learning design. This transformation reflects the broader integration of AI across educational institutions.
+          </p>
+          <p class="text-lg text-gray-700 dark:text-gray-300 mb-6 leading-relaxed" data-ref="https://www.mdpi.com/2414-4088/9/8/84|10">
+            The steady growth into 2024 suggests that AI is transitioning from an emergent innovation to a core element of educational research and practice. This reflects increasing adoption across diverse educational contexts.
+          </p>
+          <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed" data-ref="https://dl.acm.org/doi/full/10.1145/3775073.3775203|12">
+            At the curriculum level, embedding AI topics into disciplinary courses and designing domain-specific AI curricula have gained broad acceptance as essential components of modern education.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+          <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
+                <i data-lucide="graduation-cap" class="w-6 h-6 text-primary-600 dark:text-primary-400"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-semibold text-primary-700 dark:text-primary-300 mb-3" data-ref="https://www.scribd.com/document/895943251/Guide-to-Becoming-an-AI-Expert-in-2025|51">Structured Learning Path</h3>
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                  The guide outlines a structured learning path to become an AI expert by 2025, divided into four stages: Foundational Skills, Core AI/ML, Advanced Topics, and Specialization.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-12 h-12 bg-accent-100 dark:bg-accent-900/30 rounded-lg flex items-center justify-center">
+                <i data-lucide="compass" class="w-6 h-6 text-accent-600 dark:text-accent-400"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-semibold text-accent-700 dark:text-accent-300 mb-3" data-ref="https://www.scribd.com/document/935328268/Merged-LLM-Course-Roadmap|53">Semester-Style Curriculum</h3>
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                  Optimal Semester-Style LLM and Transformers Course (16 Weeks) with Week 1-2: Deep Learning &amp; NLP Foundations. Objective: Build solid foundations in deep learning.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-md">
+          <h3 class="text-2xl font-semibold text-primary-700 dark:text-primary-300 mb-4" data-ref="https://www.cs.cmu.edu/~mgormley/courses/10601/|58">Research &amp; Experimentation Focus</h3>
+          <p class="text-gray-700 dark:text-gray-300 mb-4">
+            Design experiments to evaluate and compare different machine learning techniques on real-world problems, emphasizing the importance of empirical validation and reproducible research.
+          </p>
+          <p class="text-gray-700 dark:text-gray-300" data-ref="https://dl.acm.org/doi/full/10.1145/3711403.3711481|41">
+            In the context of multidisciplinary integration, this paper aims to explore a graduate-level education model for AI courses by focusing on the integration of theory and practice.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-primary-900 dark:bg-gray-950 text-gray-300 py-12">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid md:grid-cols-3 gap-8 mb-8">
+        <div>
+          <h3 class="text-xl font-bold text-primary-300 dark:text-primary-400 mb-4">About This Curriculum</h3>
+          <p class="text-sm text-gray-400">
+            A comprehensive graduate-level AI learning hub curriculum balancing theoretical foundations with practical implementation across advanced AI and ML subfields.
+          </p>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-primary-300 dark:text-primary-400 mb-4">Key Areas</h3>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li>• Deep Learning Theory</li>
+            <li>• Natural Language Processing</li>
+            <li>• Computer Vision</li>
+            <li>• Optimization Methods</li>
+            <li>• MLOps &amp; Deployment</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-primary-300 dark:text-primary-400 mb-4">Resources</h3>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li>• Research Papers</li>
+            <li>• Practical Projects</li>
+            <li>• Industry Case Studies</li>
+            <li>• Hands-On Implementation</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 pt-8 text-center text-sm text-gray-500">
+        <p>&copy; 2025 AI Learning Hub Curriculum. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Initialize Libraries -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize AOS
+      AOS.init({
+        duration: 800,
+        once: true,
+        offset: 100
+      });
+
+      // Initialize Lucide icons
+      lucide.createIcons();
+
+      // Initialize Preline components
+      setTimeout(() => {
+        window.HSStaticMethods.autoInit();
+      }, 100);
+
+      // Progress bar functionality
+      const progressBar = document.getElementById('progressBar');
+      
+      window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressBar.style.width = scrolled + '%';
+      });
+
+      // Citation system
+      initCitationSystem();
+    });
+  </script>
+</body>
+</html>
+

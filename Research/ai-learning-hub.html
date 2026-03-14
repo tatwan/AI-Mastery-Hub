@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Learning Hub — Graduate-Level AI & ML Curriculum</title>
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&f[]=cabinet-grotesk@500,700,800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+/* ===== DESIGN TOKENS ===== */
+:root, [data-theme="light"] {
+  --font-display: 'Cabinet Grotesk', 'Georgia', serif;
+  --font-body: 'General Sans', 'Helvetica Neue', sans-serif;
+  --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+  --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+  --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem;
+  --space-4: 1rem; --space-5: 1.25rem; --space-6: 1.5rem;
+  --space-8: 2rem; --space-10: 2.5rem; --space-12: 3rem;
+  --space-16: 4rem; --space-20: 5rem; --space-24: 6rem;
+  --color-bg: #f7f6f2; --color-surface: #f9f8f5;
+  --color-surface-2: #fbfbf9; --color-surface-offset: #f3f0ec;
+  --color-surface-offset-2: #edeae5; --color-surface-dynamic: #e6e4df;
+  --color-divider: #dcd9d5; --color-border: #d4d1ca;
+  --color-text: #28251d; --color-text-muted: #7a7974;
+  --color-text-faint: #bab9b4; --color-text-inverse: #f9f8f4;
+  --color-primary: #01696f; --color-primary-hover: #0c4e54;
+  --color-primary-active: #0f3638;
+  --color-primary-highlight: #cedcd8;
+  --color-success: #437a22; --color-success-highlight: #d4dfcc;
+  --color-blue: #006494; --color-blue-highlight: #c6d8e4;
+  --color-purple: #7a39bb; --color-purple-highlight: #dacfde;
+  --color-orange: #da7101; --color-orange-highlight: #e7d7c4;
+  --color-gold: #d19900; --color-gold-highlight: #e9e0c6;
+  --color-error: #a12c7b;
+  --radius-sm: 0.375rem; --radius-md: 0.5rem;
+  --radius-lg: 0.75rem; --radius-xl: 1rem;
+  --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow-sm: 0 1px 2px oklch(0.2 0.01 80 / 0.06);
+  --shadow-md: 0 4px 12px oklch(0.2 0.01 80 / 0.08);
+  --shadow-lg: 0 12px 32px oklch(0.2 0.01 80 / 0.12);
+  --content-narrow: 640px; --content-default: 960px; --content-wide: 1200px;
+}
+
+[data-theme="dark"] {
+  --color-bg: #171614; --color-surface: #1c1b19;
+  --color-surface-2: #201f1d; --color-surface-offset: #1d1c1a;
+  --color-surface-offset-2: #22211f; --color-surface-dynamic: #2d2c2a;
+  --color-divider: #262523; --color-border: #393836;
+  --color-text: #cdccca; --color-text-muted: #797876;
+  --color-text-faint: #5a5957; --color-text-inverse: #2b2a28;
+  --color-primary: #4f98a3; --color-primary-hover: #227f8b;
+  --color-primary-active: #1a626b;
+  --color-primary-highlight: #313b3b;
+  --color-success: #6daa45; --color-success-highlight: #3a4435;
+  --color-blue: #5591c7; --color-blue-highlight: #3a4550;
+  --color-purple: #a86fdf; --color-purple-highlight: #4e4652;
+  --color-orange: #fdab43; --color-orange-highlight: #564b3e;
+  --color-gold: #e8af34; --color-gold-highlight: #4d4332;
+  --color-error: #d163a7;
+  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.2);
+  --shadow-md: 0 4px 12px oklch(0 0 0 / 0.3);
+  --shadow-lg: 0 12px 32px oklch(0 0 0 / 0.4);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --color-bg: #171614; --color-surface: #1c1b19;
+    --color-surface-2: #201f1d; --color-surface-offset: #1d1c1a;
+    --color-surface-offset-2: #22211f; --color-surface-dynamic: #2d2c2a;
+    --color-divider: #262523; --color-border: #393836;
+    --color-text: #cdccca; --color-text-muted: #797876;
+    --color-text-faint: #5a5957; --color-text-inverse: #2b2a28;
+    --color-primary: #4f98a3; --color-primary-hover: #227f8b;
+    --color-primary-active: #1a626b;
+    --color-primary-highlight: #313b3b;
+    --color-success: #6daa45; --color-success-highlight: #3a4435;
+    --color-blue: #5591c7; --color-blue-highlight: #3a4550;
+    --color-purple: #a86fdf; --color-purple-highlight: #4e4652;
+    --color-orange: #fdab43; --color-orange-highlight: #564b3e;
+    --color-gold: #e8af34; --color-gold-highlight: #4d4332;
+    --color-error: #d163a7;
+    --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.2);
+    --shadow-md: 0 4px 12px oklch(0 0 0 / 0.3);
+    --shadow-lg: 0 12px 32px oklch(0 0 0 / 0.4);
+  }
+}
+
+/* ===== BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; scroll-behavior: smooth; scroll-padding-top: var(--space-16); height: 100%; }
+body { min-height: 100dvh; line-height: 1.6; font-family: var(--font-body); font-size: var(--text-base); color: var(--color-text); background-color: var(--color-bg); overflow: hidden; height: 100%; }
+img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto; }
+h1,h2,h3,h4,h5,h6 { text-wrap: balance; line-height: 1.15; font-family: var(--font-display); }
+p, li, figcaption { text-wrap: pretty; max-width: 72ch; }
+::selection { background: oklch(from var(--color-primary) l c h / 0.25); color: var(--color-text); }
+:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; border-radius: var(--radius-sm); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } }
+button { cursor: pointer; background: none; border: none; font: inherit; color: inherit; }
+a { color: var(--color-primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+a, button, [role="button"] { transition: color var(--transition-interactive), background var(--transition-interactive), border-color var(--transition-interactive), box-shadow var(--transition-interactive); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0; }
+
+/* ===== APP LAYOUT ===== */
+.app { display: grid; grid-template-columns: 260px 1fr; grid-template-rows: auto 1fr; height: 100dvh; }
+
+.sidebar { grid-row: 1 / -1; background: var(--color-surface); border-right: 1px solid var(--color-divider); overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; z-index: 20; }
+.sidebar-header { padding: var(--space-5) var(--space-5) var(--space-3); display: flex; align-items: center; gap: var(--space-3); border-bottom: 1px solid var(--color-divider); }
+.logo { display: flex; align-items: center; gap: var(--space-2); }
+.logo svg { flex-shrink: 0; }
+.logo-text { font-family: var(--font-display); font-weight: 700; font-size: var(--text-lg); color: var(--color-text); line-height: 1.1; }
+.logo-sub { font-size: var(--text-xs); color: var(--color-text-muted); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+
+.sidebar-nav { flex: 1; padding: var(--space-3) var(--space-2); }
+.nav-section { margin-bottom: var(--space-4); }
+.nav-section-title { font-size: var(--text-xs); font-weight: 600; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.06em; padding: var(--space-1) var(--space-3); margin-bottom: var(--space-1); }
+.nav-item { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--color-text-muted); cursor: pointer; width: 100%; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nav-item:hover { background: var(--color-surface-offset); color: var(--color-text); }
+.nav-item.active { background: var(--color-primary-highlight); color: var(--color-primary); font-weight: 600; }
+.nav-item i { flex-shrink: 0; width: 18px; height: 18px; }
+.nav-item .badge { margin-left: auto; background: var(--color-primary); color: var(--color-text-inverse); font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: var(--radius-sm); flex-shrink: 0; }
+
+.sidebar-footer { padding: var(--space-3) var(--space-4); border-top: 1px solid var(--color-divider); display: flex; align-items: center; justify-content: space-between; }
+.theme-toggle { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: var(--radius-md); color: var(--color-text-muted); }
+.theme-toggle:hover { background: var(--color-surface-offset); color: var(--color-text); }
+.progress-indicator { font-size: var(--text-xs); color: var(--color-text-muted); }
+
+.top-bar { grid-column: 2; background: var(--color-surface); border-bottom: 1px solid var(--color-divider); padding: var(--space-3) var(--space-6); display: flex; align-items: center; justify-content: space-between; z-index: 10; }
+.breadcrumb { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); color: var(--color-text-muted); }
+.breadcrumb span { color: var(--color-text); font-weight: 500; }
+.search-bar { display: flex; align-items: center; gap: var(--space-2); background: var(--color-surface-offset); border-radius: var(--radius-lg); padding: var(--space-2) var(--space-4); min-width: 260px; border: 1px solid transparent; }
+.search-bar:focus-within { border-color: var(--color-primary); background: var(--color-surface-2); }
+.search-bar input { border: none; background: transparent; font: inherit; font-size: var(--text-sm); color: var(--color-text); outline: none; width: 100%; }
+.search-bar i { color: var(--color-text-faint); flex-shrink: 0; width: 16px; height: 16px; }
+.search-bar kbd { font-size: 11px; color: var(--color-text-faint); border: 1px solid var(--color-border); border-radius: 3px; padding: 0 4px; font-family: var(--font-body); }
+.hamburger { display: none; }
+
+.main { grid-column: 2; overflow-y: auto; overscroll-behavior: contain; }
+
+/* ===== HERO SECTION ===== */
+.hero { position: relative; min-height: 400px; display: flex; align-items: center; background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-primary-highlight) 100%); overflow: hidden; }
+.hero-bg { position: absolute; inset: 0; }
+.hero-bg img { width: 100%; height: 100%; object-fit: cover; opacity: 0.15; }
+.hero-content { position: relative; z-index: 2; padding: var(--space-12) var(--space-8); max-width: 720px; }
+.hero h1 { font-size: var(--text-xl); font-weight: 800; margin-bottom: var(--space-4); }
+.hero p { font-size: var(--text-base); color: var(--color-text-muted); margin-bottom: var(--space-6); max-width: 60ch; }
+.hero-stats { display: flex; gap: var(--space-8); flex-wrap: wrap; }
+.hero-stat { display: flex; flex-direction: column; }
+.hero-stat-value { font-family: var(--font-display); font-weight: 700; font-size: var(--text-lg); color: var(--color-primary); }
+.hero-stat-label { font-size: var(--text-xs); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* ===== CONTENT SECTIONS ===== */
+.content-section { padding: var(--space-8); max-width: var(--content-wide); margin: 0 auto; }
+.content-section.full { max-width: 100%; }
+.section-header { margin-bottom: var(--space-6); }
+.section-header h2 { font-size: var(--text-xl); font-weight: 700; margin-bottom: var(--space-2); }
+.section-header p { color: var(--color-text-muted); font-size: var(--text-sm); max-width: 65ch; }
+.section-divider { border: none; border-top: 1px solid var(--color-divider); margin: 0; }
+
+/* ===== MODULE CARDS ===== */
+.module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); gap: var(--space-5); }
+.module-card { background: var(--color-surface); border: 1px solid oklch(from var(--color-text) l c h / 0.08); border-radius: var(--radius-lg); padding: var(--space-5); cursor: pointer; transition: box-shadow var(--transition-interactive), transform 0.2s ease; }
+.module-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.module-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: var(--space-3); }
+.module-icon { width: 40px; height: 40px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.module-icon i { width: 20px; height: 20px; }
+.module-card h3 { font-size: var(--text-lg); font-weight: 700; margin-bottom: var(--space-2); font-family: var(--font-display); }
+.module-card p { font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-4); line-height: 1.5; }
+.module-meta { display: flex; align-items: center; gap: var(--space-4); font-size: var(--text-xs); color: var(--color-text-muted); }
+.module-meta-item { display: flex; align-items: center; gap: var(--space-1); }
+.module-meta-item i { width: 14px; height: 14px; }
+.module-tag { display: inline-flex; padding: 2px 8px; border-radius: var(--radius-sm); font-size: 11px; font-weight: 600; }
+
+/* Module color coding */
+.mc-math { background: var(--color-blue-highlight); color: var(--color-blue); }
+.mc-ml { background: var(--color-primary-highlight); color: var(--color-primary); }
+.mc-dl { background: var(--color-purple-highlight); color: var(--color-purple); }
+.mc-nlp { background: var(--color-orange-highlight); color: var(--color-orange); }
+.mc-cv { background: var(--color-success-highlight); color: var(--color-success); }
+.mc-rl { background: var(--color-gold-highlight); color: var(--color-gold); }
+.mc-eng { background: var(--color-primary-highlight); color: var(--color-primary); }
+
+/* ===== EXPANDED MODULE / DETAIL VIEW ===== */
+.module-detail { display: none; padding: var(--space-8); max-width: var(--content-wide); margin: 0 auto; }
+.module-detail.active { display: block; }
+.back-btn { display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-6); padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); }
+.back-btn:hover { background: var(--color-surface-offset); color: var(--color-text); text-decoration: none; }
+.detail-header { margin-bottom: var(--space-8); }
+.detail-header h2 { font-size: var(--text-xl); font-weight: 800; margin-bottom: var(--space-2); }
+.detail-header p { color: var(--color-text-muted); max-width: 65ch; }
+.detail-meta { display: flex; gap: var(--space-6); margin-top: var(--space-4); flex-wrap: wrap; }
+.detail-meta-item { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); color: var(--color-text-muted); }
+.detail-meta-item i { width: 16px; height: 16px; color: var(--color-primary); }
+
+.topic-list { list-style: none; }
+.topic-group { margin-bottom: var(--space-6); }
+.topic-group-title { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 700; margin-bottom: var(--space-3); padding-bottom: var(--space-2); border-bottom: 2px solid var(--color-primary); display: inline-block; }
+.topic-item { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-divider); }
+.topic-item:last-child { border-bottom: none; }
+.topic-bullet { width: 8px; height: 8px; border-radius: 50%; background: var(--color-primary); flex-shrink: 0; margin-top: 8px; }
+.topic-name { font-weight: 500; font-size: var(--text-sm); }
+.topic-desc { font-size: var(--text-xs); color: var(--color-text-muted); margin-top: 2px; }
+
+.prereq-box { background: var(--color-surface-offset); border-radius: var(--radius-lg); padding: var(--space-5); margin-top: var(--space-6); }
+.prereq-box h4 { font-family: var(--font-display); font-size: var(--text-base); font-weight: 700; margin-bottom: var(--space-3); display: flex; align-items: center; gap: var(--space-2); }
+.prereq-box ul { list-style: none; display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.prereq-box li { background: var(--color-surface); padding: var(--space-1) var(--space-3); border-radius: var(--radius-sm); font-size: var(--text-xs); font-weight: 500; border: 1px solid var(--color-border); }
+
+.ref-box { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-5); margin-top: var(--space-4); }
+.ref-box h4 { font-family: var(--font-display); font-size: var(--text-base); font-weight: 700; margin-bottom: var(--space-3); }
+.ref-item { font-size: var(--text-xs); color: var(--color-text-muted); padding: var(--space-1) 0; }
+
+/* ===== LEARNING PATH SECTION ===== */
+.path-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: var(--space-5); }
+.path-card { background: var(--color-surface); border: 1px solid oklch(from var(--color-text) l c h / 0.08); border-radius: var(--radius-lg); padding: var(--space-5); }
+.path-card h3 { font-family: var(--font-display); font-size: var(--text-base); font-weight: 700; margin-bottom: var(--space-2); }
+.path-card p { font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-4); }
+.path-modules { list-style: none; }
+.path-modules li { font-size: var(--text-xs); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-divider); display: flex; align-items: center; gap: var(--space-2); color: var(--color-text-muted); }
+.path-modules li:last-child { border-bottom: none; }
+.path-modules li i { width: 14px; height: 14px; color: var(--color-primary); flex-shrink: 0; }
+.path-step { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; background: var(--color-primary); color: var(--color-text-inverse); font-size: 10px; font-weight: 700; flex-shrink: 0; }
+
+/* ===== TABS ===== */
+.tabs { display: flex; gap: var(--space-1); border-bottom: 1px solid var(--color-divider); margin-bottom: var(--space-6); overflow-x: auto; }
+.tab { padding: var(--space-3) var(--space-4); font-size: var(--text-sm); font-weight: 500; color: var(--color-text-muted); border-bottom: 2px solid transparent; white-space: nowrap; }
+.tab:hover { color: var(--color-text); }
+.tab.active { color: var(--color-primary); border-bottom-color: var(--color-primary); font-weight: 600; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .app { grid-template-columns: 60px 1fr; }
+  .sidebar { width: 60px; }
+  .logo-text, .logo-sub, .nav-section-title, .nav-item span, .nav-item .badge, .progress-indicator { display: none; }
+  .nav-item { justify-content: center; padding: var(--space-2); }
+  .sidebar-header { padding: var(--space-3); justify-content: center; }
+  .sidebar-footer { padding: var(--space-2); justify-content: center; }
+}
+
+@media (max-width: 768px) {
+  .app { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .sidebar { display: none; position: fixed; left: 0; top: 0; bottom: 0; width: 280px; z-index: 100; }
+  .sidebar.open { display: flex; }
+  .sidebar .logo-text, .sidebar .logo-sub, .sidebar .nav-section-title, .sidebar .nav-item span, .sidebar .nav-item .badge, .sidebar .progress-indicator { display: initial; }
+  .sidebar .nav-item { justify-content: flex-start; padding: var(--space-2) var(--space-3); }
+  .overlay { display: none; position: fixed; inset: 0; background: oklch(0 0 0 / 0.5); z-index: 90; }
+  .overlay.open { display: block; }
+  .hamburger { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--radius-md); }
+  .hamburger:hover { background: var(--color-surface-offset); }
+  .content-section, .module-detail { padding: var(--space-5) var(--space-4); }
+  .hero { min-height: 300px; }
+  .hero-content { padding: var(--space-8) var(--space-4); }
+  .search-bar { display: none; }
+  .module-grid { grid-template-columns: 1fr; }
+  .path-cards { grid-template-columns: 1fr; }
+  .hero-stats { gap: var(--space-4); }
+}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="app">
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-label="AI Learning Hub Logo">
+        <rect width="32" height="32" rx="8" fill="currentColor" style="color: var(--color-primary)"/>
+        <path d="M8 24L16 8L24 24" stroke="var(--color-text-inverse)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="16" cy="16" r="3" fill="var(--color-text-inverse)"/>
+        <line x1="12" y1="20" x2="20" y2="20" stroke="var(--color-text-inverse)" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="logo-text">AI Hub</div>
+        <div class="logo-sub">Learning Platform</div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section">
+      <div class="nav-section-title">Overview</div>
+      <button class="nav-item active" data-section="home" onclick="showSection('home')">
+        <i data-lucide="layout-dashboard"></i> <span>Home</span>
+      </button>
+      <button class="nav-item" data-section="paths" onclick="showSection('paths')">
+        <i data-lucide="map"></i> <span>Learning Paths</span>
+      </button>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Foundations</div>
+      <button class="nav-item" data-module="m1" onclick="showModule('m1')"><i data-lucide="sigma"></i> <span>Math Foundations</span> <span class="badge">12</span></button>
+      <button class="nav-item" data-module="m2" onclick="showModule('m2')"><i data-lucide="bar-chart-3"></i> <span>Statistical Learning</span> <span class="badge">10</span></button>
+      <button class="nav-item" data-module="m3" onclick="showModule('m3')"><i data-lucide="settings-2"></i> <span>Optimization</span> <span class="badge">11</span></button>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Core ML</div>
+      <button class="nav-item" data-module="m4" onclick="showModule('m4')"><i data-lucide="cpu"></i> <span>Advanced ML</span> <span class="badge">14</span></button>
+      <button class="nav-item" data-module="m5" onclick="showModule('m5')"><i data-lucide="network"></i> <span>Probabilistic Models</span> <span class="badge">11</span></button>
+      <button class="nav-item" data-module="m6" onclick="showModule('m6')"><i data-lucide="git-branch"></i> <span>Causal Inference</span> <span class="badge">10</span></button>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Deep Learning</div>
+      <button class="nav-item" data-module="m7" onclick="showModule('m7')"><i data-lucide="layers"></i> <span>Advanced Deep Learning</span> <span class="badge">14</span></button>
+      <button class="nav-item" data-module="m8" onclick="showModule('m8')"><i data-lucide="hexagon"></i> <span>Geometric DL & GNNs</span> <span class="badge">10</span></button>
+      <button class="nav-item" data-module="m9" onclick="showModule('m9')"><i data-lucide="sparkles"></i> <span>Generative Models</span> <span class="badge">12</span></button>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Domains</div>
+      <button class="nav-item" data-module="m10" onclick="showModule('m10')"><i data-lucide="message-square"></i> <span>NLP & LLMs</span> <span class="badge">15</span></button>
+      <button class="nav-item" data-module="m11" onclick="showModule('m11')"><i data-lucide="eye"></i> <span>Computer Vision</span> <span class="badge">12</span></button>
+      <button class="nav-item" data-module="m12" onclick="showModule('m12')"><i data-lucide="gamepad-2"></i> <span>Reinforcement Learning</span> <span class="badge">11</span></button>
+      <button class="nav-item" data-module="m13" onclick="showModule('m13')"><i data-lucide="activity"></i> <span>Signal Processing & TS</span> <span class="badge">11</span></button>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Engineering</div>
+      <button class="nav-item" data-module="m14" onclick="showModule('m14')"><i data-lucide="database"></i> <span>Real-World Data</span> <span class="badge">12</span></button>
+      <button class="nav-item" data-module="m15" onclick="showModule('m15')"><i data-lucide="rocket"></i> <span>AI Engineering & MLOps</span> <span class="badge">14</span></button>
+      <button class="nav-item" data-module="m16" onclick="showModule('m16')"><i data-lucide="shield"></i> <span>Safety & Trustworthy AI</span> <span class="badge">12</span></button>
+      <button class="nav-item" data-module="m17" onclick="showModule('m17')"><i data-lucide="flask-conical"></i> <span>Research Methods</span> <span class="badge">10</span></button>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <span class="progress-indicator">17 Modules · 190+ Topics</span>
+    <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme">
+      <i data-lucide="moon" style="width:18px;height:18px;"></i>
+    </button>
+  </div>
+</aside>
+
+<!-- ===== TOP BAR ===== -->
+<header class="top-bar">
+  <div style="display:flex;align-items:center;gap:var(--space-3);">
+    <button class="hamburger" onclick="toggleSidebar()" aria-label="Menu"><i data-lucide="menu"></i></button>
+    <div class="breadcrumb"><i data-lucide="home" style="width:14px;height:14px;"></i> / <span id="breadcrumb-text">Home</span></div>
+  </div>
+  <div class="search-bar">
+    <i data-lucide="search"></i>
+    <input type="text" placeholder="Search topics..." id="searchInput" oninput="filterModules(this.value)">
+    <kbd>⌘K</kbd>
+  </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="main" id="mainContent">
+
+<!-- HOME SECTION -->
+<div id="section-home">
+  <div class="hero">
+    <div class="hero-bg"><img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/a58725d3-6fda-446b-9085-1251fc92efcf.png" alt="" loading="lazy" width="1200" height="675"></div>
+    <div class="hero-content">
+      <h1>Master AI & Machine Learning at the Graduate Level</h1>
+      <p>A comprehensive, research-grade curriculum designed to take you beyond the basics. Modeled after PhD programs at CMU, Stanford, MIT, and Georgia Tech — everything you need to become an effective AI practitioner and researcher.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><span class="hero-stat-value">17</span><span class="hero-stat-label">Modules</span></div>
+        <div class="hero-stat"><span class="hero-stat-value">190+</span><span class="hero-stat-label">Topics</span></div>
+        <div class="hero-stat"><span class="hero-stat-value">6</span><span class="hero-stat-label">Learning Paths</span></div>
+        <div class="hero-stat"><span class="hero-stat-value">PhD</span><span class="hero-stat-label">Level Depth</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULE GRID -->
+  <div class="content-section" id="moduleGrid">
+    <div class="section-header">
+      <h2>Curriculum Modules</h2>
+      <p>Each module is a deep dive into a critical area. Click to explore topics, prerequisites, and key references.</p>
+    </div>
+
+    <div class="tabs" id="categoryTabs">
+      <button class="tab active" onclick="filterCategory('all', this)">All Modules</button>
+      <button class="tab" onclick="filterCategory('foundation', this)">Foundations</button>
+      <button class="tab" onclick="filterCategory('core', this)">Core ML</button>
+      <button class="tab" onclick="filterCategory('deep', this)">Deep Learning</button>
+      <button class="tab" onclick="filterCategory('domain', this)">Domains</button>
+      <button class="tab" onclick="filterCategory('eng', this)">Engineering</button>
+    </div>
+
+    <div class="module-grid" id="moduleCards">
+    </div>
+  </div>
+</div>
+
+<!-- LEARNING PATHS SECTION -->
+<div id="section-paths" style="display:none;">
+  <div class="content-section">
+    <div class="section-header">
+      <h2>Learning Paths</h2>
+      <p>Structured journeys through the curriculum based on your goals. Each path sequences modules for optimal learning progression.</p>
+    </div>
+    <div class="path-cards" id="pathCards">
+    </div>
+  </div>
+</div>
+
+<!-- MODULE DETAIL VIEW (hidden by default) -->
+<div class="module-detail" id="moduleDetail">
+  <button class="back-btn" onclick="showSection('home')"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i> Back to Modules</button>
+  <div class="detail-header" id="detailHeader"></div>
+  <div id="detailContent"></div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ===== DATA: ALL MODULES =====
+const MODULES = [
+  {
+    id: "m1", title: "Mathematical Foundations for AI", icon: "sigma",
+    category: "foundation", color: "mc-math",
+    desc: "Advanced mathematics underpinning modern AI — linear algebra, probability theory, measure theory, information theory, and functional analysis.",
+    topics: 12, hours: "80–100", level: "Foundation",
+    prereqs: ["Undergraduate Calculus", "Intro Linear Algebra", "Intro Probability"],
+    refs: ["Strang — Linear Algebra and Learning from Data", "Bishop & Bishop — Deep Learning: Foundations and Concepts", "Cover & Thomas — Elements of Information Theory", "Billingsley — Probability and Measure"],
+    groups: [
+      { name: "Advanced Linear Algebra", items: [
+        { t: "Matrix Decompositions", d: "SVD, eigendecomposition, QR, Cholesky and their applications in PCA, recommender systems, and latent factor models" },
+        { t: "Tensor Algebra & Operations", d: "Tensor products, contractions, Tucker/CP decompositions for multi-dimensional data" },
+        { t: "Random Matrix Theory", d: "Marchenko-Pastur law, spectral analysis of large random matrices in neural networks" }
+      ]},
+      { name: "Advanced Probability & Measure Theory", items: [
+        { t: "Measure-Theoretic Probability", d: "σ-algebras, Lebesgue integration, Radon-Nikodym derivatives, and conditional expectations" },
+        { t: "Concentration Inequalities", d: "Hoeffding, Bernstein, McDiarmid, sub-Gaussian/sub-exponential random variables" },
+        { t: "Stochastic Processes", d: "Martingales, Brownian motion, Poisson processes, and Markov chains for sequential modeling" },
+        { t: "High-Dimensional Probability", d: "Phenomena in high-dimensional spaces — curse of dimensionality, Johnson-Lindenstrauss, random projections" }
+      ]},
+      { name: "Information Theory for ML", items: [
+        { t: "Entropy, MI & KL Divergence", d: "Shannon entropy, mutual information, cross-entropy, KL divergence, f-divergences and their role in loss functions" },
+        { t: "Rate-Distortion & Coding Theory", d: "Connections between compression, clustering, and the information bottleneck principle" },
+        { t: "Information-Theoretic Bounds", d: "Fano's inequality, data processing inequality, and minimax lower bounds for learning" }
+      ]},
+      { name: "Functional Analysis Essentials", items: [
+        { t: "Hilbert & Banach Spaces", d: "Inner product spaces, reproducing kernel Hilbert spaces (RKHS) as foundation for kernel methods" },
+        { t: "Operator Theory Basics", d: "Linear operators, spectral theorem, and applications to neural network analysis" }
+      ]}
+    ]
+  },
+  {
+    id: "m2", title: "Statistical Learning Theory", icon: "bar-chart-3",
+    category: "foundation", color: "mc-math",
+    desc: "Theoretical foundations of learning — generalization, complexity measures, minimax theory, and nonparametric methods.",
+    topics: 10, hours: "60–80", level: "Foundation",
+    prereqs: ["Mathematical Foundations (M1)", "Graduate-level Probability"],
+    refs: ["Shalev-Shwartz & Ben-David — Understanding Machine Learning", "Wainwright — High-Dimensional Statistics", "Vershynin — High-Dimensional Probability"],
+    groups: [
+      { name: "Generalization Theory", items: [
+        { t: "PAC Learning & VC Theory", d: "Probably approximately correct framework, VC dimension, fundamental theorem of statistical learning" },
+        { t: "Rademacher Complexity", d: "Empirical Rademacher complexity, McDiarmid-based bounds, applications to neural networks and kernel methods" },
+        { t: "Uniform Convergence & Stability", d: "Algorithmic stability, leave-one-out analysis, and connections to regularization" }
+      ]},
+      { name: "Nonparametric & Minimax Theory", items: [
+        { t: "Minimax Estimation", d: "Le Cam's method, Fano's method, Assouad's lemma — establishing fundamental limits of estimation" },
+        { t: "Nonparametric Regression", d: "Kernel smoothing, local polynomials, splines, wavelets — bias-variance trade-off in infinite-dimensional spaces" },
+        { t: "High-Dimensional Statistics", d: "Sparse estimation (LASSO theory), restricted isometry property, compressed sensing fundamentals" }
+      ]},
+      { name: "Advanced Topics", items: [
+        { t: "Online Learning Theory", d: "Regret bounds, expert advice, multiplicative weights, adversarial bandits" },
+        { t: "Distribution-Free Prediction", d: "Conformal prediction, calibration, and distribution-free uncertainty quantification" },
+        { t: "Double/Debiased ML", d: "Neyman orthogonality, cross-fitting, semiparametric efficiency in high dimensions" },
+        { t: "Benign Overfitting & Interpolation", d: "Double descent, implicit regularization, and why overparameterized models generalize" }
+      ]}
+    ]
+  },
+  {
+    id: "m3", title: "Optimization for Machine Learning", icon: "settings-2",
+    category: "foundation", color: "mc-math",
+    desc: "Convex and non-convex optimization theory and algorithms — the engine of all model training from classical ML to large-scale deep learning.",
+    topics: 11, hours: "60–80", level: "Foundation",
+    prereqs: ["Linear Algebra", "Multivariate Calculus", "Basic ML"],
+    refs: ["Boyd & Vandenberghe — Convex Optimization", "Nocedal & Wright — Numerical Optimization", "Bubeck — Convex Optimization: Algorithms and Complexity"],
+    groups: [
+      { name: "Convex Optimization", items: [
+        { t: "Convex Sets, Functions & Problems", d: "Convexity definitions, operations preserving convexity, standard form problems, KKT conditions" },
+        { t: "Duality Theory", d: "Lagrangian duality, strong duality, complementary slackness, dual problems in SVMs and beyond" },
+        { t: "First-Order Methods", d: "Gradient descent, subgradient methods, proximal operators, projected gradient descent, convergence rates" },
+        { t: "Accelerated & Adaptive Methods", d: "Nesterov momentum, Adam, AdaGrad, RMSProp — theory behind adaptive learning rates" }
+      ]},
+      { name: "Non-Convex Optimization", items: [
+        { t: "Landscape Analysis", d: "Saddle points, local vs global minima, loss surface geometry of neural networks" },
+        { t: "Escaping Saddle Points", d: "Perturbed gradient descent, noise injection, cubic regularization, second-order methods" },
+        { t: "Implicit Regularization", d: "How optimizer choice implicitly regularizes: gradient descent bias toward low-rank and sparse solutions" }
+      ]},
+      { name: "Scalable Optimization", items: [
+        { t: "Stochastic Optimization", d: "SGD convergence theory, variance reduction (SVRG, SARAH), mini-batch analysis" },
+        { t: "Distributed Optimization", d: "Communication-efficient training, gradient compression, federated averaging theory" },
+        { t: "Optimal Transport & Wasserstein", d: "Kantorovich formulation, Sinkhorn algorithm, applications in generative models and domain adaptation" },
+        { t: "Bilevel Optimization", d: "Meta-learning formulation, hyperparameter optimization, neural architecture search as bilevel programs" }
+      ]}
+    ]
+  },
+  {
+    id: "m4", title: "Advanced Machine Learning", icon: "cpu",
+    category: "core", color: "mc-ml",
+    desc: "Beyond the basics — kernel methods, ensemble theory, semi-supervised learning, domain adaptation, meta-learning, and AutoML.",
+    topics: 14, hours: "80–100", level: "Core",
+    prereqs: ["Mathematical Foundations (M1)", "Optimization (M3)", "Intro ML"],
+    refs: ["Murphy — Probabilistic Machine Learning: Advanced Topics", "Hastie, Tibshirani, Friedman — Elements of Statistical Learning", "Goodfellow, Bengio, Courville — Deep Learning"],
+    groups: [
+      { name: "Advanced Supervised Learning", items: [
+        { t: "Kernel Methods & RKHS", d: "Mercer's theorem, kernel trick, Gaussian processes as kernel machines, multi-kernel learning" },
+        { t: "Ensemble Theory", d: "Boosting theory (AdaBoost margin analysis), random forests (Breiman's analysis), stacking, calibration" },
+        { t: "Advanced Regularization", d: "Elastic net, group LASSO, dropout as approximate Bayesian inference, spectral regularization" }
+      ]},
+      { name: "Learning Paradigms", items: [
+        { t: "Semi-Supervised Learning", d: "Label propagation, co-training, consistency regularization, self-training with confidence thresholds" },
+        { t: "Self-Supervised Learning", d: "Contrastive learning (SimCLR, MoCo), masked prediction, BYOL, DINO — learning representations without labels" },
+        { t: "Transfer Learning & Domain Adaptation", d: "Distribution shift theory, domain-adversarial training, covariate shift correction, dataset shift" },
+        { t: "Meta-Learning", d: "MAML, Prototypical Networks, learning-to-learn, task distributions, few-shot learning" },
+        { t: "Active Learning", d: "Uncertainty sampling, query-by-committee, Bayesian active learning, batch mode strategies" }
+      ]},
+      { name: "Scalability & Automation", items: [
+        { t: "ML with Large Datasets", d: "Distributed training paradigms, data parallelism, model parallelism, pipeline parallelism" },
+        { t: "AutoML & NAS", d: "Neural architecture search (DARTS, ENAS), hyperparameter optimization (Bayesian, evolutionary), efficient search spaces" },
+        { t: "Curriculum Learning", d: "Training data ordering, self-paced learning, difficulty scoring, teacher-student frameworks" },
+        { t: "Continual/Lifelong Learning", d: "Catastrophic forgetting, elastic weight consolidation, progressive neural networks, memory replay" },
+        { t: "Multi-Task Learning", d: "Hard/soft parameter sharing, task weighting, gradient surgery, negative transfer detection" },
+        { t: "Weak Supervision", d: "Data programming, label functions, Snorkel framework, programmatic labeling at scale" }
+      ]}
+    ]
+  },
+  {
+    id: "m5", title: "Probabilistic Graphical Models", icon: "network",
+    category: "core", color: "mc-ml",
+    desc: "Structured probabilistic reasoning — Bayesian networks, Markov random fields, exact/approximate inference, and structure learning.",
+    topics: 11, hours: "60–80", level: "Core",
+    prereqs: ["Probability Theory (M1)", "Statistical Learning (M2)"],
+    refs: ["Koller & Friedman — Probabilistic Graphical Models", "Bishop — Pattern Recognition and Machine Learning", "Murphy — Machine Learning: A Probabilistic Perspective"],
+    groups: [
+      { name: "Representation", items: [
+        { t: "Bayesian Networks", d: "DAG structure, d-separation, conditional independence, plate notation, naive Bayes as a special case" },
+        { t: "Markov Random Fields", d: "Undirected models, clique factorization, Hammersley-Clifford theorem, Ising/Potts models" },
+        { t: "Factor Graphs & CRFs", d: "Conditional random fields for structured prediction, factor graphs unifying directed/undirected models" },
+        { t: "Dynamic Models", d: "Hidden Markov Models, Kalman filters, dynamic Bayesian networks, state-space models" }
+      ]},
+      { name: "Inference", items: [
+        { t: "Exact Inference", d: "Variable elimination, belief propagation, junction tree algorithm, complexity analysis" },
+        { t: "Variational Inference", d: "Mean-field approximation, ELBO, coordinate ascent VI, amortized inference, black-box VI" },
+        { t: "Monte Carlo Methods", d: "MCMC (Metropolis-Hastings, Gibbs, HMC), importance sampling, particle filtering, convergence diagnostics" }
+      ]},
+      { name: "Learning", items: [
+        { t: "Parameter Learning", d: "MLE/MAP with complete/incomplete data, EM algorithm derivation and convergence" },
+        { t: "Structure Learning", d: "Score-based (BIC, MDL), constraint-based (PC algorithm), hybrid methods, causal structure discovery" },
+        { t: "Bayesian Deep Learning", d: "Bayesian neural networks, MC Dropout, Laplace approximation, epistemic vs aleatoric uncertainty" },
+        { t: "Gaussian Processes", d: "GP regression/classification, kernel design, sparse GPs, deep kernel learning, GP for Bayesian optimization" }
+      ]}
+    ]
+  },
+  {
+    id: "m6", title: "Causal Inference & Machine Learning", icon: "git-branch",
+    category: "core", color: "mc-ml",
+    desc: "Moving beyond correlation — causal discovery, effect estimation, and integrating causal reasoning with modern ML.",
+    topics: 10, hours: "50–70", level: "Core",
+    prereqs: ["Statistical Learning (M2)", "Probabilistic Models (M5)"],
+    refs: ["Pearl — Causality", "Hernán & Robins — Causal Inference: What If", "Peters, Janzing, Schölkopf — Elements of Causal Inference", "Chernozhukov et al. — Applied Causal Inference (CausalML Book)"],
+    groups: [
+      { name: "Causal Foundations", items: [
+        { t: "Structural Causal Models", d: "DAGs, do-calculus, interventions, counterfactuals, potential outcomes framework (Rubin) vs DAG framework (Pearl)" },
+        { t: "Identifiability & Assumptions", d: "Ignorability, positivity, SUTVA, backdoor/frontdoor criteria, causal effect identification" },
+        { t: "Causal Discovery", d: "Constraint-based (PC, FCI), score-based, functional causal models, causal discovery from observational data" }
+      ]},
+      { name: "Effect Estimation", items: [
+        { t: "Treatment Effect Estimation", d: "ATE, ATT, CATE estimation with propensity scores, inverse probability weighting, doubly robust methods" },
+        { t: "Heterogeneous Treatment Effects", d: "Meta-learners (S/T/X/R), causal forests, BART, personalized treatment rules" },
+        { t: "Instrumental Variables & Natural Experiments", d: "IV estimation, regression discontinuity, difference-in-differences, synthetic controls" }
+      ]},
+      { name: "Causal ML Integration", items: [
+        { t: "Double/Debiased Machine Learning", d: "Neyman orthogonality, cross-fitting, using ML for nuisance parameters while preserving causal inference" },
+        { t: "Causal Representation Learning", d: "Learning disentangled causal factors, identifiable VAEs, causal discovery in latent spaces" },
+        { t: "Causality for Robustness", d: "Invariant risk minimization, domain generalization through causal reasoning, OOD prediction" },
+        { t: "Causal Reasoning in Generative AI", d: "Controllable generation, extrapolation beyond training data through causal structure" }
+      ]}
+    ]
+  },
+  {
+    id: "m7", title: "Advanced Deep Learning", icon: "layers",
+    category: "deep", color: "mc-dl",
+    desc: "Deep dive into modern architectures, training dynamics, generalization theory, and the mathematical foundations of why deep learning works.",
+    topics: 14, hours: "80–100", level: "Core",
+    prereqs: ["Optimization (M3)", "Intro Deep Learning"],
+    refs: ["Prince — Understanding Deep Learning", "Goodfellow et al. — Deep Learning", "Zhang et al. — Dive into Deep Learning"],
+    groups: [
+      { name: "Architectures in Depth", items: [
+        { t: "Transformer Internals", d: "Multi-head attention mechanics, positional encodings (sinusoidal, RoPE, ALiBi), KV-cache, attention variants (linear, sparse, flash)" },
+        { t: "State Space Models", d: "Mamba, S4, continuous-time models, selective state spaces — bridging RNNs and Transformers" },
+        { t: "Mixture of Experts", d: "Sparse MoE layers, routing mechanisms, load balancing, Switch Transformer, expert parallelism" },
+        { t: "Architecture Design Principles", d: "Residual connections theory, normalization (LayerNorm, RMSNorm), initialization schemes, depth vs width trade-offs" }
+      ]},
+      { name: "Training Dynamics", items: [
+        { t: "Loss Landscape Geometry", d: "Mode connectivity, loss surface visualization, sharp vs flat minima and generalization" },
+        { t: "Neural Scaling Laws", d: "Chinchilla scaling, compute-optimal training, data scaling, emergent abilities at scale" },
+        { t: "Training Stability", d: "Gradient flow analysis, vanishing/exploding gradients in depth, mixed precision training (fp16/bf16), gradient clipping theory" },
+        { t: "Lottery Ticket Hypothesis", d: "Sparse subnetworks, pruning at initialization, iterative magnitude pruning, sparse-to-sparse training" }
+      ]},
+      { name: "Theory of Deep Learning", items: [
+        { t: "Neural Tangent Kernel", d: "Infinite-width regime, NTK theory, lazy training, feature learning vs kernel regime" },
+        { t: "Generalization in Deep Networks", d: "Double descent, grokking, implicit bias of gradient descent, PAC-Bayes bounds for DNNs" },
+        { t: "Universal Approximation Revisited", d: "Depth vs width, approximation vs estimation, benefits of depth, Barron spaces" }
+      ]},
+      { name: "Efficiency & Compression", items: [
+        { t: "Quantization", d: "Post-training quantization (GPTQ, AWQ), quantization-aware training, INT4/INT8, GGUF format" },
+        { t: "Knowledge Distillation", d: "Teacher-student frameworks, feature-based vs logit-based distillation, self-distillation" },
+        { t: "Efficient Fine-Tuning", d: "LoRA, QLoRA, adapters, prefix tuning, prompt tuning — parameter-efficient adaptation at scale" }
+      ]}
+    ]
+  },
+  {
+    id: "m8", title: "Geometric Deep Learning & GNNs", icon: "hexagon",
+    category: "deep", color: "mc-dl",
+    desc: "Extending neural networks to non-Euclidean domains — graphs, manifolds, point clouds — through the lens of symmetry and equivariance.",
+    topics: 10, hours: "50–70", level: "Specialized",
+    prereqs: ["Deep Learning (M7)", "Linear Algebra (M1)"],
+    refs: ["Bronstein et al. — Geometric Deep Learning (GDL Blueprint)", "Hamilton — Graph Representation Learning", "Veličković & Liò — Cambridge GDL Course"],
+    groups: [
+      { name: "Foundations", items: [
+        { t: "Symmetry, Invariance & Equivariance", d: "Group theory for deep learning, symmetry groups, invariant/equivariant functions as architectural constraints" },
+        { t: "The GDL Blueprint", d: "Unifying framework: CNNs, GNNs, Transformers, DeepSets all derived from symmetry principles on different domains" },
+        { t: "Spectral vs Spatial Methods", d: "Graph Fourier transform, spectral convolution (ChebNet), spatial message passing — trade-offs and connections" }
+      ]},
+      { name: "Graph Neural Networks", items: [
+        { t: "Message Passing Architectures", d: "GCN, GAT, GraphSAGE, GIN — design choices, aggregation functions, expressivity analysis" },
+        { t: "Oversmoothing & Oversquashing", d: "Depth limitations of GNNs, graph rewiring, skip connections, curvature-based analysis" },
+        { t: "Expressivity & WL Hierarchy", d: "Weisfeiler-Leman isomorphism test, k-WL hierarchy, higher-order GNNs, subgraph GNNs" },
+        { t: "Graph Transformers", d: "Combining attention with graph structure, positional/structural encodings for graphs" }
+      ]},
+      { name: "Beyond Graphs", items: [
+        { t: "Point Cloud Networks", d: "PointNet, PointNet++, 3D perception for autonomous systems, rotation-equivariant architectures" },
+        { t: "Topological Deep Learning", d: "Simplicial complexes, cell complexes, hypergraph neural networks — modeling higher-order interactions" },
+        { t: "Equivariant Networks for Science", d: "SE(3)-equivariant networks for molecular dynamics, protein structure prediction, material design" }
+      ]}
+    ]
+  },
+  {
+    id: "m9", title: "Generative Models", icon: "sparkles",
+    category: "deep", color: "mc-dl",
+    desc: "The complete generative modeling landscape — from VAEs and GANs to diffusion models, normalizing flows, and neural radiance fields.",
+    topics: 12, hours: "60–80", level: "Core",
+    prereqs: ["Deep Learning (M7)", "Probability (M1)"],
+    refs: ["Prince — Understanding Deep Learning (Ch. 14-18)", "Song & Ermon — Score-Based Generative Modeling", "Kingma & Welling — Auto-Encoding Variational Bayes"],
+    groups: [
+      { name: "Latent Variable Models", items: [
+        { t: "Variational Autoencoders", d: "ELBO derivation, reparameterization trick, β-VAE, VQ-VAE, hierarchical VAEs" },
+        { t: "Normalizing Flows", d: "Change of variables, coupling layers, autoregressive flows, continuous normalizing flows (Neural ODEs)" }
+      ]},
+      { name: "Adversarial Models", items: [
+        { t: "GAN Theory & Training", d: "Minimax formulation, mode collapse, training instabilities, Wasserstein GAN, spectral normalization" },
+        { t: "Advanced GAN Architectures", d: "StyleGAN, Progressive GAN, conditional generation, image-to-image translation (pix2pix, CycleGAN)" }
+      ]},
+      { name: "Diffusion & Score Models", items: [
+        { t: "DDPM Foundations", d: "Forward/reverse process, noise schedules, ELBO for diffusion, connection to score matching" },
+        { t: "Score-Based Models", d: "Score matching, Langevin dynamics, stochastic differential equations, continuous-time diffusion" },
+        { t: "Classifier-Free Guidance", d: "Conditional generation, guidance scales, trade-off between diversity and fidelity" },
+        { t: "Diffusion Transformers (DiT)", d: "Replacing UNets with Transformers, latent diffusion, FLUX architecture, scalable generation" },
+        { t: "Video & 3D Generation", d: "Temporal diffusion, video consistency, text-to-video architectures, 3D-aware generation" }
+      ]},
+      { name: "Neural Scene Representations", items: [
+        { t: "Neural Radiance Fields (NeRFs)", d: "Volume rendering, positional encoding, multi-view consistency, instant-NGP, efficient NeRFs" },
+        { t: "3D Gaussian Splatting", d: "Explicit scene representation, real-time rendering, differentiable rasterization, dynamic scenes" },
+        { t: "Generative World Models", d: "Learning world models for robotics/autonomous vehicles through generative simulation" }
+      ]}
+    ]
+  },
+  {
+    id: "m10", title: "NLP & Large Language Models", icon: "message-square",
+    category: "domain", color: "mc-nlp",
+    desc: "From classical NLP through the Transformer revolution to modern LLM training, alignment, and agentic systems.",
+    topics: 15, hours: "80–100", level: "Core",
+    prereqs: ["Deep Learning (M7)", "Probability (M1)"],
+    refs: ["Jurafsky & Martin — Speech and Language Processing", "Karpathy — Let's build GPT", "Stanford CS224N Lecture Notes", "UT Austin CS388 Lecture Notes"],
+    groups: [
+      { name: "NLP Foundations", items: [
+        { t: "Distributed Representations", d: "Word2Vec, GloVe, contextual embeddings, subword tokenization (BPE, SentencePiece, WordPiece)" },
+        { t: "Sequence Models Evolution", d: "RNNs → LSTMs → attention → Transformers — understanding what each solved and why" },
+        { t: "Classical NLP Tasks", d: "POS tagging, NER, parsing, coreference, sentiment — as benchmarks and building blocks" }
+      ]},
+      { name: "LLM Architecture & Training", items: [
+        { t: "Transformer Deep Dive", d: "Encoder-only (BERT), decoder-only (GPT), encoder-decoder (T5) — architectural trade-offs and use cases" },
+        { t: "Pre-Training at Scale", d: "Data curation, deduplication, toxicity filtering, curriculum in pre-training, compute scaling laws" },
+        { t: "Tokenization Engineering", d: "BPE variants, tokenizer-free approaches, multilingual tokenization, impact on model performance" }
+      ]},
+      { name: "Alignment & Post-Training", items: [
+        { t: "Supervised Fine-Tuning (SFT)", d: "Instruction tuning, data quality > quantity, chat formatting, multi-turn training" },
+        { t: "RLHF Pipeline", d: "Reward modeling from human preferences, PPO for language models, KL penalty, reward hacking" },
+        { t: "DPO & Alternatives", d: "Direct Preference Optimization, RLAIF, constitutional AI, iterative alignment methods" },
+        { t: "Evaluation & Benchmarks", d: "MMLU, HumanEval, AlpacaEval, chatbot arena, contamination detection, eval methodology" }
+      ]},
+      { name: "LLM Applications & Systems", items: [
+        { t: "Retrieval-Augmented Generation", d: "Dense retrieval, embedding models, chunking strategies, hybrid search, reranking, GraphRAG, HippoRAG" },
+        { t: "Agentic Systems", d: "Tool use, function calling, multi-agent orchestration, planning, reasoning chains, ReAct, Tree-of-Thought" },
+        { t: "Prompt Engineering & Elicitation", d: "Chain-of-thought, few-shot, structured output, system prompts, prompt optimization" },
+        { t: "Small Language Models", d: "Phi, Gemma, Llama distillation — efficient models for on-device deployment, knowledge distillation from large models" }
+      ]}
+    ]
+  },
+  {
+    id: "m11", title: "Advanced Computer Vision", icon: "eye",
+    category: "domain", color: "mc-cv",
+    desc: "Modern computer vision — from geometry and multi-view reconstruction to generative visual models and embodied vision.",
+    topics: 12, hours: "60–80", level: "Specialized",
+    prereqs: ["Deep Learning (M7)", "Linear Algebra (M1)"],
+    refs: ["Szeliski — Computer Vision: Algorithms and Applications", "MIT 6.8300 Advances in Computer Vision", "Stanford CS231A/N"],
+    groups: [
+      { name: "Geometry & 3D Vision", items: [
+        { t: "Multi-View Geometry", d: "Epipolar geometry, fundamental/essential matrices, stereo reconstruction, structure from motion" },
+        { t: "Differentiable Rendering", d: "Neural rendering pipelines, differentiable rasterization, inverse graphics" },
+        { t: "Depth Estimation & Optical Flow", d: "Monocular depth, stereo matching, scene flow, point tracking across frames" },
+        { t: "6D Pose Estimation", d: "Object pose estimation, PnP algorithms, learning-based methods, applications in robotics" }
+      ]},
+      { name: "Representation Learning", items: [
+        { t: "Contrastive & Masked Methods", d: "SimCLR, CLIP, MAE, DINOv2 — self-supervised visual representation learning" },
+        { t: "Vision-Language Models", d: "CLIP, SigLIP, LLaVA, GPT-4V — bridging vision and language understanding" },
+        { t: "Vision Transformers", d: "ViT, DeiT, Swin — patch-based architectures, hierarchical attention, efficiency improvements" }
+      ]},
+      { name: "Generation & Synthesis", items: [
+        { t: "Image Generation", d: "Text-to-image (Stable Diffusion, DALL-E, FLUX), controllable generation, ControlNet, inpainting" },
+        { t: "Video Synthesis", d: "Text-to-video architectures, temporal attention, motion consistency, style transfer for video" },
+        { t: "Vision for Embodied Agents", d: "Visual navigation, robotic manipulation, sim-to-real transfer, vision-language-action models" }
+      ]},
+      { name: "Advanced Applications", items: [
+        { t: "Medical Imaging", d: "Segmentation (U-Net variants), detection, classification in radiology, pathology, self-supervised pretraining for medical data" },
+        { t: "Document & Scene Understanding", d: "OCR, document layout analysis, scene graph generation, visual question answering" }
+      ]}
+    ]
+  },
+  {
+    id: "m12", title: "Advanced Reinforcement Learning", icon: "gamepad-2",
+    category: "domain", color: "mc-rl",
+    desc: "From deep RL algorithms through multi-agent systems to safe RL, world models, and decision-making under uncertainty.",
+    topics: 11, hours: "60–80", level: "Specialized",
+    prereqs: ["Deep Learning (M7)", "Optimization (M3)", "Probability (M1)"],
+    refs: ["Sutton & Barto — Reinforcement Learning (2nd ed.)", "Bertsekas — Reinforcement Learning and Optimal Control", "Shoham & Leyton-Brown — Multiagent Systems"],
+    groups: [
+      { name: "Deep RL Algorithms", items: [
+        { t: "Policy Gradient Methods", d: "REINFORCE, PPO, TRPO, A2C/A3C — variance reduction, trust regions, natural gradients" },
+        { t: "Value-Based Methods", d: "DQN, Double DQN, Dueling, Rainbow — experience replay, target networks, distributional RL" },
+        { t: "Actor-Critic Architectures", d: "SAC, TD3, DDPG — continuous action spaces, entropy regularization, off-policy learning" },
+        { t: "Model-Based RL", d: "World models (Dreamer, IRIS), planning with learned models, MuZero, model predictive control" }
+      ]},
+      { name: "Multi-Agent RL", items: [
+        { t: "MARL Foundations", d: "Non-stationarity, credit assignment, independent learning, emergent communication" },
+        { t: "Cooperative Methods", d: "CTDE paradigm, value decomposition (VDN, QMIX), parameter sharing strategies" },
+        { t: "Competitive & Mixed", d: "MADDPG, self-play, population-based training, game-theoretic foundations (Nash equilibria)" }
+      ]},
+      { name: "Advanced Topics", items: [
+        { t: "Offline RL", d: "Conservative Q-learning, decision transformers, sequence modeling for RL, dataset considerations" },
+        { t: "Safe RL", d: "Constrained MDPs, reward shaping, human-in-the-loop RL, safe exploration" },
+        { t: "Inverse RL & Imitation Learning", d: "Learning reward functions from demonstrations, GAIL, DAgger, behavior cloning limitations" },
+        { t: "Hierarchical RL", d: "Options framework, feudal networks, goal-conditioned policies, skill discovery" }
+      ]}
+    ]
+  },
+  {
+    id: "m13", title: "Signal Processing & Time Series", icon: "activity",
+    category: "domain", color: "mc-rl",
+    desc: "Processing temporal and sequential data — from classical signal processing through modern deep learning approaches for forecasting and classification.",
+    topics: 11, hours: "50–70", level: "Specialized",
+    prereqs: ["Mathematical Foundations (M1)", "Intro ML"],
+    refs: ["Oppenheim & Willsky — Signals and Systems", "Hyndman & Athanasopoulos — Forecasting: Principles and Practice", "Stanford EE269"],
+    groups: [
+      { name: "Signal Processing Foundations", items: [
+        { t: "Time-Frequency Analysis", d: "STFT, Gabor transform, spectrogram analysis, windowing functions, time-frequency resolution trade-off" },
+        { t: "Wavelet Analysis", d: "Continuous/discrete wavelet transforms, multi-resolution analysis, signal denoising, JPEG2000" },
+        { t: "Compressed Sensing", d: "Sparsity, restricted isometry property, basis pursuit, applications in MRI and signal recovery" },
+        { t: "Adaptive Filtering", d: "LMS, RLS algorithms, Kalman filtering, online learning connections" }
+      ]},
+      { name: "Time Series Analysis", items: [
+        { t: "Classical Methods", d: "ARIMA, SARIMA, VAR/VECM, exponential smoothing — when they outperform deep learning" },
+        { t: "Deep Learning for Time Series", d: "Temporal CNNs, LSTMs, Transformers for forecasting, Temporal Fusion Transformer, PatchTST, TimesFM" },
+        { t: "Probabilistic Forecasting", d: "Quantile regression, conformal prediction for time series, DeepAR, uncertainty calibration" }
+      ]},
+      { name: "Applications", items: [
+        { t: "Anomaly Detection in Sequences", d: "Change point detection, novelty detection, autoencoders for anomaly scoring, streaming methods" },
+        { t: "Biomedical Signal Processing", d: "EEG/ECG analysis, brain-computer interfaces, wearable sensor data, clinical decision systems" },
+        { t: "Audio & Speech Processing", d: "Mel spectrograms, speech recognition pipeline, audio generation, speaker diarization" },
+        { t: "Sensor Fusion & IoT", d: "Multi-modal sensor integration, edge inference, streaming time series classification" }
+      ]}
+    ]
+  },
+  {
+    id: "m14", title: "Real-World Data Challenges", icon: "database",
+    category: "eng", color: "mc-eng",
+    desc: "The messy reality of data — handling imbalanced datasets, missing data, distribution shift, feature engineering, and evaluation at scale.",
+    topics: 12, hours: "50–70", level: "Applied",
+    prereqs: ["Intro ML", "Basic Statistics"],
+    refs: ["Kuhn & Johnson — Feature Engineering and Selection", "He & Ma — Imbalanced Learning", "Géron — Hands-On ML (Ch. 2-3)"],
+    groups: [
+      { name: "Imbalanced Data", items: [
+        { t: "Resampling Strategies", d: "SMOTE and variants (Borderline-SMOTE, ADASYN), random undersampling, Tomek links, hybrid methods" },
+        { t: "Algorithmic Approaches", d: "Cost-sensitive learning, focal loss, class-weighted loss functions, threshold tuning strategies" },
+        { t: "Advanced Techniques", d: "GAN-based oversampling, meta-learning for imbalance, ensemble methods (BalancedRandomForest, EasyEnsemble)" },
+        { t: "Evaluation for Imbalanced Data", d: "PR-AUC vs ROC-AUC, F1 variants, Matthews correlation coefficient, calibration under imbalance" }
+      ]},
+      { name: "Data Quality & Engineering", items: [
+        { t: "Missing Data Strategies", d: "MCAR/MAR/MNAR mechanisms, multiple imputation, deep learning imputation, sensitivity analysis" },
+        { t: "Feature Engineering", d: "Automated feature generation, feature stores, domain-specific feature design, feature interaction discovery" },
+        { t: "Outlier & Anomaly Detection", d: "Statistical methods, isolation forests, LOF, autoencoders, robust estimation under contamination" },
+        { t: "Data Augmentation", d: "Image augmentation (Albumentations, Mixup, CutMix), text augmentation, tabular augmentation strategies" }
+      ]},
+      { name: "Distribution Shift & Monitoring", items: [
+        { t: "Dataset Shift Taxonomy", d: "Covariate shift, label shift, concept drift — detection and adaptation strategies" },
+        { t: "Drift Detection in Production", d: "Statistical tests (KS, PSI, MMD), monitoring pipelines, alert thresholds, windowed detection" },
+        { t: "Data Versioning & Lineage", d: "DVC, data contracts, schema evolution, reproducibility through data versioning" },
+        { t: "Data-Centric AI", d: "Improving data quality over model architecture, data cleaning, label error detection (Confident Learning)" }
+      ]}
+    ]
+  },
+  {
+    id: "m15", title: "AI Engineering & MLOps", icon: "rocket",
+    category: "eng", color: "mc-eng",
+    desc: "Production AI — containerization, CI/CD for ML, model serving, LLMOps, monitoring, and scalable infrastructure.",
+    topics: 14, hours: "80–100", level: "Applied",
+    prereqs: ["Intro ML", "Python", "Basic DevOps Concepts"],
+    refs: ["Huyen — Designing Machine Learning Systems", "Harvard E115 MLOps Course", "Google MLOps Maturity Model", "Burkov — Machine Learning Engineering"],
+    groups: [
+      { name: "ML System Design", items: [
+        { t: "ML System Architecture", d: "End-to-end ML pipeline design, batch vs real-time serving, feature stores, model registries" },
+        { t: "Experiment Tracking", d: "MLflow, Weights & Biases, experiment management, hyperparameter logging, artifact versioning" },
+        { t: "Training Infrastructure", d: "GPU/TPU clusters, distributed training orchestration, spot instances, training pipeline automation" }
+      ]},
+      { name: "Deployment & Serving", items: [
+        { t: "Containerization for ML", d: "Docker for ML workloads, GPU containers, model packaging, reproducible environments" },
+        { t: "Model Serving Patterns", d: "REST/gRPC APIs, batch inference, streaming inference, model ensembles in production" },
+        { t: "Kubernetes for ML", d: "Kubeflow, KServe, auto-scaling, resource management, A/B testing infrastructure" },
+        { t: "Edge Deployment", d: "ONNX Runtime, TensorRT, mobile deployment (Core ML, TFLite), quantization for edge" }
+      ]},
+      { name: "CI/CD & Monitoring", items: [
+        { t: "ML CI/CD Pipelines", d: "Automated testing for ML (data tests, model tests, integration tests), continuous training" },
+        { t: "Model Monitoring", d: "Data drift, model performance degradation, concept drift detection, alerting systems" },
+        { t: "A/B Testing for Models", d: "Online experimentation, multi-armed bandits, interleaving, statistical significance for model comparison" }
+      ]},
+      { name: "LLMOps", items: [
+        { t: "LLM Fine-Tuning Pipeline", d: "Data preparation, SFT/DPO training loops, evaluation, deployment of fine-tuned models" },
+        { t: "RAG System Engineering", d: "Vector databases (Pinecone, Weaviate, Qdrant), embedding pipelines, chunk optimization, evaluation (RAGAS)" },
+        { t: "LLM Serving & Cost Optimization", d: "vLLM, TGI, batched inference, KV-cache optimization, speculative decoding, cost-per-token analysis" },
+        { t: "Prompt Management", d: "Prompt versioning, prompt testing frameworks, guardrails, output parsing, structured generation" }
+      ]}
+    ]
+  },
+  {
+    id: "m16", title: "AI Safety, Ethics & Trustworthy AI", icon: "shield",
+    category: "eng", color: "mc-eng",
+    desc: "Building AI that is safe, interpretable, fair, and aligned — mechanistic interpretability, alignment research, fairness, and governance.",
+    topics: 12, hours: "50–70", level: "Applied",
+    prereqs: ["Deep Learning (M7)", "NLP & LLMs (M10)"],
+    refs: ["Anthropic — Alignment Research Recommendations", "Molnar — Interpretable Machine Learning", "Russell — Human Compatible", "Neel Nanda — Mechanistic Interpretability Resources"],
+    groups: [
+      { name: "Interpretability", items: [
+        { t: "Classical Interpretability", d: "SHAP, LIME, permutation importance, partial dependence plots, attention visualization limitations" },
+        { t: "Mechanistic Interpretability", d: "Sparse autoencoders (SAEs), superposition hypothesis, circuit analysis, probing classifiers" },
+        { t: "Automated Interpretability", d: "Using AI to interpret AI — automated circuit discovery, feature attribution at scale" }
+      ]},
+      { name: "Alignment", items: [
+        { t: "Alignment Problem Formulation", d: "Outer alignment, inner alignment, goal misgeneralization, mesa-optimization, reward hacking" },
+        { t: "Scalable Oversight", d: "Recursive reward modeling, debate, constitutional AI, weak-to-strong generalization" },
+        { t: "Alignment Evaluation", d: "Red-teaming, adversarial testing, behavioral monitoring, activation monitoring, deception detection" },
+        { t: "AI Control", d: "Monitoring deployed systems, anomaly detection in model behavior, circuit breakers, deployment safeguards" }
+      ]},
+      { name: "Fairness & Governance", items: [
+        { t: "Fairness in ML", d: "Demographic parity, equalized odds, calibration, impossibility theorems, pre/in/post-processing methods" },
+        { t: "Robustness & Adversarial ML", d: "Adversarial examples, certified robustness, adversarial training, backdoor attacks and defenses" },
+        { t: "Privacy-Preserving ML", d: "Differential privacy, federated learning, secure multi-party computation, privacy attacks on models" },
+        { t: "AI Governance & Regulation", d: "EU AI Act, risk classification, audit trails, model cards, responsible disclosure, organizational AI governance" }
+      ]}
+    ]
+  },
+  {
+    id: "m17", title: "Research Methods & Experimental Design", icon: "flask-conical",
+    category: "eng", color: "mc-eng",
+    desc: "How to conduct rigorous AI research — experimental design, reproducibility, paper writing, benchmarking, and scientific methodology.",
+    topics: 10, hours: "40–50", level: "Applied",
+    prereqs: ["Statistical Learning (M2)", "Any domain module"],
+    refs: ["Langley — Crafting Papers on Machine Learning", "Lipton & Steinhardt — Troubling Trends in ML Scholarship", "Pineau et al. — ML Reproducibility Checklist"],
+    groups: [
+      { name: "Experimental Design", items: [
+        { t: "Hypothesis Testing for ML", d: "Paired t-tests, bootstrap confidence intervals, multiple comparison correction (Bonferroni, Holm)" },
+        { t: "A/B Testing & Online Experiments", d: "Randomization, power analysis, sample size calculation, sequential testing, multi-armed bandits" },
+        { t: "Ablation Studies", d: "Systematic component analysis, single-factor experiments, interaction effects, proper baselines" }
+      ]},
+      { name: "Benchmarking & Evaluation", items: [
+        { t: "Benchmark Design", d: "Dataset construction, avoiding shortcuts, measuring the right thing, leaderboard culture critique" },
+        { t: "Evaluation Methodology", d: "Cross-validation strategies, stratified sampling, nested cross-validation, statistical comparison of classifiers" },
+        { t: "Reproducibility", d: "Seeds, environment specification, code release, ML reproducibility checklist, containerized experiments" }
+      ]},
+      { name: "Research Skills", items: [
+        { t: "Paper Reading & Literature Review", d: "Systematic review methodology, taxonomy building, gap analysis, citation network navigation" },
+        { t: "Writing Research Papers", d: "IMRaD structure for ML, writing effective abstracts, results visualization, rebuttal strategies" },
+        { t: "Open Science Practices", d: "Preregistration, data/code sharing, negative results, model cards, datasheets for datasets" },
+        { t: "Research Ethics", d: "Dual use, responsible disclosure, human subjects in AI research, environmental impact of training" }
+      ]}
+    ]
+  }
+];
+
+const PATHS = [
+  {
+    id: "p1", title: "ML Research Scientist",
+    desc: "For those pursuing PhD-level research in machine learning theory and methods.",
+    modules: ["M1: Math Foundations", "M2: Statistical Learning Theory", "M3: Optimization", "M5: Probabilistic Models", "M7: Advanced Deep Learning", "M4: Advanced ML", "M6: Causal Inference", "M17: Research Methods"],
+    color: "mc-math"
+  },
+  {
+    id: "p2", title: "NLP & LLM Engineer",
+    desc: "Specialize in language models, from theory through alignment to production deployment.",
+    modules: ["M1: Math Foundations", "M3: Optimization", "M7: Advanced Deep Learning", "M10: NLP & Large Language Models", "M9: Generative Models", "M15: AI Engineering & MLOps", "M16: Safety & Trustworthy AI"],
+    color: "mc-nlp"
+  },
+  {
+    id: "p3", title: "Computer Vision Specialist",
+    desc: "Master visual understanding — from 3D geometry to generative visual models and embodied agents.",
+    modules: ["M1: Math Foundations", "M3: Optimization", "M7: Advanced Deep Learning", "M11: Advanced Computer Vision", "M9: Generative Models", "M13: Signal Processing", "M14: Real-World Data"],
+    color: "mc-cv"
+  },
+  {
+    id: "p4", title: "AI Systems Engineer",
+    desc: "Build production-grade AI systems — MLOps, LLMOps, and scalable infrastructure.",
+    modules: ["M3: Optimization", "M4: Advanced ML", "M7: Advanced Deep Learning", "M14: Real-World Data Challenges", "M15: AI Engineering & MLOps", "M10: NLP & LLMs", "M16: Safety & Trustworthy AI"],
+    color: "mc-eng"
+  },
+  {
+    id: "p5", title: "Deep Learning Theorist",
+    desc: "Understand why deep learning works — optimization theory, generalization, and geometric perspectives.",
+    modules: ["M1: Math Foundations", "M2: Statistical Learning Theory", "M3: Optimization", "M7: Advanced Deep Learning", "M8: Geometric DL & GNNs", "M5: Probabilistic Models", "M17: Research Methods"],
+    color: "mc-dl"
+  },
+  {
+    id: "p6", title: "Applied AI Practitioner",
+    desc: "Comprehensive path for real-world impact — from data challenges through deployment to monitoring.",
+    modules: ["M3: Optimization", "M4: Advanced ML", "M7: Advanced Deep Learning", "M14: Real-World Data Challenges", "M10: NLP & LLMs", "M13: Signal Processing & TS", "M15: AI Engineering & MLOps", "M17: Research Methods"],
+    color: "mc-ml"
+  }
+];
+
+// ===== RENDER FUNCTIONS =====
+function renderModuleCards() {
+  const container = document.getElementById('moduleCards');
+  container.innerHTML = MODULES.map(m => `
+    <div class="module-card" data-category="${m.category}" data-id="${m.id}" onclick="showModule('${m.id}')">
+      <div class="module-card-header">
+        <div class="module-icon ${m.color}" style="background:var(--color-surface-offset);">
+          <i data-lucide="${m.icon}"></i>
+        </div>
+        <span class="module-tag ${m.color}">${m.level}</span>
+      </div>
+      <h3>${m.title}</h3>
+      <p>${m.desc}</p>
+      <div class="module-meta">
+        <span class="module-meta-item"><i data-lucide="list-checks"></i> ${m.topics} topics</span>
+        <span class="module-meta-item"><i data-lucide="clock"></i> ${m.hours}h</span>
+      </div>
+    </div>
+  `).join('');
+  lucide.createIcons();
+}
+
+function renderPaths() {
+  const container = document.getElementById('pathCards');
+  container.innerHTML = PATHS.map(p => `
+    <div class="path-card">
+      <h3>${p.title}</h3>
+      <p>${p.desc}</p>
+      <ul class="path-modules">
+        ${p.modules.map((mod, i) => `<li><span class="path-step">${i+1}</span> ${mod}</li>`).join('')}
+      </ul>
+    </div>
+  `).join('');
+}
+
+function renderModuleDetail(moduleId) {
+  const m = MODULES.find(mod => mod.id === moduleId);
+  if (!m) return;
+
+  document.getElementById('detailHeader').innerHTML = `
+    <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-3);">
+      <div class="module-icon ${m.color}" style="background:var(--color-surface-offset);width:48px;height:48px;">
+        <i data-lucide="${m.icon}" style="width:24px;height:24px;"></i>
+      </div>
+      <span class="module-tag ${m.color}">${m.level}</span>
+    </div>
+    <h2>${m.title}</h2>
+    <p>${m.desc}</p>
+    <div class="detail-meta">
+      <span class="detail-meta-item"><i data-lucide="list-checks"></i> ${m.topics} topics</span>
+      <span class="detail-meta-item"><i data-lucide="clock"></i> ${m.hours} estimated hours</span>
+      <span class="detail-meta-item"><i data-lucide="signal"></i> ${m.level}</span>
+    </div>
+  `;
+
+  let topicHtml = '';
+  m.groups.forEach(g => {
+    topicHtml += `<div class="topic-group"><div class="topic-group-title">${g.name}</div><div class="topic-list">`;
+    g.items.forEach(item => {
+      topicHtml += `<div class="topic-item"><div class="topic-bullet"></div><div><div class="topic-name">${item.t}</div><div class="topic-desc">${item.d}</div></div></div>`;
+    });
+    topicHtml += `</div></div>`;
+  });
+
+  topicHtml += `<div class="prereq-box"><h4><i data-lucide="lock" style="width:16px;height:16px;"></i> Prerequisites</h4><ul>${m.prereqs.map(p => `<li>${p}</li>`).join('')}</ul></div>`;
+  topicHtml += `<div class="ref-box"><h4>Key References</h4>${m.refs.map(r => `<div class="ref-item">📚 ${r}</div>`).join('')}</div>`;
+
+  document.getElementById('detailContent').innerHTML = topicHtml;
+  lucide.createIcons();
+}
+
+// ===== NAVIGATION =====
+function showSection(section) {
+  document.getElementById('section-home').style.display = section === 'home' ? 'block' : 'none';
+  document.getElementById('section-paths').style.display = section === 'paths' ? 'block' : 'none';
+  document.getElementById('moduleDetail').classList.remove('active');
+  document.getElementById('breadcrumb-text').textContent = section === 'home' ? 'Home' : 'Learning Paths';
+
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  const navBtn = document.querySelector(`[data-section="${section}"]`);
+  if (navBtn) navBtn.classList.add('active');
+
+  document.getElementById('mainContent').scrollTop = 0;
+  closeSidebar();
+}
+
+function showModule(moduleId) {
+  document.getElementById('section-home').style.display = 'none';
+  document.getElementById('section-paths').style.display = 'none';
+  document.getElementById('moduleDetail').classList.add('active');
+
+  renderModuleDetail(moduleId);
+  const m = MODULES.find(mod => mod.id === moduleId);
+  document.getElementById('breadcrumb-text').textContent = m ? m.title : '';
+
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  const navBtn = document.querySelector(`[data-module="${moduleId}"]`);
+  if (navBtn) navBtn.classList.add('active');
+
+  document.getElementById('mainContent').scrollTop = 0;
+  closeSidebar();
+}
+
+function filterCategory(cat, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.module-card').forEach(card => {
+    card.style.display = (cat === 'all' || card.dataset.category === cat) ? '' : 'none';
+  });
+}
+
+function filterModules(query) {
+  const q = query.toLowerCase();
+  document.querySelectorAll('.module-card').forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = text.includes(q) ? '' : 'none';
+  });
+  // Also filter in detail view topics
+  document.querySelectorAll('.topic-item').forEach(item => {
+    const text = item.textContent.toLowerCase();
+    item.style.display = text.includes(q) || q.length < 2 ? '' : 'none';
+  });
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ===== THEME TOGGLE =====
+(function(){
+  const t=document.querySelector('[data-theme-toggle]'),r=document.documentElement;
+  let d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+  r.setAttribute('data-theme',d);
+  if(t)t.addEventListener('click',()=>{
+    d=d==='dark'?'light':'dark';
+    r.setAttribute('data-theme',d);
+    t.innerHTML=d==='dark'?'<i data-lucide="sun" style="width:18px;height:18px;"></i>':'<i data-lucide="moon" style="width:18px;height:18px;"></i>';
+    lucide.createIcons();
+  });
+})();
+
+// ===== KEYBOARD SHORTCUT =====
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+  }
+});
+
+// ===== INIT =====
+renderModuleCards();
+renderPaths();
+lucide.createIcons();
+</script>
+</body>
+</html>

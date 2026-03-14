@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced AI & ML Learning Hub</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Chosen Palette: Warm Neutrals (Stone) with Deep Indigo & Amber Accents -->
+    <!-- Application Structure Plan: A dashboard-style interactive journey. The application is divided into a "Curriculum Navigator" at the top and a dynamic "Module Deep Dive" below. The deep dive splits into a detailed textual syllabus (left) and interactive visual analytics (right). This structure was chosen because an advanced curriculum is non-linear and multi-faceted; users need to see how skills connect and what the real-world utility of each complex topic is, rather than just reading a static, overwhelming list. -->
+    <!-- Visualization & Content Choices: 
+         1. Curriculum Modules -> Goal: Organize -> Viz/Presentation: Interactive horizontal scroll menu -> Interaction: Click to load module -> Justification: Allows quick jumps between distinct phases of the journey without losing context. -> Library: HTML/Tailwind/JS.
+         2. Topic Breakdown -> Goal: Inform -> Viz/Presentation: Grid of cards with text -> Interaction: Hover effects -> Justification: Breaks dense graduate-level topics into digestible chunks. -> Library: HTML/Tailwind.
+         3. Skill Profile -> Goal: Relationships/Compare -> Viz/Presentation: Radar Chart -> Interaction: Updates on module change -> Justification: Shows the user what cognitive and technical skills (Math, Engineering, Theory) are demanded by the current advanced topic. -> Library: Chart.js (Canvas).
+         4. Academic vs Real-World Impact -> Goal: Compare -> Viz/Presentation: Bar Chart -> Interaction: Updates on module change -> Justification: Directly addresses the user's prompt about going beyond academic basics to real-world effectiveness. -> Library: Chart.js (Canvas).
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        /* Chart Container Styling - Strict adherence to requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Constrains max width on large screens */
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh; /* Responsive height */
+            min-height: 300px;
+            max-height: 400px; /* Prevents vertical overflow */
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1rem;
+        }
+
+        /* Custom scrollbar for aesthetic */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f5f5f4; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d6d3d1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a29e; 
+        }
+
+        /* Smooth transitions */
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans antialiased overflow-x-hidden">
+
+    <!-- Header Section -->
+    <header class="bg-stone-900 text-stone-100 py-16 px-6 relative border-b-4 border-indigo-600">
+        <div class="max-w-7xl mx-auto relative z-10">
+            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">Advanced AI & ML <span class="text-indigo-400">Mastery Hub</span></h1>
+            <p class="text-lg md:text-xl text-stone-300 max-w-3xl leading-relaxed">
+                A graduate-level, real-world curriculum designed to take you beyond undergraduate basics. Master the complexities of signal processing, advanced optimization, large language models, and AI engineering required to build robust, production-ready AI systems.
+            </p>
+        </div>
+        <!-- Decorative background elements using CSS only -->
+        <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-800 rounded-full mix-blend-multiply filter blur-3xl opacity-30 z-0 transform translate-x-1/2 -translate-y-1/2"></div>
+    </header>
+
+    <!-- Main Application Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        
+        <!-- Navigation Section -->
+        <section class="mb-12">
+            <div class="mb-4">
+                <h2 class="text-2xl font-bold text-stone-800">The Curriculum Journey</h2>
+                <p class="text-stone-600 mt-1">Select a module below to explore its advanced topics, required skills, and real-world applicability.</p>
+            </div>
+            
+            <!-- Module Selector (Horizontal Scroll) -->
+            <div class="flex space-x-4 overflow-x-auto pb-4 pt-2 px-2 -mx-2" id="module-nav">
+                <!-- Buttons injected via JS -->
+            </div>
+        </section>
+
+        <!-- Dynamic Content Section -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            
+            <!-- Left Column: Textual Syllabus & Deep Dive (Spans 7 columns) -->
+            <div class="lg:col-span-7 space-y-8 fade-in" id="content-panel">
+                
+                <div class="bg-white rounded-xl p-8 shadow-sm border border-stone-200">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span id="module-icon" class="text-3xl">📘</span>
+                        <h3 id="module-title" class="text-3xl font-bold text-stone-900">Module Title</h3>
+                    </div>
+                    
+                    <div class="prose prose-stone max-w-none">
+                        <p id="module-overview" class="text-lg leading-relaxed text-stone-700">
+                            Module overview goes here.
+                        </p>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-xl font-bold text-stone-800 mb-6 border-b-2 border-stone-200 pb-2">Advanced Sub-Topics</h4>
+                    <!-- Sub-topics Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="topics-grid">
+                        <!-- Topic Cards injected via JS -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Interactive Visual Analytics (Spans 5 columns) -->
+            <div class="lg:col-span-5 space-y-8">
+                
+                <!-- Introduction to Visualizations -->
+                <div class="bg-indigo-50 rounded-xl p-6 border border-indigo-100">
+                    <h4 class="text-lg font-bold text-indigo-900 mb-2">Module Analytics 📊</h4>
+                    <p class="text-sm text-indigo-700">
+                        These interactive charts dynamically update based on the selected module. They illustrate the specific blend of skills required to master the topic, and contrast its focus on academic theory versus real-world application challenges.
+                    </p>
+                </div>
+
+                <!-- Radar Chart Container: Skill Profile -->
+                <div>
+                    <h5 class="font-semibold text-stone-800 mb-3 text-center">Required Competency Profile</h5>
+                    <div class="chart-container">
+                        <canvas id="skillsRadarChart"></canvas>
+                    </div>
+                    <p class="text-xs text-center text-stone-500 mt-2">Scale: 0 (Basic) to 100 (PhD Level)</p>
+                </div>
+
+                <!-- Bar Chart Container: Impact & Complexity -->
+                <div>
+                    <h5 class="font-semibold text-stone-800 mb-3 text-center">Focus & Complexity Analysis</h5>
+                    <div class="chart-container">
+                        <canvas id="impactBarChart"></canvas>
+                    </div>
+                    <p class="text-xs text-center text-stone-500 mt-2">Comparing Theoretical Depth vs. Engineering Complexity</p>
+                </div>
+
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="bg-stone-900 text-stone-400 py-8 text-center mt-16 border-t border-stone-800">
+        <p>Interactive Advanced AI Curriculum &bull; Designed for Master/PhD Level Progression</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // --- 1. Data Storage: Advanced Curriculum Content ---
+        const curriculumData = {
+            foundations: {
+                id: 'foundations',
+                icon: '🧮',
+                title: 'Data Realities & Advanced Foundations',
+                shortName: 'Foundations & Data',
+                overview: 'Moving beyond clean academic datasets (like MNIST/Titanic). This module tackles the harsh realities of real-world data environments. It covers advanced statistical methods, handling severely imbalanced data beyond simple SMOTE, and extracting meaning from noisy, high-frequency signals.',
+                topics: [
+                    { name: 'Advanced Signal Processing', desc: 'Fourier & Wavelet Transforms, Digital Filtering, Spectrogram analysis for non-stationary time series.' },
+                    { name: 'Imbalanced Learning Strategies', desc: 'Cost-sensitive learning, Manifold-based synthetic sampling, Focal Loss implementations.' },
+                    { name: 'Information Geometry', desc: 'Understanding Fisher Information matrices and statistical manifolds for model capacity analysis.' },
+                    { name: 'Robust Statistics', desc: 'Outlier-resistant estimators, heavy-tailed distributions, and handling extreme label noise.' }
+                ],
+                skills: [95, 60, 85, 40, 90], // Math, Software Eng, Theory, Deployment, Data Wrangling
+                impact: [80, 95] // Academic Depth, Real-world Engineering
+            },
+            optimization: {
+                id: 'optimization',
+                icon: '⚙️',
+                title: 'Advanced Optimization & Meta-Learning',
+                shortName: 'Optimization',
+                overview: 'Standard Gradient Descent is just the beginning. To train massive or highly constrained models, one must understand the geometry of loss landscapes. This covers non-convex optimization, second-order methods, and systems that learn how to learn.',
+                topics: [
+                    { name: 'Non-Convex Optimization', desc: 'Saddle point evasion, Hessian analysis, and Trust Region methods in high dimensions.' },
+                    { name: 'Bayesian Optimization', desc: 'Gaussian Processes, Acquisition functions, and hyperparameter tuning in highly constrained spaces.' },
+                    { name: 'Meta-Learning (Few-Shot)', desc: 'MAML (Model-Agnostic Meta-Learning), Prototypical Networks, and episodic training regimes.' },
+                    { name: 'Advanced Ensembling', desc: 'Stacking, Mixture of Experts (MoE) architectures, and Bayesian Model Averaging.' }
+                ],
+                skills: [90, 75, 95, 50, 60],
+                impact: [95, 75]
+            },
+            deeplearning: {
+                id: 'deeplearning',
+                icon: '🧠',
+                title: 'Deep Learning Architectures & Customization',
+                shortName: 'DL Architectures',
+                overview: 'Using PyTorch/TensorFlow off-the-shelf is insufficient for cutting-edge research. This module dives into writing custom CUDA kernels, designing novel loss functions, and understanding the theoretical limits of various network topologies.',
+                topics: [
+                    { name: 'Graph Neural Networks (GNNs)', desc: 'Message passing interfaces, Graph Convolution, and dynamic graph temporal networks.' },
+                    { name: 'Custom Loss & Gradients', desc: 'Deriving custom backward passes, contrastive loss variants (InfoNCE), and implicit layers.' },
+                    { name: 'Distributed Training', desc: 'Data/Tensor/Pipeline Parallelism (DeepSpeed/Megatron), gradient accumulation, and memory offloading.' },
+                    { name: 'State-Space Models', desc: 'Moving beyond RNNs/Transformers with linear-time sequence models like Mamba and S4.' }
+                ],
+                skills: [85, 95, 90, 80, 70],
+                impact: [90, 90]
+            },
+            llms: {
+                id: 'llms',
+                icon: '💬',
+                title: 'Generative AI & Large Language Models',
+                shortName: 'GenAI & LLMs',
+                overview: 'The frontier of AI. This module goes beyond prompt engineering into the mechanics of pre-training, efficient fine-tuning, retrieval-augmented systems at scale, and aligning models with human intent.',
+                topics: [
+                    { name: 'Parameter-Efficient Fine-Tuning (PEFT)', desc: 'LoRA, QLoRA, Adapter layers, and dealing with catastrophic forgetting.' },
+                    { name: 'Alignment (RLHF & DPO)', desc: 'Reinforcement Learning from Human Feedback, Direct Preference Optimization, and reward modeling.' },
+                    { name: 'Advanced RAG Systems', desc: 'Semantic routing, hybrid search (Sparse+Dense), Re-ranking, and chunking strategies.' },
+                    { name: 'Agentic Workflows', desc: 'ReAct frameworks, Tool use, multi-agent collaboration orchestrations, and memory management.' }
+                ],
+                skills: [70, 90, 85, 90, 85],
+                impact: [85, 100]
+            },
+            cv_audio: {
+                id: 'cv_audio',
+                icon: '👁️',
+                title: 'Advanced Computer Vision & Audio',
+                shortName: 'CV & Audio',
+                overview: 'Processing complex sensory data. This covers multi-modal alignment (e.g., CLIP), 3D vision, neural radiance fields (NeRFs), and advanced speech processing techniques.',
+                topics: [
+                    { name: '3D Vision & NeRFs', desc: 'Neural Radiance Fields, point cloud processing, and 3D object detection/reconstruction.' },
+                    { name: 'Vision Transformers (ViT)', desc: 'Self-attention applied to image patches, Swin Transformers, and masked image modeling.' },
+                    { name: 'Multi-Modal Architectures', desc: 'Contrastive Language-Image Pre-training (CLIP), late vs. early fusion, and cross-attention.' },
+                    { name: 'Speech & Audio Synthesis', desc: 'Vocoders, flow-matching for audio, and real-time noise suppression.' }
+                ],
+                skills: [85, 80, 85, 70, 80],
+                impact: [80, 85]
+            },
+            mlops: {
+                id: 'mlops',
+                icon: '🚀',
+                title: 'AI Engineering & MLOps',
+                shortName: 'AI Engineering',
+                overview: 'A model is useless if it cannot survive in production. This covers the rigorous engineering required to deploy, monitor, scale, and maintain ML systems in unpredictable real-world environments.',
+                topics: [
+                    { name: 'Model Deployment & Serving', desc: 'Triton Inference Server, TensorRT optimization, ONNX conversions, and edge deployment.' },
+                    { name: 'Data Drift & Monitoring', desc: 'Statistical drift detection (KS tests, Wasserstein distance), concept drift handling, and shadow deployments.' },
+                    { name: 'Experimental Research Setups', desc: 'A/B testing for ML, multi-armed bandits for routing, and reproducible research artifact management.' },
+                    { name: 'AI Security & Red Teaming', desc: 'Adversarial robustness, prompt injection defenses, and differential privacy.' }
+                ],
+                skills: [40, 100, 50, 100, 80],
+                impact: [50, 100]
+            }
+        };
+
+        const moduleKeys = Object.keys(curriculumData);
+        let currentModule = moduleKeys[0];
+
+        // --- 2. Chart Instances ---
+        let skillsChartInstance = null;
+        let impactChartInstance = null;
+
+        // --- 3. UI Initialization & Update Functions ---
+
+        function initApp() {
+            buildNavigation();
+            initCharts();
+            loadModuleContent(currentModule);
+        }
+
+        function buildNavigation() {
+            const navContainer = document.getElementById('module-nav');
+            moduleKeys.forEach(key => {
+                const mod = curriculumData[key];
+                const btn = document.createElement('button');
+                btn.className = `flex-shrink-0 px-6 py-3 rounded-full font-semibold transition-all duration-300 border-2 ${key === currentModule ? 'bg-indigo-600 text-white border-indigo-600 shadow-md' : 'bg-white text-stone-600 border-stone-200 hover:border-indigo-400 hover:text-indigo-600'}`;
+                btn.innerHTML = `<span class="mr-2">${mod.icon}</span>${mod.shortName}`;
+                btn.onclick = () => {
+                    // Update active state styling
+                    Array.from(navContainer.children).forEach(child => {
+                        child.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600', 'shadow-md');
+                        child.classList.add('bg-white', 'text-stone-600', 'border-stone-200');
+                    });
+                    btn.classList.remove('bg-white', 'text-stone-600', 'border-stone-200');
+                    btn.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600', 'shadow-md');
+                    
+                    currentModule = key;
+                    loadModuleContent(key);
+                };
+                navContainer.appendChild(btn);
+            });
+        }
+
+        function loadModuleContent(key) {
+            const mod = curriculumData[key];
+            const contentPanel = document.getElementById('content-panel');
+            
+            // Trigger reflow for animation
+            contentPanel.classList.remove('fade-in');
+            void contentPanel.offsetWidth; 
+            contentPanel.classList.add('fade-in');
+
+            // Update Text Content
+            document.getElementById('module-icon').textContent = mod.icon;
+            document.getElementById('module-title').textContent = mod.title;
+            document.getElementById('module-overview').textContent = mod.overview;
+
+            // Update Topics Grid
+            const topicsGrid = document.getElementById('topics-grid');
+            topicsGrid.innerHTML = ''; // Clear existing
+            mod.topics.forEach((topic, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-stone-50 border border-stone-200 rounded-lg p-5 hover:shadow-md hover:border-indigo-300 transition-all duration-200 cursor-default";
+                card.innerHTML = `
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2 py-1 rounded-full">${index + 1}</span>
+                        <h5 class="font-bold text-stone-800 text-md">${topic.name}</h5>
+                    </div>
+                    <p class="text-sm text-stone-600 leading-relaxed">${topic.desc}</p>
+                `;
+                topicsGrid.appendChild(card);
+            });
+
+            // Update Charts
+            updateCharts(mod);
+        }
+
+        // --- 4. Chart.js Implementations ---
+
+        function initCharts() {
+            // Radar Chart: Skill Profile
+            const ctxRadar = document.getElementById('skillsRadarChart').getContext('2d');
+            skillsChartInstance = new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: ['Mathematics/Stats', 'Software Eng.', 'Algorithmic Theory', 'DevOps/Deployment', 'Data Wrangling'],
+                    datasets: [{
+                        label: 'Skill Requirement Level',
+                        data: [0, 0, 0, 0, 0], // Initial empty
+                        backgroundColor: 'rgba(79, 70, 229, 0.2)', // Indigo-600 with opacity
+                        borderColor: 'rgba(79, 70, 229, 1)',
+                        pointBackgroundColor: 'rgba(79, 70, 229, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(79, 70, 229, 1)',
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // CRITICAL: Allows CSS container to control height
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0, 0, 0, 0.1)' },
+                            grid: { color: 'rgba(0, 0, 0, 0.1)' },
+                            pointLabels: {
+                                font: { size: 11, family: "'Inter', sans-serif" },
+                                color: '#44403c' // stone-700
+                            },
+                            ticks: {
+                                display: false, // Hide numeric ticks on radar for cleaner look
+                                min: 0,
+                                max: 100,
+                                stepSize: 20
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` Required Level: ${context.raw}/100`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Bar Chart: Impact & Complexity
+            const ctxBar = document.getElementById('impactBarChart').getContext('2d');
+            impactChartInstance = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: ['Academic/Theoretical Depth', 'Real-World Engineering Complexity'],
+                    datasets: [{
+                        label: 'Intensity Score',
+                        data: [0, 0], // Initial empty
+                        backgroundColor: [
+                            'rgba(245, 158, 11, 0.8)', // Amber-500
+                            'rgba(16, 185, 129, 0.8)'  // Emerald-500
+                        ],
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // CRITICAL: Allows CSS container to control height
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                font: { family: "'Inter', sans-serif" },
+                                color: '#78716c' // stone-500
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { family: "'Inter', sans-serif", weight: 'bold' },
+                                color: '#44403c' // stone-700
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` Score: ${context.raw}/100`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateCharts(modData) {
+            // Update Radar Data
+            skillsChartInstance.data.datasets[0].data = modData.skills;
+            skillsChartInstance.update();
+
+            // Update Bar Data
+            impactChartInstance.data.datasets[0].data = modData.impact;
+            impactChartInstance.update();
+        }
+
+        // Initialize App on DOM Load
+        document.addEventListener('DOMContentLoaded', initApp);
+
+    </script>
+</body>
+</html>
