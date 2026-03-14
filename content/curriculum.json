@@ -1,0 +1,32 @@
+{
+  "semesters": [
+    {
+      "id": "s1-math-foundations",
+      "title": "Semester 1: Mathematical Foundations",
+      "description": "The mathematical language underpinning all modern ML.",
+      "status": "available",
+      "modules": [
+        {
+          "id": "m3-information-theory",
+          "title": "Information Theory for ML",
+          "description": "Entropy, KL divergence, mutual information, and connections to modern ML.",
+          "status": "available",
+          "lessons": [
+            {
+              "id": "l1-entropy",
+              "title": "Shannon Entropy & Information Content",
+              "estimatedMinutes": 25,
+              "status": "available"
+            },
+            {
+              "id": "l2-kl-divergence",
+              "title": "KL Divergence & f-Divergences",
+              "estimatedMinutes": 30,
+              "status": "available"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
