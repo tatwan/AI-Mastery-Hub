@@ -35,10 +35,15 @@
         {
           "id": "m2-probability-theory",
           "title": "Measure-Theoretic Probability",
-          "description": "Sigma-algebras, Lebesgue integration, martingales, stochastic processes.",
-          "status": "coming-soon",
-          "releaseNote": "Coming soon",
-          "lessons": []
+          "description": "σ-algebras, Lebesgue integration, concentration inequalities, martingales, and stochastic differential equations — the rigorous probability behind modern ML.",
+          "status": "available",
+          "lessons": [
+            { "id": "l1-measure-theory", "title": "Probability Spaces & Measure Theory", "estimatedMinutes": 30, "status": "available" },
+            { "id": "l2-radon-nikodym", "title": "Radon-Nikodym Theorem & Change of Measure", "estimatedMinutes": 25, "status": "available" },
+            { "id": "l3-concentration-inequalities", "title": "Concentration Inequalities", "estimatedMinutes": 30, "status": "available" },
+            { "id": "l4-martingales", "title": "Martingales & Stopping Times", "estimatedMinutes": 30, "status": "available" },
+            { "id": "l5-sdes", "title": "Stochastic Differential Equations & Diffusion", "estimatedMinutes": 35, "status": "available" }
+          ]
         },
         {
           "id": "m4-optimization-theory",
