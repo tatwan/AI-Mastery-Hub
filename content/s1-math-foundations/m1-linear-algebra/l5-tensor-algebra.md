@@ -11,6 +11,8 @@ Matrices capture bilinear relationships — interactions between two indices. Bu
 
 ## Tensors as Multi-Dimensional Arrays
 
+> **Refresher:** Tensors generalize scalars, vectors, and matrices along a single axis of order. A scalar is order-0 (no indices), a vector is order-1 (one index), a matrix is order-2 (two indices: row and column), and a 3rd-order tensor has three indices. Each additional order adds a new "dimension" of interaction. A convolutional weight kernel, for example, is naturally order-4 (output channels × input channels × height × width) — it cannot be fully captured by any single matrix without losing structural information.
+
 A **tensor** $\mathcal{T} \in \mathbb{R}^{I_1 \times I_2 \times \cdots \times I_N}$ is an $N$-dimensional array. The integer $N$ is the **order** (or mode) of the tensor. Scalars are order-0, vectors are order-1, matrices are order-2, and everything beyond is where tensor algebra becomes essential.
 
 The **fibers** of a tensor are the higher-order analogues of matrix rows and columns. For a 3rd-order tensor $\mathcal{T} \in \mathbb{R}^{I \times J \times K}$:
@@ -31,6 +33,8 @@ This multiplies each mode-$n$ fiber by $U$, transforming the $n$-th dimension fr
 
 ## Mode-$n$ Unfolding (Matricization)
 
+> **Intuition:** Mode-$n$ unfolding reshapes a tensor into a matrix by "unrolling" all dimensions except the $n$-th into a single column index. Concretely: pick one mode to be the rows; concatenate all the tensor's slices along that mode to fill the columns. This is the bridge that lets you apply matrix algorithms (SVD, rank computations) to tensors. The mode-$n$ rank of the tensor is just the rank of this unfolded matrix — different modes can have different ranks, giving the tensor its richer "multi-rank" structure.
+
 The **mode-$n$ unfolding** rearranges a tensor into a matrix by mapping mode $n$ to the rows and all other modes to the columns:
 
 $$T_{(n)} \in \mathbb{R}^{I_n \times (I_1 \cdots I_{n-1} I_{n+1} \cdots I_N)}$$
@@ -49,6 +53,8 @@ $$Y = \mathcal{T} \times_n U \quad \Leftrightarrow \quad Y_{(n)} = U \, T_{(n)}$
 This means mode-$n$ multiplication is just matrix multiplication on the unfolded tensor — making it computationally straightforward.
 
 ## Tucker Decomposition
+
+> **Intuition:** Tucker decomposition is SVD generalized to tensors. In matrix SVD, you find two orthogonal bases (one per mode) and a diagonal "core" matrix of singular values. In Tucker, you find one orthogonal factor matrix per mode and a dense core tensor that captures all the mode-to-mode interactions. The factor matrices compress each mode independently; the core encodes the structure of how compressed modes interact. Think of it as rotating into a compact coordinate system along every mode simultaneously.
 
 The **Tucker decomposition** expresses a tensor as a core tensor multiplied by factor matrices along each mode:
 
@@ -88,6 +94,8 @@ This is useful for interpretation: each component $r$ contributes a multiplicati
 
 ## Multi-Head Attention as Tensor Operation
 
+> **Refresher:** Recall from l1-svd that the attention matrix $QK^T \in \mathbb{R}^{T \times T}$ has rank at most $d_k$, the head dimension. Each attention head is therefore a rank-$d_k$ approximation of the full token-to-token interaction pattern, where the $Q$ and $K$ projections define the subspace. Stacking $H$ heads into a tensor $\mathcal{W}_Q \in \mathbb{R}^{d \times d_k \times H}$ makes this multi-rank structure explicit: the full attention mechanism is a collection of $H$ rank-$d_k$ views of the same sequence, computed simultaneously via tensor contraction.
+
 In a transformer with $H$ attention heads and model dimension $d$, each head $h$ has projection matrices $W_Q^{(h)}, W_K^{(h)}, W_V^{(h)} \in \mathbb{R}^{d \times d_k}$ where $d_k = d/H$. These can be stacked into 3rd-order tensors:
 
 $$\mathcal{W}_Q \in \mathbb{R}^{d \times d_k \times H}$$
@@ -107,6 +115,8 @@ This batched tensor contraction computes all $H$ attention patterns in a single 
 Efficient implementations (FlashAttention, xFormers) exploit this tensor structure to tile the computation across GPU memory hierarchies, processing attention in blocks that fit in SRAM rather than materializing the full $T \times T \times H$ attention tensor in HBM.
 
 ## Tensor Networks
+
+> **Intuition:** The tensor train factorizes an exponentially large tensor as a chain of small 3D tensors (the "cores"), connected by shared indices. Reading the TT formula left to right, each core $G^{(k)}$ is a $r_{k-1} \times I_k \times r_k$ array; the shared indices $r_k$ are the TT-ranks. The product of all these small matrices (one matrix per value of the physical index $i_k$) yields a single scalar — the $(i_1, i_2, \ldots, i_N)$ entry of the original tensor. Expressiveness grows with the TT-ranks, but storage only grows linearly in $N$. This is the tensor analogue of why an $n$-qubit quantum state can sometimes be represented efficiently: when correlations between distant indices are limited, the TT-ranks stay small.
 
 Tensor networks generalize tensor decompositions by arranging tensors into graphs, where edges represent contracted indices. The most important for ML is the **tensor train** (TT) decomposition, also known as **matrix product states** (MPS) in physics:
 

@@ -13,6 +13,8 @@ Every backward pass in a neural network is an exercise in matrix calculus. Autog
 
 Matrix calculus has two competing conventions, and conflating them is a perennial source of bugs and confusion. We adopt the **numerator layout** (also called the Jacobian formulation):
 
+> **Refresher:** The Jacobian is the multivariable generalization of the derivative. For a scalar function $f: \mathbb{R} \to \mathbb{R}$, the derivative $f'(x)$ tells you how $f$ changes per unit change in $x$. For a vector function $f: \mathbb{R}^m \to \mathbb{R}^n$, the Jacobian $J \in \mathbb{R}^{n \times m}$ is the matrix of all partial derivatives: entry $J_{ij}$ tells you how output $y_i$ changes per unit change in input $x_j$. The Jacobian is to vector functions what the derivative is to scalar functions.
+
 For $f: \mathbb{R}^m \to \mathbb{R}^n$, the Jacobian is:
 
 $$J = \frac{\partial \mathbf{y}}{\partial \mathbf{x}} \in \mathbb{R}^{n \times m}, \quad J_{ij} = \frac{\partial y_i}{\partial x_j}$$
@@ -55,6 +57,8 @@ The gradient of a Frobenius-norm regression objective. Setting this to zero give
 
 ## The Chain Rule in Matrix Form
 
+> **Intuition:** The matrix chain rule is the same idea as the 1D chain rule $\frac{d\ell}{dx} = \frac{d\ell}{dy} \cdot \frac{dy}{dx}$, just with matrices. In 1D, you multiply two scalars; in the matrix case, you multiply two Jacobians. The only new wrinkle is that matrix multiplication is not commutative, so the order matters — upstream gradient on the left, local Jacobian on the right. Every layer in a neural network applies this rule once.
+
 The chain rule is the engine of backpropagation. For a composition $\ell = \ell(Y(X))$:
 
 $$\frac{\partial \ell}{\partial X} = \frac{\partial \ell}{\partial Y} \cdot \frac{\partial Y}{\partial X}$$
@@ -68,6 +72,8 @@ By rearranging the trace expression, we identify $\frac{\partial \ell}{\partial 
 The pattern that every backward pass implements is: **upstream gradient times local Jacobian**. Each layer receives $\frac{\partial \ell}{\partial Y}$ from above and computes $\frac{\partial \ell}{\partial X}$ by multiplying with the local derivative.
 
 ## Backpropagation as Matrix Calculus
+
+> **Intuition:** Backpropagation is just the matrix chain rule applied layer by layer, from the loss back to the inputs. At each layer, you receive the upstream gradient (how the loss changes with respect to this layer's output) and multiply by the local Jacobian (how this layer's output changes with respect to its input and parameters). Autograd frameworks automate this bookkeeping — but they are computing exactly the matrix chain rule you can derive by hand, as the next section shows.
 
 Consider a single linear layer: $Y = XW + \mathbf{1}b^T$, where $X \in \mathbb{R}^{B \times d_{\text{in}}}$ is the input batch, $W \in \mathbb{R}^{d_{\text{in}} \times d_{\text{out}}}$, and $b \in \mathbb{R}^{d_{\text{out}}}$.
 
@@ -101,6 +107,8 @@ $$J_\sigma = \text{diag}(\sigma'(x_1), \sigma'(x_2), \ldots, \sigma'(x_n))$$
 
 The Jacobian is diagonal — gradient computation costs $O(n)$, not $O(n^2)$. For ReLU: $\sigma'(x_i) = \mathbf{1}[x_i > 0]$. For sigmoid: $\sigma'(x_i) = \sigma(x_i)(1 - \sigma(x_i))$.
 
+> **Intuition:** The softmax Jacobian has off-diagonal terms because softmax outputs are coupled — they must sum to 1. Increasing logit $x_j$ raises $y_j$ but forces all other $y_i$ to decrease proportionally. So $\partial y_i / \partial x_j$ for $i \neq j$ is negative (specifically $-y_i y_j$): raising a competing logit always reduces your probability. This coupling is precisely what makes softmax output a probability simplex rather than independent predictions.
+
 **Softmax Jacobian** is more interesting. For $y = \text{softmax}(x)$ where $y_i = e^{x_i}/\sum_j e^{x_j}$:
 
 $$\frac{\partial y_i}{\partial x_j} = y_i(\delta_{ij} - y_j)$$
@@ -128,6 +136,8 @@ For neural network loss functions, the Hessian is enormous ($p \times p$ for $p$
 - **Saddle points**: in high-dimensional loss landscapes, most critical points are saddle points (the Hessian has both positive and negative eigenvalues). The fraction of negative eigenvalues correlates with the loss value (Baldi & Hornik, Choromanska et al.).
 
 ## The Fisher Information Matrix
+
+> **Refresher:** Fisher information measures how much the distribution $p(x|\theta)$ changes when you perturb $\theta$. If $F$ is large in some direction, moving $\theta$ that way dramatically changes the distribution — the data is highly informative about $\theta$ in that direction. If $F$ is small, the distribution barely changes — you can move $\theta$ without affecting what the model predicts. This curvature of the likelihood surface is exactly what makes the Fisher a natural metric for parameter space.
 
 The Fisher information matrix is the bridge between statistics and optimization:
 

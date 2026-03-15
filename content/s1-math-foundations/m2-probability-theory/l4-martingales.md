@@ -9,6 +9,8 @@ prerequisites: ["l1-measure-theory"]
 
 ## The Martingale Concept
 
+> **Intuition:** A martingale is a fair game: given everything you know now, your best prediction of the future value is the present value — $\mathbb{E}[M_{t+1} \mid \mathcal{F}_t] = M_t$. There is no systematic drift upward or downward. The process can fluctuate wildly, but on average it goes nowhere. This is the mathematical definition of "no free lunch" in sequential settings.
+
 A **martingale** is a stochastic process that models a fair game. Formally, a sequence of random variables $(M_t)_{t \geq 0}$ adapted to a filtration $(\mathcal{F}_t)_{t \geq 0}$ is a martingale if:
 
 1. $M_t$ is $\mathcal{F}_t$-measurable for all $t$ (the value at time $t$ depends only on information available at $t$)
@@ -37,11 +39,15 @@ In reinforcement learning, cumulative regret under an algorithm that "learns" is
 
 **Likelihood ratio process.** Given two measures $P$ and $Q$, the process $Z_t = \prod_{s=1}^t \frac{p(X_s)}{q(X_s)}$ is a martingale under $Q$. This is because $\mathbb{E}_Q[Z_{t+1} | \mathcal{F}_t] = Z_t \cdot \mathbb{E}_Q\left[\frac{p(X_{t+1})}{q(X_{t+1})}\right] = Z_t \cdot 1 = Z_t$. This martingale is the foundation of sequential hypothesis testing (Wald's sequential probability ratio test) and appears in the importance weights of off-policy RL.
 
+> **Remember:** Given any integrable random variable $Y$, the sequence $M_t = \mathbb{E}[Y \mid \mathcal{F}_t]$ is always a martingale — the tower property guarantees this. This is Doob's martingale construction. In Bayesian learning, posterior means are Doob martingales in the number of observations. In attention mechanisms, $M_t$ approximates the conditional expectation of the target given the context seen so far.
+
 **Doob's martingale.** For any integrable random variable $Y$ and filtration $(\mathcal{F}_t)$, the process $M_t = \mathbb{E}[Y | \mathcal{F}_t]$ is a martingale. This is the "best prediction" process: as more information is revealed, the conditional expectation updates but remains a martingale. In Bayesian learning, the posterior mean of a parameter is a Doob martingale in the number of observations.
 
 **Exponential martingale.** If $Z_i$ are i.i.d. with MGF $M(\lambda) = \mathbb{E}[e^{\lambda Z_i}]$, then $\exp\left(\lambda \sum_{i=1}^t Z_i - t \log M(\lambda)\right)$ is a martingale for any $\lambda$. This construction is the engine behind the Chernoff bound and Azuma-Hoeffding inequality.
 
 ## Martingale Convergence Theorem
+
+> **Intuition:** Bounded martingales always converge — they cannot oscillate forever without violating the bounded-expectation condition. The key is that the process cannot "explore" indefinitely if its values are constrained. This is why modeling the squared distance to an optimum as a non-negative supermartingale automatically implies convergence of the algorithm, without needing to track the detailed trajectory.
 
 **Theorem.** If $(M_t)$ is a martingale (or non-negative supermartingale) with $\sup_t \mathbb{E}[|M_t|] < \infty$, then $M_t$ converges almost surely to a finite limit $M_\infty$.
 
@@ -62,6 +68,8 @@ The decision to stop at or before time $t$ must depend only on information avail
 Examples of stopping times: the first time a random walk hits zero; the first time a confidence interval is sufficiently narrow; the first time a loss drops below a threshold. Non-examples: "the last time the process exceeds 5" (requires knowing the entire future path) or "stop one step before the maximum" (requires future knowledge).
 
 ## Optional Stopping Theorem
+
+> **Refresher:** You cannot beat a fair game by cleverly choosing when to stop — the Optional Stopping Theorem says $\mathbb{E}[M_\tau] = \mathbb{E}[M_0]$ as long as the stopping rule satisfies certain integrability conditions. This is the gambler's ruin in formal clothing: no stopping strategy generates a positive expected gain from a martingale. The conditions matter — unbounded increments or infinite expected stopping times can break the result.
 
 **Theorem (Doob's Optional Stopping).** Let $(M_t)$ be a martingale and $\tau$ a stopping time. If any of the following conditions hold:
 
@@ -86,6 +94,8 @@ This is a martingale under $\pi$: the sum of discounted rewards collected plus t
 $$\mathbb{E}_\pi[M_{t+1} | \mathcal{F}_t] = \sum_{k=0}^{t-1} \gamma^k r_k + \gamma^t \mathbb{E}_\pi[r_t + \gamma V^\pi(s_{t+1}) | s_t] = M_t$$
 
 where the last equality uses the Bellman equation $V^\pi(s_t) = \mathbb{E}_\pi[r_t + \gamma V^\pi(s_{t+1}) | s_t]$.
+
+> **Intuition:** TD errors in reinforcement learning are martingale difference sequences — their conditional expectation given the current history is zero. This zero-mean property is exactly why temporal difference learning converges: the updates are noisy but unbiased, and the noise averages out over time. The martingale structure is what distinguishes convergent TD learning from divergent "residual gradient" methods that break this property.
 
 The TD error $\delta_t = r_t + \gamma V^\pi(s_{t+1}) - V^\pi(s_t)$ is a **martingale difference**: $\mathbb{E}[\delta_t | \mathcal{F}_t] = 0$. This is exactly why TD learning converges — the updates are noisy but unbiased, and the noise forms a martingale difference sequence. Convergence proofs for TD($\lambda$), Q-learning, and actor-critic methods all rely on this structure.
 

@@ -9,6 +9,8 @@ prerequisites: ["l1-measure-theory"]
 
 ## Absolute Continuity of Measures
 
+> **Intuition:** $P$ is absolutely continuous with respect to $Q$ ($P \ll Q$) means: if $Q$ says something is impossible, $P$ agrees. Wherever $Q$ assigns zero probability, $P$ must too. This is the condition that makes the density $dP/dQ$ well-defined — you cannot have a reweighting factor at a point that $Q$ never visits.
+
 Given two measures $P$ and $Q$ on the same measurable space $(\Omega, \mathcal{F})$, we say $P$ is **absolutely continuous** with respect to $Q$, written $P \ll Q$, if:
 
 $$Q(A) = 0 \implies P(A) = 0 \quad \text{for all } A \in \mathcal{F}$$
@@ -20,6 +22,8 @@ If both $P \ll Q$ and $Q \ll P$, the measures are **equivalent** — they agree 
 > **Key insight:** Absolute continuity is the minimal condition for importance sampling to work. If $P$ is not absolutely continuous with respect to the proposal $Q$, there exist events with positive probability under $P$ that $Q$ never generates — making unbiased estimation impossible.
 
 ## The Radon-Nikodym Theorem
+
+> **Remember:** The Radon-Nikodym derivative $dP/dQ$ is the likelihood ratio — it tells you how to reweight samples drawn from $Q$ so they behave as if drawn from $P$. When densities exist, $dP/dQ = p/q$. This single object is the common thread behind importance sampling, off-policy RL, variational inference, and KL divergence.
 
 The Radon-Nikodym theorem is one of the central results of measure theory, and it underpins nearly every density-based computation in ML.
 
@@ -59,6 +63,8 @@ The KL divergence measures the expected log-likelihood ratio under $P$. It quant
 
 ## Girsanov's Theorem and Change of Drift
 
+> **Intuition:** Girsanov's theorem says you can change the drift of a Brownian motion by reweighting path probabilities. Under the new measure $Q$, the process with drift looks like pure noise. This is how risk-neutral pricing works in finance (remove the drift, price by discounting), and it is why the score function $\nabla_x \log p_t$ enters the reverse SDE in diffusion models — it is a drift correction under a change of measure.
+
 In continuous-time settings, the most powerful change-of-measure result is **Girsanov's theorem**. Informally, it states:
 
 If $W_t$ is a Brownian motion under measure $P$, and we define a new measure $Q$ via the Radon-Nikodym derivative:
@@ -74,6 +80,8 @@ The practical implication: changing the measure amounts to changing the drift of
 In reinforcement learning, the ratio $\frac{d P_\pi}{d P_\mu}$ between the trajectory distributions under a target policy $\pi$ and a behavior policy $\mu$ is a product of per-step importance weights — this is the foundation of off-policy methods like V-trace and retrace.
 
 ## Importance Sampling
+
+> **Refresher:** Importance sampling is a Monte Carlo trick: instead of drawing samples from $P$ directly (which may be expensive or impossible), draw samples from a proposal $Q$ and multiply each evaluation $f(x_i)$ by the likelihood ratio $dP/dQ(x_i) = p(x_i)/q(x_i)$. The estimator is unbiased by the change-of-measure formula, but variance can explode if $P$ and $Q$ are poorly matched — high weights on rare samples dominate the average.
 
 Importance sampling (IS) operationalizes the change-of-measure formula for Monte Carlo estimation. To estimate $\mathbb{E}_P[f(X)]$ when sampling from $P$ is expensive or infeasible, we draw samples $x_1, \ldots, x_n \sim Q$ and compute:
 
@@ -100,6 +108,8 @@ $$\log p(x) \geq \mathbb{E}_{q(z|x)}\left[\log \frac{p(x,z)}{q(z|x)}\right] = \t
 The gap between $\log p(x)$ and the ELBO is exactly $D_{\text{KL}}(q(z|x) \| p(z|x))$. Maximizing the ELBO over $q$ simultaneously tightens this bound and makes $q$ a better approximation to the true posterior. The ratio $\frac{p(x,z)}{q(z|x)}$ inside the logarithm is the Radon-Nikodym derivative of the joint distribution with respect to the variational approximation — the same object that appears in importance sampling.
 
 ### Lebesgue Decomposition Theorem
+
+> **Intuition:** Any measure splits uniquely into an absolutely continuous part (which has a density with respect to $Q$) and a singular part (which lives on a set that $Q$ ignores entirely). The GAN discriminator implicitly learns this split: early in training, the generator's distribution is singular with respect to the data distribution — they live on different manifolds — making density-ratio estimation ill-posed and motivating Wasserstein distance.
 
 A companion result to Radon-Nikodym: any measure $P$ can be uniquely decomposed as $P = P_{ac} + P_s$ where $P_{ac} \ll Q$ (absolutely continuous part, admitting an RN derivative) and $P_s \perp Q$ (singular part, living on a $Q$-null set). This decomposition is the mathematical basis for understanding GAN training: the generator's distribution $P_G$ is initially singular with respect to the data distribution $P_{data}$ (they live on different manifolds), making the JS divergence undefined as a density ratio. This singularity problem motivates Wasserstein GANs (Semester 5), which use a distance that remains well-defined even for mutually singular measures.
 

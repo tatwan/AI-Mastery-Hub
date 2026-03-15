@@ -24,6 +24,8 @@ A probability space consists of three objects:
    - If $A \in \mathcal{F}$, then $A^c \in \mathcal{F}$ (closed under complement)
    - If $A_1, A_2, \ldots \in \mathcal{F}$, then $\bigcup_{i=1}^\infty A_i \in \mathcal{F}$ (closed under countable union)
 
+> **Intuition:** The σ-algebra is the collection of events we are allowed to assign probability to — not every subset qualifies. Think of it as the "vocabulary" of questions your probability model can answer. On uncountable spaces like $\mathbb{R}$, some pathological subsets cannot be assigned a consistent probability, so the σ-algebra excludes them.
+
 3. **Probability measure** $P: \mathcal{F} \to [0,1]$ — assigns probabilities to events. It must satisfy $P(\Omega) = 1$ and **countable additivity**: for disjoint $A_1, A_2, \ldots \in \mathcal{F}$,
 
 $$P\left(\bigcup_{i=1}^\infty A_i\right) = \sum_{i=1}^\infty P(A_i)$$
@@ -52,6 +54,8 @@ The measurability requirement may seem pedantic, but it enforces a critical cons
 
 ## Expectation as Lebesgue Integration
 
+> **Refresher:** Unlike the Riemann integral, which slices the domain (x-axis) into thin vertical strips, the Lebesgue integral slices the range (y-axis) — grouping together all inputs that produce similar output values. This reorganization is what allows the Lebesgue integral to handle discontinuous and complex functions seamlessly, and it is what makes probability theory work for distributions that are neither purely discrete nor purely continuous.
+
 The expectation of a random variable $X$ is defined as the **Lebesgue integral** with respect to the probability measure $P$:
 
 $$\mathbb{E}[X] = \int_\Omega X(\omega) \, dP(\omega)$$
@@ -65,6 +69,8 @@ The construction proceeds by first defining the integral for simple functions (f
 ## The Dominated Convergence Theorem
 
 The most important convergence theorem for ML practitioners is the **Dominated Convergence Theorem (DCT)**:
+
+> **Intuition:** The DCT says you can swap the limit and the integral — move $\lim$ inside $\mathbb{E}$ — whenever the sequence is dominated by something integrable. This is the formal license for differentiating under the integral sign, which you do every time you compute a policy gradient or ELBO gradient. Without it, those interchanges are unjustified.
 
 **Theorem.** If $X_n \to X$ almost surely, and there exists an integrable random variable $Y$ with $|X_n| \leq Y$ a.s. for all $n$, then:
 
@@ -84,6 +90,8 @@ The closely related **Monotone Convergence Theorem** handles the case where $X_n
 
 Completing the convergence trilogy, **Fatou's Lemma** provides a lower bound without requiring a dominating function:
 
+> **Remember:** $\mathbb{E}[\liminf_n X_n] \leq \liminf_n \mathbb{E}[X_n]$ for any non-negative sequence. The inequality can be strict — the limit of expectations can exceed the expectation of the limit when probability "leaks to infinity." Use Fatou's Lemma when you have non-negativity but no dominating function and need a lower bound on the limiting expectation.
+
 $$\mathbb{E}\left[\liminf_{n \to \infty} X_n\right] \leq \liminf_{n \to \infty} \mathbb{E}[X_n]$$
 
 for any sequence of non-negative random variables $X_n \geq 0$.
@@ -91,6 +99,8 @@ for any sequence of non-negative random variables $X_n \geq 0$.
 Unlike DCT, Fatou's Lemma requires no integrability condition — only non-negativity. The inequality can be strict: the limit of expectations can exceed the expectation of the limit (probability "leaks to infinity"). Together with MCT and DCT, Fatou's Lemma covers the full landscape of when limits and expectations can be exchanged — a question that arises constantly in ML when analyzing convergence of stochastic algorithms.
 
 ## Filtrations and Information
+
+> **Intuition:** A filtration is how information accumulates over time. $\mathcal{F}_t$ captures everything that is knowable up to time $t$ — the history of all events that have occurred. As $t$ increases, the filtration can only grow: you never forget information. A random variable is $\mathcal{F}_t$-measurable exactly when its value is fully determined by the information available at time $t$, with no peeking into the future.
 
 A **filtration** $\{\mathcal{F}_t\}_{t \geq 0}$ is an increasing sequence of σ-algebras:
 

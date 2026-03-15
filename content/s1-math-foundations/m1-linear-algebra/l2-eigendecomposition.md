@@ -11,6 +11,8 @@ Where the SVD applies to any matrix, eigendecomposition reveals the internal dyn
 
 ## Eigendecomposition Fundamentals
 
+> **Intuition:** An eigenvector is a direction that the matrix doesn't rotate — it only stretches or flips. For any other vector, applying $A$ changes both magnitude and direction. Eigendecomposition asks: what are the special directions where $A$ acts like pure scalar multiplication? Finding these directions transforms the matrix into a coordinate system where its action is completely transparent.
+
 A scalar $\lambda$ is an **eigenvalue** of $A \in \mathbb{R}^{n \times n}$ with corresponding **eigenvector** $v \neq 0$ if:
 
 $$Av = \lambda v$$
@@ -28,6 +30,8 @@ where $Q$ has eigenvectors as columns and $\Lambda = \text{diag}(\lambda_1, \ldo
 ## The Spectral Theorem
 
 The spectral theorem is the foundation of spectral methods in ML.
+
+> **Refresher:** A symmetric matrix satisfies $A = A^T$ — its $(i,j)$ entry equals its $(j,i)$ entry. This means the matrix "looks the same" from row and column perspectives. Symmetry arises naturally whenever $A$ encodes undirected relationships: the covariance between features $i$ and $j$ is the same as between $j$ and $i$; the similarity of point $i$ to point $j$ equals the similarity of $j$ to $i$. The spectral theorem is why symmetric matrices are so analytically tractable.
 
 **Theorem.** If $A \in \mathbb{R}^{n \times n}$ is symmetric ($A = A^T$), then:
 
@@ -64,6 +68,8 @@ If $A \succ 0$ (strictly positive definite, all $\lambda_i > 0$), then $A$ is in
 
 ## Matrix Functions via Spectral Decomposition
 
+> **Intuition:** Matrix functions work by the same logic as the spectral decomposition itself. Rotate into the eigenbasis (via $Q^T$), apply the scalar function to each eigenvalue independently (since the matrix is now diagonal), then rotate back (via $Q$). This is only possible because symmetric matrices have an orthonormal eigenbasis — the "rotation" is clean. The result is that any function you can apply to a number, you can apply to a symmetric matrix via its eigenvalues.
+
 Given $A = Q \Lambda Q^T$, we can define **matrix functions** by applying scalar functions to the eigenvalues:
 
 $$f(A) = Q \, f(\Lambda) \, Q^T = Q \, \text{diag}(f(\lambda_1), \ldots, f(\lambda_n)) \, Q^T$$
@@ -76,6 +82,8 @@ Important examples in ML:
 - **Matrix inverse**: $A^{-1} = Q \, \text{diag}(\lambda_1^{-1}, \ldots, \lambda_n^{-1}) \, Q^T$. This reveals why near-zero eigenvalues cause numerical instability.
 
 ## The Graph Laplacian and Spectral Graph Theory
+
+> **Refresher:** The graph Laplacian $L = D - W$ encodes graph structure in a matrix. The degree matrix $D$ captures how many edges each node has; the adjacency matrix $W$ captures which nodes are connected. Their difference $L$ has a key property: $x^T L x = \sum_{(i,j) \in E} W_{ij}(x_i - x_j)^2$, which measures how much a signal $x$ on the graph varies across edges. Small eigenvalues of $L$ correspond to smooth signals (slowly varying across edges); large eigenvalues correspond to rapidly oscillating signals. This is the graph analogue of Fourier frequency.
 
 Given an undirected weighted graph with adjacency matrix $W$ (where $W_{ij} \geq 0$), the **graph Laplacian** is:
 
@@ -108,6 +116,8 @@ where $\mu, \sigma$ are the mean and standard deviation of $x$'s components.
 Viewed spectrally: across a batch of activations, the Gram matrix $G = X X^T$ has an eigenvalue spectrum. Without normalization, a few eigenvalues dominate (activations concentrate along a few directions), causing gradient instabilities. As an interpretive lens (rather than a formal theorem), LayerNorm can be understood as compressing the eigenvalue spread of $G$ toward uniformity by centering and scaling the activation distribution. This is a useful geometric intuition rather than a mathematically proven statement — the precise relationship between LayerNorm and the spectral properties of activations is an active area of analysis. Nonetheless, the practical effect is that the condition number of the effective Gram matrix stays bounded, stabilizing the backward pass.
 
 ## Condition Number
+
+> **Intuition:** The condition number answers the question: how much does a small error in the input amplify into an error in the output? If $\kappa(A) = 10^6$, an error of size $10^{-6}$ in $A$ can produce an error of size 1 in the solution — catastrophic loss of precision. For optimization, the condition number of the Hessian determines how different the curvature is in different directions of parameter space. A large condition number means gradient descent takes tiny steps in the flat directions while oscillating in the steep ones.
 
 The **condition number** of an invertible matrix is:
 

@@ -19,6 +19,8 @@ After training, comparing a weight matrix's spectrum to the random baseline reve
 
 ## The Wigner Semicircle Law
 
+> **Intuition:** The Wigner semicircle law reveals surprising order in randomness. If you fill a large symmetric matrix with independent random entries, the histogram of eigenvalues doesn't look random at all — it converges to a clean semicircular shape with sharp edges at $\pm 2\sigma$. No eigenvalue escapes this bulk. The semicircle is not specific to Gaussian entries; any distribution with finite fourth moment gives the same shape. This universality is what makes the law useful as a baseline: it tells you what "pure noise" looks like spectrally.
+
 The simplest RMT result concerns symmetric random matrices. Let $M = \frac{1}{\sqrt{n}}(A + A^T)/2$ where $A$ has i.i.d. $\mathcal{N}(0, 1)$ entries. As $n \to \infty$, the empirical spectral distribution (the histogram of eigenvalues) converges to the **semicircle distribution**:
 
 $$\rho(\lambda) = \frac{1}{2\pi\sigma^2}\sqrt{4\sigma^2 - \lambda^2}, \quad |\lambda| \leq 2\sigma$$
@@ -30,6 +32,8 @@ In words: the eigenvalues spread out into a smooth semicircular shape, with shar
 The semicircle law applies to symmetric matrices, which appear as Hessians, covariance matrices at initialization, and Gram matrices. It provides the baseline spectrum against which to measure the effect of training on these quantities.
 
 ## The Marchenko-Pastur Law
+
+> **Refresher:** The Marchenko-Pastur distribution is the null distribution for PCA on random data. In PCA, you compute the covariance matrix $X^T X / n$ and look for large eigenvalues as evidence of structure. But even for a completely random data matrix, the eigenvalues are not all equal — they spread out. The MP law tells you exactly how they spread as a function of the aspect ratio $\gamma = m/n$. Any eigenvalue above $\lambda_+$ is a genuine signal; anything inside the bulk $[\lambda_-, \lambda_+]$ is indistinguishable from noise.
 
 For rectangular matrices — the case directly relevant to weight matrices — the Marchenko-Pastur (MP) law is the fundamental result.
 
@@ -63,6 +67,8 @@ Martin and Mahoney (2021) developed this into a systematic diagnostic: by fittin
 
 ## Free Probability: The Mathematics of Random Matrix Sums
 
+> **Intuition:** Free probability is probability theory for non-commuting matrices. In classical probability, knowing the distributions of independent variables $X$ and $Y$ tells you the distribution of $X + Y$. For matrices, independence is replaced by "freeness" — a condition roughly meaning the eigenbases of $A$ and $B$ are in generic position relative to each other. When $A$ and $B$ are free, the spectral distribution of $A + B$ is determined by those of $A$ and $B$ alone, via free convolution. This is the tool that lets you predict how spectra compose across the layers of a deep network.
+
 Classical probability studies sums of independent scalar random variables (central limit theorem). **Free probability theory** (Voiculescu, 1991) is the analogous framework for sums and products of large random matrices, where "freeness" replaces classical independence.
 
 The key result is **free convolution**: if $A$ and $B$ are large random matrices that are "free" (roughly: drawn from rotationally invariant ensembles), the empirical spectral distribution of $A + B$ is the **free additive convolution** $\mu_A \boxplus \mu_B$, computable via $R$-transforms. Similarly for products via the $S$-transform.
@@ -75,6 +81,8 @@ Why this matters for deep learning:
 > **Key insight:** Free probability is the right language for understanding how spectra compose across layers. Classical addition $\mu_{A+B} \neq \mu_A * \mu_B$ for matrices, but free convolution $\mu_{A+B} = \mu_A \boxplus \mu_B$ holds when $A$ and $B$ are free.
 
 ## Weight Initialization: Kaiming/He
+
+> **Remember:** Kaiming initialization sets $\text{Var}(W_{ij}) = 2/n_{\text{in}}$ for ReLU networks. The goal is to keep activation variance constant across layers: without the factor of 2, each ReLU layer would halve the variance (since ReLU zeroes out roughly half its inputs), and after $L$ layers the signal would shrink by $(1/2)^L$. The factor of 2 exactly cancels this attenuation.
 
 The Kaiming (He) initialization sets:
 
@@ -107,6 +115,8 @@ $$\bar{W} = \frac{W}{\|W\|_2}$$
 This ensures each layer is 1-Lipschitz, making the entire network $L$-Lipschitz (where $L$ is the number of layers, accounting for activation functions). Spectral normalization was introduced for stabilizing GAN training — it prevents the discriminator from being too sensitive to small input perturbations, which causes mode collapse.
 
 ## Double Descent and the Interpolation Threshold
+
+> **Intuition:** Double descent breaks the classical U-shaped bias-variance tradeoff. In the classical picture, adding model capacity past the interpolation threshold (where parameters = data points) causes overfitting. But for modern overparameterized models, test error decreases again beyond this threshold — forming a second descent. The key: when a model has far more capacity than needed, it can interpolate the training data while still generalizing, because the excess capacity allows it to find a smooth, low-norm solution. The classical curve was correct for its regime; it just doesn't extend to the overparameterized regime that deep learning operates in.
 
 One of the most striking predictions of RMT concerns generalization. Classical learning theory says test error follows a U-shaped curve as model complexity increases: first decreasing (underfitting to good fit) then increasing (overfitting). But modern over-parameterized models violate this — test error decreases *again* after the interpolation threshold (where the number of parameters equals the number of data points).
 

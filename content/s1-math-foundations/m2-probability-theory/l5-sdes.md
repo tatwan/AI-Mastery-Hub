@@ -9,6 +9,8 @@ prerequisites: ["l1-measure-theory", "l4-martingales"]
 
 ## Brownian Motion
 
+> **Refresher:** Brownian motion is the continuous-time limit of a symmetric random walk. Take a random walk with steps $\pm 1/\sqrt{n}$ at each time interval $1/n$; as $n \to \infty$, the path converges to Brownian motion. The limiting process has independent increments, Gaussian distributions, and continuous paths — but the paths are nowhere differentiable and have infinite total variation. Classical calculus cannot handle such paths directly.
+
 **Brownian motion** (or the Wiener process) $W_t$ is the continuous-time analogue of a random walk and the fundamental building block of stochastic calculus. It is defined by four properties:
 
 1. $W_0 = 0$
@@ -40,6 +42,8 @@ SDEs define not just a single trajectory but a probability distribution over tra
 
 ## The Itô Integral
 
+> **Intuition:** We cannot use the ordinary Riemann integral for Brownian motion because Brownian paths have infinite total variation — the usual "sum of step sizes" diverges. The Itô integral sidesteps this by using left-endpoint Riemann sums and taking an $L^2$ limit, which converges even though the path-length limit does not. The left-endpoint choice (rather than midpoint or right endpoint) is what gives the Itô integral its martingale property.
+
 The **Itô integral** $\int_0^T g(t) \, dW_t$ is constructed as the $L^2$ limit of left-endpoint Riemann sums:
 
 $$\int_0^T g(t) \, dW_t = \lim_{n \to \infty} \sum_{i=0}^{n-1} g(t_i)(W_{t_{i+1}} - W_{t_i})$$
@@ -54,6 +58,8 @@ The martingale property means stochastic integrals have zero mean — the "noise
 The alternative Stratonovich convention (midpoint evaluation) gives different results — specifically, it obeys the classical chain rule but loses the martingale property. Itô's convention is standard in probability and ML; Stratonovich is preferred in some physics contexts. The two are related by a drift correction: a Stratonovich SDE can always be converted to an Itô SDE and vice versa.
 
 ## Itô's Lemma
+
+> **Remember:** Itô's lemma is the chain rule for stochastic processes: $df(X_t) = f'(X_t)\,dX_t + \frac{1}{2}f''(X_t)(dX_t)^2$. The extra $\frac{1}{2}f''$ term comes from Brownian motion's quadratic variation $(dW)^2 = dt$ — in ordinary calculus, second-order terms vanish, but here they survive. This term appears in every SDE computation, every Black-Scholes derivation, and the score-matching objective in diffusion models.
 
 The **Itô formula** is the chain rule of stochastic calculus. For a twice continuously differentiable function $f(x, t)$ and a process $X_t$ satisfying $dX_t = \mu \, dt + \sigma \, dW_t$:
 
@@ -78,6 +84,8 @@ The Itô correction term $\frac{1}{2}\text{tr}(GG^T H_\phi)$ involves the **Hess
 > **Key insight:** Itô's lemma is the workhorse of SDE computations. Any time you need to find the SDE for a transformed process — log-prices in finance, log-densities in diffusion models — you apply Itô's lemma and collect the correction term.
 
 ## The Fokker-Planck Equation
+
+> **Intuition:** Instead of tracking individual particle paths (which are random and irregular), the Fokker-Planck equation tracks how the probability density evolves deterministically over time. Drift shifts the density in one direction; diffusion spreads it out. This is the "fluid dynamics" view of a stochastic process — the density flows like a fluid under the combined influence of advection and dispersion.
 
 While the SDE describes the evolution of a single sample path, the **Fokker-Planck equation** (also called the Kolmogorov forward equation) describes the evolution of the probability density $p(x, t)$ of $X_t$:
 
@@ -106,6 +114,8 @@ $$X_t | X_s = x \sim \mathcal{N}\left(x e^{-\theta(t-s)}, \frac{\sigma^2}{2\thet
 As $t - s \to \infty$, the conditional distribution converges to the stationary distribution regardless of the starting point. This is precisely the noising process used in many diffusion models: start with data $X_0 \sim p_{\text{data}}$ and run the OU process forward until $X_T \approx \mathcal{N}(0, \sigma^2/2\theta)$.
 
 ## Diffusion Models as SDEs
+
+> **Refresher:** The forward process of a diffusion model is an SDE that slowly adds noise to data over time $t \in [0, T]$; the reverse process is another SDE that denoises, running from $T$ back to $0$. Both the forward and reverse SDEs are described by the same framework — the only missing ingredient in the reverse direction is the score function $\nabla_x \log p_t(x)$, which a neural network learns to approximate.
 
 The framework of Song et al. (2020) unifies score-based generative models through the SDE lens. The **forward process** progressively corrupts data:
 

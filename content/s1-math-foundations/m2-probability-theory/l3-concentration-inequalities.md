@@ -17,6 +17,8 @@ Without concentration inequalities, we cannot state generalization bounds, we ca
 
 ### Markov's Inequality
 
+> **Intuition:** Markov's inequality says: if the average is small, the distribution cannot have a large tail without paying for it in expectation. You cannot concentrate most of your probability mass far above the mean — the mean would have to be large too. This gives an $O(1/t)$ decay, which is weak, but it requires only non-negativity and a finite first moment — the minimal assumptions.
+
 The simplest tail bound requires only that $X \geq 0$ with finite mean:
 
 $$P(X \geq t) \leq \frac{\mathbb{E}[X]}{t}$$
@@ -47,6 +49,8 @@ This is called the **Chernoff bound** or **exponential Markov inequality**. The 
 
 ## Sub-Gaussian Random Variables
 
+> **Intuition:** A sub-Gaussian variable has tails that decay at least as fast as a Gaussian — the MGF $\mathbb{E}[e^{\lambda X}]$ grows no faster than $e^{\lambda^2 \sigma^2/2}$, which is exactly the Gaussian MGF. The parameter $\sigma^2$ is the "variance proxy": larger $\sigma^2$ means slower tail decay. Bounded random variables and Gaussians are both sub-Gaussian; heavy-tailed distributions like the Cauchy are not.
+
 A centered random variable $X$ (with $\mathbb{E}[X] = 0$) is **sub-Gaussian with parameter $\sigma$** if its MGF satisfies:
 
 $$\mathbb{E}[e^{\lambda X}] \leq e^{\lambda^2 \sigma^2 / 2} \quad \text{for all } \lambda \in \mathbb{R}$$
@@ -69,6 +73,8 @@ $$P\left(\sum_{i=1}^n X_i \geq t\right) \leq \exp\left(-\frac{t^2}{2\sum \sigma_
 This is the template for all the named inequalities below.
 
 ## Hoeffding's Inequality
+
+> **Remember:** For bounded independent random variables with $X_i \in [a_i, b_i]$, Hoeffding gives $P(\bar{X} - \mu \geq t) \leq \exp(-2nt^2/(b-a)^2)$. The concentration is exponential in $n$ — double the sample size and the probability of a given deviation decreases quadratically in the exponent. The range $(b-a)$ appears squared, so wide-bounded variables concentrate more slowly.
 
 **Theorem (Hoeffding, 1963).** Let $X_1, \ldots, X_n$ be independent random variables with $X_i \in [a_i, b_i]$ almost surely. Then:
 
@@ -96,6 +102,8 @@ The bound has two regimes. When $t \ll n\sigma^2/M$ (the "normal" regime), the d
 
 ## McDiarmid's Inequality (Bounded Differences)
 
+> **Intuition:** McDiarmid's inequality says: a function of independent inputs is concentrated if changing any single input cannot change the output much — the "bounded differences" condition. You do not need the function to be a sum; empirical risk, cross-validation estimates, and k-NN error all qualify. The condition $c_i$ measures how much leverage the $i$-th sample has over the final answer.
+
 The previous inequalities apply to sums of independent random variables. McDiarmid's inequality extends concentration to **arbitrary functions** of independent variables, provided the function does not depend too strongly on any single coordinate.
 
 **Theorem (McDiarmid, 1989).** Let $X_1, \ldots, X_n$ be independent, and let $f: \mathcal{X}^n \to \mathbb{R}$ satisfy the **bounded differences** condition: for each $i$,
@@ -115,6 +123,8 @@ $$P(|\hat{R}(h) - R(h)| \geq t) \leq 2\exp\left(-2nt^2/B^2\right)$$
 for any fixed hypothesis $h$.
 
 ## Application: PAC Learning and Uniform Convergence
+
+> **Refresher:** PAC learning stands for "Probably Approximately Correct." The goal: with probability at least $1 - \delta$ (the "probably" part), the learned hypothesis has generalization error at most $\varepsilon$ (the "approximately correct" part). Concentration inequalities are what make this precise — they convert the informal hope that training loss tracks test loss into a quantitative bound with explicit $n$, $\varepsilon$, and $\delta$.
 
 The single-hypothesis bound above is useful but insufficient — we want guarantees that hold **simultaneously** for all hypotheses in a class $\mathcal{H}$. For finite $\mathcal{H}$, a union bound gives:
 

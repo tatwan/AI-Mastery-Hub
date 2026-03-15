@@ -11,6 +11,8 @@ The singular value decomposition is arguably the single most important factoriza
 
 ## The Singular Value Decomposition
 
+> **Intuition:** SVD decomposes any linear map into exactly three geometric steps: first rotate the input space (via $V^T$), then scale independently along each coordinate axis (via $\Sigma$), then rotate the output space (via $U$). The singular values in $\Sigma$ are the scaling factors — they tell you how much each axis is stretched or compressed. Every matrix, no matter how complicated, reduces to this rotate–scale–rotate structure.
+
 Every real matrix $A \in \mathbb{R}^{m \times n}$ admits a factorization
 
 $$A = U \Sigma V^T$$
@@ -33,6 +35,8 @@ $$A_k = U_k \Sigma_k V_k^T$$
 
 where $U_k$ contains the first $k$ columns of $U$, $\Sigma_k$ is the $k \times k$ upper-left block of $\Sigma$, and $V_k$ contains the first $k$ columns of $V$.
 
+> **Remember:** The Eckart-Young-Mirsky theorem: $A_k$ is the best rank-$k$ approximation of $A$ under any unitarily invariant norm, and the error is $\|A - A_k\|_F = \sqrt{\sigma_{k+1}^2 + \cdots + \sigma_{\min(m,n)}^2}$. No other rank-$k$ matrix can do better.
+
 The **Eckart-Young-Mirsky theorem** states that $A_k$ is the best rank-$k$ approximation of $A$ in both the Frobenius and spectral norms:
 
 $$\|A - A_k\|_F = \min_{\text{rank}(B) \leq k} \|A - B\|_F = \sqrt{\sigma_{k+1}^2 + \sigma_{k+2}^2 + \cdots + \sigma_{\min(m,n)}^2}$$
@@ -43,6 +47,8 @@ The reconstruction error equals the root sum of squares of the discarded singula
 
 ## PCA as SVD
 
+> **Refresher:** PCA is traditionally defined through the eigenvectors of the sample covariance matrix $\frac{1}{n}X^T X$. Here we connect that to SVD directly: the right singular vectors of $X$ are the eigenvectors of $X^T X$, and the singular values satisfy $\sigma_i^2 = n \lambda_i$ where $\lambda_i$ are the covariance eigenvalues. SVD is the numerically preferred route because it avoids forming $X^T X$ explicitly, which squares the condition number.
+
 Principal Component Analysis is SVD applied to centered data. Given a data matrix $X \in \mathbb{R}^{n \times d}$ (rows are samples, columns are features), center it so each column has zero mean, then compute $X = U \Sigma V^T$.
 
 The **principal components** are the right singular vectors (columns of $V$). The projections of data onto the first $k$ principal components are $X V_k = U_k \Sigma_k$. The **explained variance ratio** for the $i$-th component is:
@@ -52,6 +58,8 @@ $$\text{EVR}_i = \frac{\sigma_i^2}{\sum_{j=1}^{\min(n,d)} \sigma_j^2}$$
 This tells you what fraction of the total data variance is captured by each component — the singular value spectrum of your data matrix is a fingerprint of its intrinsic dimensionality.
 
 ## LoRA: Low-Rank Adaptation
+
+> **Intuition:** LoRA works because fine-tuning a pretrained model doesn't require moving through all of weight space — the useful updates live in a low-dimensional subspace. Think of it this way: a weight matrix has millions of parameters, but the task-relevant directions number in the dozens. LoRA forces the update $\Delta W = BA$ to be exactly rank-$r$, ensuring that only directions with sufficient "energy" can be updated. The pretrained knowledge in $W_0$ is frozen; only the task-specific low-rank component is learned.
 
 Low-Rank Adaptation (LoRA) is one of the most impactful applications of low-rank structure in modern ML. Instead of fine-tuning all parameters of a pretrained weight matrix $W_0 \in \mathbb{R}^{d \times k}$, LoRA parameterizes the weight update as:
 
@@ -76,6 +84,8 @@ Each attention head is a rank-$d_k$ projection of the full attention pattern. **
 > **Key insight:** Multi-head attention is essentially a structured low-rank decomposition of what would otherwise need to be a full-rank $T \times T$ interaction matrix. The head dimension $d_k$ is the rank budget per head.
 
 ## Stable Rank
+
+> **Intuition:** Stable rank measures the effective number of directions with significant energy in a matrix. A stable rank of 10 means the matrix acts as if it has roughly 10 important directions, even if its algebraic rank is much higher due to tiny singular values. It equals 1 when all energy is in a single direction (a rank-1 matrix) and equals the true rank only when all nonzero singular values are identical. In practice, stable rank is a noise-robust proxy for the "working dimensionality" of a linear layer.
 
 The standard matrix rank is fragile — adding tiny noise to a rank-$k$ matrix makes it full rank. The **stable rank** provides a noise-robust alternative:
 
