@@ -1,0 +1,13 @@
+{
+  "id": "m5-bayesian-inference",
+  "title": "Bayesian Inference & Monte Carlo",
+  "description": "Conjugate analysis, MCMC, Hamiltonian Monte Carlo, variational inference, amortized inference, and sequential Monte Carlo.",
+  "status": "coming-soon",
+  "lessons": [
+    { "id": "l1-bayesian-computation", "title": "Bayesian Computation & Conjugate Analysis", "estimatedMinutes": 35, "status": "coming-soon" },
+    { "id": "l2-mcmc-mh-gibbs", "title": "MCMC: Metropolis-Hastings & Gibbs Sampling", "estimatedMinutes": 40, "status": "coming-soon" },
+    { "id": "l3-hmc-nuts", "title": "Hamiltonian Monte Carlo & NUTS", "estimatedMinutes": 40, "status": "coming-soon" },
+    { "id": "l4-variational-inference", "title": "Variational Inference, ELBO & Amortized Inference", "estimatedMinutes": 40, "status": "coming-soon" },
+    { "id": "l5-smc-particle-filters", "title": "Sequential Monte Carlo & Particle Filters", "estimatedMinutes": 40, "status": "coming-soon" }
+  ]
+}

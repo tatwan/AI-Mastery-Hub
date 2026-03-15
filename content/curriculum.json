@@ -89,9 +89,88 @@
     {
       "id": "s2-classical-ml",
       "title": "Semester 2: Advanced Classical ML",
-      "description": "Probabilistic graphical models, kernel methods, Gaussian processes, generalization theory.",
+      "description": "Statistical learning theory, kernel methods, Gaussian processes, probabilistic graphical models, Bayesian inference, and nonparametric methods.",
       "status": "coming-soon",
-      "modules": []
+      "modules": [
+        {
+          "id": "m1-statistical-learning-theory",
+          "title": "Statistical Learning Theory",
+          "description": "PAC learning, VC dimension, Rademacher complexity, algorithmic stability, and PAC-Bayes bounds — the rigorous theory of generalization.",
+          "status": "coming-soon",
+          "lessons": [
+            { "id": "l1-pac-learning", "title": "PAC Learning & Sample Complexity", "estimatedMinutes": 35, "status": "coming-soon" },
+            { "id": "l2-vc-dimension", "title": "VC Dimension & Shattering", "estimatedMinutes": 35, "status": "coming-soon" },
+            { "id": "l3-rademacher-complexity", "title": "Rademacher Complexity & Uniform Convergence", "estimatedMinutes": 40, "status": "coming-soon" },
+            { "id": "l4-algorithmic-stability", "title": "Algorithmic Stability & Uniform Stability", "estimatedMinutes": 35, "status": "coming-soon" },
+            { "id": "l5-pac-bayes", "title": "PAC-Bayes Bounds", "estimatedMinutes": 40, "status": "coming-soon" }
+          ]
+        },
+        {
+          "id": "m2-kernel-methods",
+          "title": "Kernel Methods",
+          "description": "SVMs, structured prediction, scalable kernel approximations, and spectral methods — algorithmic kernel theory built on the RKHS foundation.",
+          "status": "coming-soon",
+          "lessons": [
+            { "id": "l1-svm-primal-dual", "title": "SVMs: Primal, Dual & KKT Conditions", "estimatedMinutes": 35, "status": "coming-soon" },
+            { "id": "l2-soft-margin-hinge-loss", "title": "Soft Margin, Hinge Loss & Regularization Paths", "estimatedMinutes": 35, "status": "coming-soon" },
+            { "id": "l3-structured-svms", "title": "Structured SVMs & Output Kernels", "estimatedMinutes": 40, "status": "coming-soon" },
+            { "id": "l4-nystrom-random-features", "title": "Nyström Approximation & Random Features", "estimatedMinutes": 35, "status": "coming-soon" },
+            { "id": "l5-kernel-pca-spectral", "title": "Kernel PCA, Spectral Clustering & Kernel CCA", "estimatedMinutes": 40, "status": "coming-soon" }
+          ]
+        },
+        {
+          "id": "m3-gaussian-processes",
+          "title": "Gaussian Processes",
+          "description": "GP regression, covariance design, approximate inference, sparse GPs, and deep GP connections to the NTK.",
+          "status": "coming-soon",
+          "lessons": [
+            { "id": "l1-gp-regression-bo", "title": "GP Regression, Marginal Likelihood & Bayesian Optimization", "estimatedMinutes": 40, "status": "coming-soon" },
+            { "id": "l2-covariance-spectral", "title": "Covariance Function Design, Stationarity & Spectral Methods", "estimatedMinutes": 35, "status": "coming-soon" },
+            { "id": "l3-gp-classification", "title": "GP Classification & Approximate Inference", "estimatedMinutes": 40, "status": "coming-soon" },
+            { "id": "l4-sparse-gps", "title": "Sparse GPs & Inducing Point Methods", "estimatedMinutes": 40, "status": "coming-soon" },
+            { "id": "l5-deep-gps-ntk", "title": "Deep GPs, NTK Correspondence & Neural Network Priors", "estimatedMinutes": 45, "status": "coming-soon" }
+          ]
+        },
+        {
+          "id": "m4-pgms",
+          "title": "Probabilistic Graphical Models",
+          "description": "Directed and undirected graphical models, exact and approximate inference, belief propagation, and EM-based parameter learning.",
+          "status": "coming-soon",
+          "lessons": [
+            { "id": "l1-directed-graphical-models", "title": "Directed Graphical Models & d-Separation", "estimatedMinutes": 35, "status": "coming-soon" },
+            { "id": "l2-undirected-mrfs", "title": "Undirected Models & Markov Random Fields", "estimatedMinutes": 35, "status": "coming-soon" },
+            { "id": "l3-exact-inference", "title": "Exact Inference: Variable Elimination & Junction Tree", "estimatedMinutes": 40, "status": "coming-soon" },
+            { "id": "l4-belief-propagation", "title": "Belief Propagation & Loopy BP", "estimatedMinutes": 40, "status": "coming-soon" },
+            { "id": "l5-em-hmms-crfs", "title": "EM Algorithm, HMMs & CRF Training", "estimatedMinutes": 45, "status": "coming-soon" }
+          ]
+        },
+        {
+          "id": "m5-bayesian-inference",
+          "title": "Bayesian Inference & Monte Carlo",
+          "description": "Conjugate analysis, MCMC, Hamiltonian Monte Carlo, variational inference, amortized inference, and sequential Monte Carlo.",
+          "status": "coming-soon",
+          "lessons": [
+            { "id": "l1-bayesian-computation", "title": "Bayesian Computation & Conjugate Analysis", "estimatedMinutes": 35, "status": "coming-soon" },
+            { "id": "l2-mcmc-mh-gibbs", "title": "MCMC: Metropolis-Hastings & Gibbs Sampling", "estimatedMinutes": 40, "status": "coming-soon" },
+            { "id": "l3-hmc-nuts", "title": "Hamiltonian Monte Carlo & NUTS", "estimatedMinutes": 40, "status": "coming-soon" },
+            { "id": "l4-variational-inference", "title": "Variational Inference, ELBO & Amortized Inference", "estimatedMinutes": 40, "status": "coming-soon" },
+            { "id": "l5-smc-particle-filters", "title": "Sequential Monte Carlo & Particle Filters", "estimatedMinutes": 40, "status": "coming-soon" }
+          ]
+        },
+        {
+          "id": "m6-nonparametric-bayesian",
+          "title": "Nonparametric Bayesian Methods",
+          "description": "Dirichlet processes, hierarchical DPs, Indian buffet process, GP latent variable models, and Bayesian nonparametric regression.",
+          "status": "coming-soon",
+          "lessons": [
+            { "id": "l1-dirichlet-process", "title": "Dirichlet Process & Chinese Restaurant Process", "estimatedMinutes": 40, "status": "coming-soon" },
+            { "id": "l2-hierarchical-dp", "title": "Hierarchical Dirichlet Processes & Topic Models", "estimatedMinutes": 40, "status": "coming-soon" },
+            { "id": "l3-indian-buffet-process", "title": "Indian Buffet Process & Latent Feature Models", "estimatedMinutes": 40, "status": "coming-soon" },
+            { "id": "l4-gplvm", "title": "GP Latent Variable Models & Dimensionality Reduction", "estimatedMinutes": 40, "status": "coming-soon" },
+            { "id": "l5-bnp-regression", "title": "Bayesian Nonparametric Regression & Density Estimation", "estimatedMinutes": 40, "status": "coming-soon" }
+          ]
+        }
+      ]
     },
     {
       "id": "s3-deep-learning",

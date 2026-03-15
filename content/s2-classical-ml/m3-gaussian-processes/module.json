@@ -1,0 +1,13 @@
+{
+  "id": "m3-gaussian-processes",
+  "title": "Gaussian Processes",
+  "description": "GP regression, covariance design, approximate inference, sparse GPs, and deep GP connections to the NTK.",
+  "status": "coming-soon",
+  "lessons": [
+    { "id": "l1-gp-regression-bo", "title": "GP Regression, Marginal Likelihood & Bayesian Optimization", "estimatedMinutes": 40, "status": "coming-soon" },
+    { "id": "l2-covariance-spectral", "title": "Covariance Function Design, Stationarity & Spectral Methods", "estimatedMinutes": 35, "status": "coming-soon" },
+    { "id": "l3-gp-classification", "title": "GP Classification & Approximate Inference", "estimatedMinutes": 40, "status": "coming-soon" },
+    { "id": "l4-sparse-gps", "title": "Sparse GPs & Inducing Point Methods", "estimatedMinutes": 40, "status": "coming-soon" },
+    { "id": "l5-deep-gps-ntk", "title": "Deep GPs, NTK Correspondence & Neural Network Priors", "estimatedMinutes": 45, "status": "coming-soon" }
+  ]
+}

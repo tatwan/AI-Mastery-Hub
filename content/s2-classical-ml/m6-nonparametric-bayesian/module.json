@@ -1,0 +1,13 @@
+{
+  "id": "m6-nonparametric-bayesian",
+  "title": "Nonparametric Bayesian Methods",
+  "description": "Dirichlet processes, hierarchical DPs, Indian buffet process, GP latent variable models, and Bayesian nonparametric regression.",
+  "status": "coming-soon",
+  "lessons": [
+    { "id": "l1-dirichlet-process", "title": "Dirichlet Process & Chinese Restaurant Process", "estimatedMinutes": 40, "status": "coming-soon" },
+    { "id": "l2-hierarchical-dp", "title": "Hierarchical Dirichlet Processes & Topic Models", "estimatedMinutes": 40, "status": "coming-soon" },
+    { "id": "l3-indian-buffet-process", "title": "Indian Buffet Process & Latent Feature Models", "estimatedMinutes": 40, "status": "coming-soon" },
+    { "id": "l4-gplvm", "title": "GP Latent Variable Models & Dimensionality Reduction", "estimatedMinutes": 40, "status": "coming-soon" },
+    { "id": "l5-bnp-regression", "title": "Bayesian Nonparametric Regression & Density Estimation", "estimatedMinutes": 40, "status": "coming-soon" }
+  ]
+}

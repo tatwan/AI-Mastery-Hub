@@ -1,0 +1,13 @@
+{
+  "id": "m1-statistical-learning-theory",
+  "title": "Statistical Learning Theory",
+  "description": "PAC learning, VC dimension, Rademacher complexity, algorithmic stability, and PAC-Bayes bounds — the rigorous theory of generalization.",
+  "status": "coming-soon",
+  "lessons": [
+    { "id": "l1-pac-learning", "title": "PAC Learning & Sample Complexity", "estimatedMinutes": 35, "status": "coming-soon" },
+    { "id": "l2-vc-dimension", "title": "VC Dimension & Shattering", "estimatedMinutes": 35, "status": "coming-soon" },
+    { "id": "l3-rademacher-complexity", "title": "Rademacher Complexity & Uniform Convergence", "estimatedMinutes": 40, "status": "coming-soon" },
+    { "id": "l4-algorithmic-stability", "title": "Algorithmic Stability & Uniform Stability", "estimatedMinutes": 35, "status": "coming-soon" },
+    { "id": "l5-pac-bayes", "title": "PAC-Bayes Bounds", "estimatedMinutes": 40, "status": "coming-soon" }
+  ]
+}

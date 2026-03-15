@@ -1,0 +1,13 @@
+{
+  "id": "m4-pgms",
+  "title": "Probabilistic Graphical Models",
+  "description": "Directed and undirected graphical models, exact and approximate inference, belief propagation, and EM-based parameter learning.",
+  "status": "coming-soon",
+  "lessons": [
+    { "id": "l1-directed-graphical-models", "title": "Directed Graphical Models & d-Separation", "estimatedMinutes": 35, "status": "coming-soon" },
+    { "id": "l2-undirected-mrfs", "title": "Undirected Models & Markov Random Fields", "estimatedMinutes": 35, "status": "coming-soon" },
+    { "id": "l3-exact-inference", "title": "Exact Inference: Variable Elimination & Junction Tree", "estimatedMinutes": 40, "status": "coming-soon" },
+    { "id": "l4-belief-propagation", "title": "Belief Propagation & Loopy BP", "estimatedMinutes": 40, "status": "coming-soon" },
+    { "id": "l5-em-hmms-crfs", "title": "EM Algorithm, HMMs & CRF Training", "estimatedMinutes": 45, "status": "coming-soon" }
+  ]
+}

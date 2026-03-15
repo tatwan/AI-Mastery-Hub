@@ -1,0 +1,13 @@
+{
+  "id": "m2-kernel-methods",
+  "title": "Kernel Methods",
+  "description": "SVMs, structured prediction, scalable kernel approximations, and spectral methods — algorithmic kernel theory built on the RKHS foundation.",
+  "status": "coming-soon",
+  "lessons": [
+    { "id": "l1-svm-primal-dual", "title": "SVMs: Primal, Dual & KKT Conditions", "estimatedMinutes": 35, "status": "coming-soon" },
+    { "id": "l2-soft-margin-hinge-loss", "title": "Soft Margin, Hinge Loss & Regularization Paths", "estimatedMinutes": 35, "status": "coming-soon" },
+    { "id": "l3-structured-svms", "title": "Structured SVMs & Output Kernels", "estimatedMinutes": 40, "status": "coming-soon" },
+    { "id": "l4-nystrom-random-features", "title": "Nyström Approximation & Random Features", "estimatedMinutes": 35, "status": "coming-soon" },
+    { "id": "l5-kernel-pca-spectral", "title": "Kernel PCA, Spectral Clustering & Kernel CCA", "estimatedMinutes": 40, "status": "coming-soon" }
+  ]
+}
