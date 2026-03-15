@@ -11,7 +11,7 @@ Every backward pass in a neural network is an exercise in matrix calculus. Autog
 
 ## Layout Conventions
 
-Matrix calculus has two competing conventions, and conflating them is a perennial source of bugs and confusion. We adopt the **denominator layout** (also called the Jacobian formulation):
+Matrix calculus has two competing conventions, and conflating them is a perennial source of bugs and confusion. We adopt the **numerator layout** (also called the Jacobian formulation):
 
 For $f: \mathbb{R}^m \to \mathbb{R}^n$, the Jacobian is:
 
@@ -19,13 +19,15 @@ $$J = \frac{\partial \mathbf{y}}{\partial \mathbf{x}} \in \mathbb{R}^{n \times m
 
 Row $i$ of $J$ is the gradient of $y_i$ with respect to all inputs. This is what PyTorch's `torch.autograd.functional.jacobian` returns, what JAX's `jacfwd` and `jacrev` compute, and the convention used in most ML research.
 
-For a scalar-valued function $f: \mathbb{R}^m \to \mathbb{R}$, the gradient $\nabla f = \frac{\partial f}{\partial \mathbf{x}} \in \mathbb{R}^{1 \times m}$ is a row vector in denominator layout. In practice, frameworks return it as a column vector (numerator layout for this special case) to match the shape of $x$. Be aware of this inconsistency.
+For a scalar-valued function $f: \mathbb{R}^m \to \mathbb{R}$, the gradient $\nabla f = \frac{\partial f}{\partial \mathbf{x}} \in \mathbb{R}^{1 \times m}$ is a row vector in numerator layout. In practice, frameworks return it as a column vector to match the shape of $x$. Be aware of this inconsistency.
 
-> **Key insight:** When you see a matrix derivative, the first question is always: which layout convention? Denominator layout makes chain rules compose naturally as matrix products. Most bugs in manual gradient derivations trace back to a layout mismatch.
+In **denominator layout** (used in some statistics texts), the Jacobian is transposed: $\mathbb{R}^{m \times n}$, and scalar gradients are column vectors. We follow the numerator convention, which matches PyTorch, JAX, and Goodfellow et al.
+
+> **Key insight:** When you see a matrix derivative, the first question is always: which layout convention? Numerator layout makes chain rules compose naturally as matrix products. Most bugs in manual gradient derivations trace back to a layout mismatch.
 
 ## Essential Matrix Derivatives
 
-These identities form the working vocabulary of matrix calculus in ML. Each is stated in denominator layout.
+These identities form the working vocabulary of matrix calculus in ML. Each is stated in numerator layout.
 
 **Vector derivatives:**
 
@@ -35,7 +37,7 @@ The gradient of a linear function is the coefficient vector — the simplest cas
 
 $$\frac{\partial}{\partial x}(x^T A x) = x^T(A + A^T) = 2x^T A \quad \text{when } A = A^T$$
 
-For a quadratic form with symmetric $A$, the gradient is $2Ax$ (as a column vector). This governs the gradient of $L_2$ regularization, Mahalanobis distances, and any quadratic loss.
+For a quadratic form with symmetric $A$: in numerator layout this is the row vector $2x^TA$. As a gradient column vector (as returned by PyTorch and most frameworks), it is $2Ax$. The two are transposes of each other — the distinction matters when you chain Jacobians. This identity governs the gradient of $L_2$ regularization, Mahalanobis distances, and any quadratic loss.
 
 **Matrix derivatives (for scalar-valued functions of matrices):**
 
@@ -90,6 +92,22 @@ The upstream gradient $\delta$ is projected back through the transpose of the we
 **Gradient with respect to $b$:** $\frac{\partial \ell}{\partial b} = \delta^T \mathbf{1} = \sum_i \delta_i$ — sum of upstream gradients across the batch.
 
 > **Key insight:** The forward pass multiplies by $W$; the backward pass multiplies by $W^T$. The weight gradient is the outer product of the input and the upstream gradient. These three operations are the entire backward pass of a linear layer, derived purely from matrix calculus.
+
+## Jacobians of Common Nonlinearities
+
+Understanding the local Jacobian of each layer is essential for tracing gradient flow. For **elementwise activations** $\sigma: \mathbb{R}^n \to \mathbb{R}^n$ where $y_i = \sigma(x_i)$ independently:
+
+$$J_\sigma = \text{diag}(\sigma'(x_1), \sigma'(x_2), \ldots, \sigma'(x_n))$$
+
+The Jacobian is diagonal — gradient computation costs $O(n)$, not $O(n^2)$. For ReLU: $\sigma'(x_i) = \mathbf{1}[x_i > 0]$. For sigmoid: $\sigma'(x_i) = \sigma(x_i)(1 - \sigma(x_i))$.
+
+**Softmax Jacobian** is more interesting. For $y = \text{softmax}(x)$ where $y_i = e^{x_i}/\sum_j e^{x_j}$:
+
+$$\frac{\partial y_i}{\partial x_j} = y_i(\delta_{ij} - y_j)$$
+
+In matrix form: $J_{\text{softmax}} = \text{diag}(y) - yy^T$. This is a rank-1 update of a diagonal matrix.
+
+> **Key insight:** The softmax Jacobian is symmetric and has rank $n-1$ (it is singular — softmax outputs sum to 1, so one degree of freedom is lost). In practice, the backward pass of cross-entropy + softmax is simplified to $\delta = \hat{y} - y_{\text{true}}$ by combining both Jacobians analytically.
 
 ## The Hessian Matrix
 

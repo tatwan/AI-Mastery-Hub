@@ -61,6 +61,19 @@ Martin and Mahoney (2021) developed this into a systematic diagnostic: by fittin
 
 > **Key insight:** The MP distribution is the spectral fingerprint of randomness. Outlier eigenvalues above the MP edge are the mathematical signature of what a neural network has learned — each one represents a direction in weight space that has moved away from its random initialization in a structured way.
 
+## Free Probability: The Mathematics of Random Matrix Sums
+
+Classical probability studies sums of independent scalar random variables (central limit theorem). **Free probability theory** (Voiculescu, 1991) is the analogous framework for sums and products of large random matrices, where "freeness" replaces classical independence.
+
+The key result is **free convolution**: if $A$ and $B$ are large random matrices that are "free" (roughly: drawn from rotationally invariant ensembles), the empirical spectral distribution of $A + B$ is the **free additive convolution** $\mu_A \boxplus \mu_B$, computable via $R$-transforms. Similarly for products via the $S$-transform.
+
+Why this matters for deep learning:
+- **Residual networks**: the spectrum of $W + I$ (residual connection) is not simply a shift of $W$'s spectrum — it's a free convolution. Free probability explains why residual connections preserve spectral bulk near 1.
+- **Gram matrices of trained networks**: the spectrum of $\frac{1}{n}X^TX$ for deep representations follows free convolution of the individual layer spectra.
+- Martin & Mahoney (2021) use free probability to explain power-law tails in trained weight matrices as evidence of "heavy-tailed self-regularization."
+
+> **Key insight:** Free probability is the right language for understanding how spectra compose across layers. Classical addition $\mu_{A+B} \neq \mu_A * \mu_B$ for matrices, but free convolution $\mu_{A+B} = \mu_A \boxplus \mu_B$ holds when $A$ and $B$ are free.
+
 ## Weight Initialization: Kaiming/He
 
 The Kaiming (He) initialization sets:
@@ -73,9 +86,9 @@ The derivation follows from variance propagation. For a layer $y = Wx$ followed 
 
 $$\text{Var}(y_j) = n_{\text{in}} \cdot \text{Var}(W_{ij}) \cdot \text{Var}(x_i) \cdot \frac{1}{2}$$
 
-The factor $\frac{1}{2}$ comes from ReLU zeroing out negative values. Setting $\text{Var}(W_{ij}) = 2/n_{\text{in}}$ gives $\text{Var}(y_j) = \text{Var}(x_i)$ — variance is preserved across layers.
+The factor $\frac{1}{2}$ comes from ReLU zeroing out negative values — this assumes inputs are symmetrically distributed around zero at initialization, so ReLU zeroes approximately half. The approximation holds at initialization but drifts during training as the distribution of pre-activations shifts. Setting $\text{Var}(W_{ij}) = 2/n_{\text{in}}$ gives $\text{Var}(y_j) = \text{Var}(x_i)$ — variance is preserved across layers.
 
-From the RMT perspective, this initialization places the singular values of each weight matrix near 1, ensuring that the product of Jacobians through many layers neither grows nor shrinks. The MP distribution for this initialization has bulk edges at $\sigma^2(1 \pm \sqrt{\gamma})^2$ with $\sigma^2 = 2/n_{\text{in}}$. For a square layer ($\gamma = 1$), the bulk spans $[0, 4\sigma^2]$, and the mean singular value squared is $\sigma^2 \cdot n_{\text{in}} = 2$ — giving a mean singular value of $\sqrt{2}$, which compensates for the $1/\sqrt{2}$ factor from ReLU.
+From the RMT perspective, this initialization places the singular values of each weight matrix near 1, ensuring that the product of Jacobians through many layers neither grows nor shrinks. The MP distribution for this initialization has bulk edges at $\sigma^2(1 \pm \sqrt{\gamma})^2$ with $\sigma^2 = 2/n_{\text{in}}$. For a square layer ($\gamma = 1$), the bulk spans $[0, 4\sigma^2]$, and the mean singular value squared is $\sigma^2 \cdot n_{\text{in}} = 2$ — giving a mean singular value of approximately $\sqrt{2}$, which compensates for the $1/\sqrt{2}$ factor from ReLU. (Strictly, Jensen's inequality gives $\mathbb{E}[\sigma_i] \leq \sqrt{\mathbb{E}[\sigma_i^2]}$, so $\sqrt{2}$ is an upper bound on the mean singular value, not the exact value. For practical purposes of initialization the approximation is sufficient.)
 
 ## Spectral Norm and Lipschitz Constants
 
@@ -113,7 +126,7 @@ np.random.seed(42)
 m, n = 500, 1000  # gamma = m/n = 0.5
 sigma2 = 1.0 / n
 X = np.random.randn(m, n) * np.sqrt(sigma2)
-S = X @ X.T  # m x m sample covariance (unnormalized)
+S = X @ X.T  # m x m (unnormalized by m; MP edges below are scaled accordingly)
 eigs = np.linalg.eigvalsh(S)
 
 # Theoretical MP distribution

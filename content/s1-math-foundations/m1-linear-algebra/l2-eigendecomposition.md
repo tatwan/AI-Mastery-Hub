@@ -95,6 +95,8 @@ $$g_\theta(L) \, x = Q \, g_\theta(\Lambda) \, Q^T x$$
 
 ChebNet and GCN approximate this with polynomials of $L$ to avoid the $O(n^2)$ eigendecomposition, but the spectral perspective explains *what* these networks compute: they filter graph signals by amplifying or suppressing different frequency components (eigenvectors of $L$).
 
+**Note on GCN normalization:** The standard GCN formulation (Kipf & Welling, 2017) uses the **normalized** Laplacian $\tilde{L} = D^{-1/2}LD^{-1/2}$, which also has orthonormal eigenvectors, so the spectral convolution formula $g_\theta(L)\,x = Q\,g_\theta(\Lambda)\,Q^T x$ holds for both normalized and unnormalized variants. Standard GCN implementations use the normalized version for numerical stability, as it bounds eigenvalues to $[0, 2]$.
+
 ## Layer Normalization: A Spectral View
 
 LayerNorm computes, for each token's activation vector $x \in \mathbb{R}^d$:
@@ -103,7 +105,7 @@ $$\text{LayerNorm}(x) = \gamma \odot \frac{x - \mu}{\sigma} + \beta$$
 
 where $\mu, \sigma$ are the mean and standard deviation of $x$'s components.
 
-Viewed spectrally: across a batch of activations, the Gram matrix $G = X X^T$ has an eigenvalue spectrum. Without normalization, a few eigenvalues dominate (activations concentrate along a few directions), causing gradient instabilities. LayerNorm centers and scales the activation distribution, compressing the eigenvalue spread of $G$ toward uniformity. This keeps the condition number of the effective Gram matrix bounded, stabilizing the backward pass.
+Viewed spectrally: across a batch of activations, the Gram matrix $G = X X^T$ has an eigenvalue spectrum. Without normalization, a few eigenvalues dominate (activations concentrate along a few directions), causing gradient instabilities. As an interpretive lens (rather than a formal theorem), LayerNorm can be understood as compressing the eigenvalue spread of $G$ toward uniformity by centering and scaling the activation distribution. This is a useful geometric intuition rather than a mathematically proven statement — the precise relationship between LayerNorm and the spectral properties of activations is an active area of analysis. Nonetheless, the practical effect is that the condition number of the effective Gram matrix stays bounded, stabilizing the backward pass.
 
 ## Condition Number
 

@@ -148,7 +148,7 @@ rank_cp = 5
 
 # Ground truth: sum of rank-1 tensors + noise
 factors_true = [np.random.randn(s, rank_cp) for s in shape]
-T_clean = tl.cp_to_tensor((None, factors_true))
+T_clean = tl.cp_to_tensor((np.ones(rank_cp), factors_true))
 T_noisy = T_clean + 0.1 * np.random.randn(*shape)
 
 # CP decomposition

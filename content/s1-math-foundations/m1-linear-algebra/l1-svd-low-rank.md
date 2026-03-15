@@ -85,6 +85,18 @@ Stable rank is always between 1 and $\text{rank}(A)$. It equals 1 when the matri
 
 In ML, stable rank is used to analyze weight matrix conditioning, measure the effective capacity of linear layers, and bound generalization error (PAC-Bayes bounds often involve stable rank).
 
+## Randomized SVD: Scaling to Large Matrices
+
+The exact SVD costs $O(mn^2)$ for an $m \times n$ matrix ($m \geq n$) — prohibitive when both dimensions are large. In practice, most large-scale ML systems use **randomized SVD** (Halko, Martinsson & Tropp, 2011), which computes an approximate rank-$k$ SVD in $O(mnk)$ time by:
+
+1. Draw a random sketch matrix $\Omega \in \mathbb{R}^{n \times (k+p)}$ (e.g., Gaussian, $p$ is oversampling)
+2. Form $Y = A\Omega$ to project $A$ into a low-dimensional subspace
+3. Orthogonalize: $Q, \_ = \text{QR}(Y)$, so $A \approx QQ^TA$
+4. Compute the small SVD of $B = Q^T A \in \mathbb{R}^{(k+p) \times n}$
+5. Recover approximate singular vectors of $A$
+
+> **Key insight:** You don't need the full SVD — you need the top-$k$ singular vectors, and a random projection finds them with high probability. `sklearn.utils.extmath.randomized_svd` and PyTorch's `torch.svd_lowrank` both implement this.
+
 ## Python: SVD in Practice
 
 ```python
@@ -100,7 +112,7 @@ V_true = np.linalg.qr(np.random.randn(n, 10))[0]
 signal = U_true @ np.diag(np.logspace(2, 0, 10)) @ V_true.T
 A = signal + 0.5 * np.random.randn(m, n)
 
-# Full SVD
+# Thin SVD (full_matrices=False returns economy-size U, S, Vt)
 U, sigma, Vt = np.linalg.svd(A, full_matrices=False)
 
 # Reconstruction error vs rank k
