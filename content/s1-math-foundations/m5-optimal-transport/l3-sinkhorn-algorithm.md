@@ -28,6 +28,8 @@ where $H(\pi) = -\sum_{i,j} \pi_{ij} \log \pi_{ij}$ is the **entropy** of the tr
 - *Smoothness:* $\text{OT}_\varepsilon(\mu,\nu)$ is smooth (infinitely differentiable) in $\mu$ and $\nu$, unlike exact OT which is only Lipschitz.
 - *Convergence:* As $\varepsilon \to 0$, $\pi_\varepsilon^* \to \pi^*$ (optimal coupling of exact OT) and $\text{OT}_\varepsilon(\mu,\nu) \to \text{OT}(\mu,\nu)$.
 
+> **Intuition:** Entropic regularization replaces the "hard" linear program (sharp, sparse solution) with a "soft" strictly convex problem (smooth, dense solution). As ε → 0 the soft solution approaches the hard one. As ε → ∞ the solution approaches independent coupling — total spreading. The practical sweet spot is where the solution is close enough to true OT but numerically stable: typically ε ≈ median(C)/20.
+
 > **Remember:** $\text{OT}_\varepsilon(\mu,\nu) = \min_{\pi \in \mathbf{U}(r,c)} \langle C, \pi \rangle - \varepsilon H(\pi)$, where $H(\pi) = -\sum_{ij} \pi_{ij} \log \pi_{ij}$. The regularization parameter $\varepsilon$ trades off transport cost (fidelity) against smoothness (spread).
 
 ## The Gibbs Kernel and Scaling Structure
@@ -71,9 +73,11 @@ Each iteration requires two matrix-vector products $Kb$ and $K^\top a$, each cos
 
 > **Key insight:** Sinkhorn is matrix scaling: we want to scale the rows and columns of $K$ to achieve target marginals. Row normalization and column normalization alternate. The critical observation is that the Gibbs kernel $K$ is a fixed positive matrix, and only the diagonal scalings $a$ and $b$ change. The entire algorithm is two matrix-vector products per iteration — easily parallelizable on GPUs.
 
-**Convergence.** The Sinkhorn iterates converge linearly to the optimal $(a^*, b^*)$. The convergence rate is $\kappa = \tanh(\frac{1}{4} \log \frac{\lambda_{\max}}{\lambda_{\min}})$ where $\lambda_{\max}$ and $\lambda_{\min}$ are the largest and smallest entries of $K$. For small $\varepsilon$, $K$ is very peaked (near-zero entries everywhere except near the OT support), and convergence slows. This is the fundamental tension: small $\varepsilon$ gives better approximation to true OT but slower Sinkhorn convergence.
+**Convergence.** The Sinkhorn iterates converge linearly to the optimal $(a^*, b^*)$. The convergence rate is $\kappa = \tanh(\frac{1}{4} \log \frac{\lambda_{\max}}{\lambda_{\min}})$ where $\lambda_{\max}$ and $\lambda_{\min}$ are the largest and smallest entries of $K$ (Franklin and Lorenz, 1989, via Birkhoff-Hopf contraction on the Hilbert projective metric). For small $\varepsilon$, $K$ is very peaked (near-zero entries everywhere except near the OT support), and convergence slows. This is the fundamental tension: small $\varepsilon$ gives better approximation to true OT but slower Sinkhorn convergence.
 
 **Practical guideline.** Set $\varepsilon \approx \text{median}(C) / 20$ for a good balance of accuracy and convergence speed. For most ML applications, 20–100 Sinkhorn iterations suffice.
+
+> **Refresher:** Linear convergence means the error shrinks by a constant factor each iteration: $\|e^{(t)}\| \leq \kappa^t \|e^{(0)}\|$. The rate $\kappa < 1$ depends on the "peakedness" of the Gibbs kernel $K$. For large ε (diffuse $K$), $\kappa \approx 0$ and convergence is fast (a few iterations). For small ε (peaked $K$, near exact OT), $\kappa \to 1$ and many iterations are needed — the fundamental tradeoff.
 
 ## Log-Domain Sinkhorn
 
@@ -93,7 +97,7 @@ $$f_i = \varepsilon \log r_i - \varepsilon \log \sum_j \exp\left(\frac{g_j - C_{
 
 More cleanly, using the **softmin** operator $\text{smin}_\varepsilon(h)_i = -\varepsilon \log \sum_j e^{-h_{ij}/\varepsilon}$:
 
-$$f_i \leftarrow \varepsilon \log r_i - \text{smin}_\varepsilon(C - g^\top)_i$$
+$$f_i \leftarrow \varepsilon \log r_i + \text{smin}_\varepsilon(C - g^\top)_i$$
 
 $$g_j \leftarrow \varepsilon \log c_j - \text{smin}_\varepsilon(C^\top - f^\top)_j$$
 
@@ -119,11 +123,25 @@ $$S_\varepsilon(\mu, \nu) = \text{OT}_\varepsilon(\mu, \nu) - \frac{1}{2}\text{O
 
 **Why the correction works.** The bias $\text{OT}_\varepsilon(\mu,\mu) > 0$ comes from the regularization penalizing concentration. Both $\text{OT}_\varepsilon(\mu,\mu)$ and $\text{OT}_\varepsilon(\nu,\nu)$ contribute the same bias, and the cross term $\text{OT}_\varepsilon(\mu,\nu)$ combines both biases. The debiasing formula cancels them.
 
+> **Key insight:** The Sinkhorn divergence $S_\varepsilon(\mu,\nu) = \text{OT}_\varepsilon(\mu,\nu) - \frac{1}{2}\text{OT}_\varepsilon(\mu,\mu) - \frac{1}{2}\text{OT}_\varepsilon(\nu,\nu)$ is positive definite and converges to $W_p$ as ε → 0. It combines the best of both worlds: the smoothness and GPU-friendliness of entropic OT, and the correct zero-when-equal property needed as a training loss. The three Sinkhorn runs (one cross-term, two self-terms) only triple the computational cost.
+
 **Differentiability.** Both $\text{OT}_\varepsilon(\mu, \nu)$ and $S_\varepsilon(\mu, \nu)$ are differentiable with respect to the support points $\{x_i\}$ and weights $r$. The gradient $\nabla_{x_i} S_\varepsilon$ can be computed via the dual potentials:
 
 $$\frac{\partial \text{OT}_\varepsilon}{\partial x_i} = r_i \nabla_{x_i} f_i^*$$
 
-where $f^*$ is the optimal dual potential. In practice, automatic differentiation through the Sinkhorn iterations (backpropagation through the loop) computes these gradients.
+where $f_i^*$ is the converged log-domain Sinkhorn potential at the fixed point. This formula applies when Sinkhorn has converged; in practice, backpropagating through $T$ Sinkhorn iterations approximates this gradient, and the approximation quality improves with $T$.
+
+## ML Connections
+
+Sinkhorn and entropic OT are the key algorithmic enablers for using optimal transport in large-scale deep learning — they turn a cubic algorithm into a quadratic one that runs on GPUs.
+
+- **Point Cloud Matching and Generation:** 3D point cloud generative models (PointFlow, ShapeGLO) use Sinkhorn distance as a training objective. The Sinkhorn loss between generated and real point clouds is differentiable (via the implicit function theorem on the scaling iterations), providing stable gradients for shape generation.
+- **Sequence-to-Sequence Alignment:** Cross-lingual word alignment and machine translation evaluation (BERTScore, MoverScore) use Sinkhorn to compute soft alignment between token embeddings. The transport plan $\pi^\varepsilon$ provides a probabilistic word-to-word matching that accounts for semantic similarity.
+- **Cell Trajectory Inference (scRNA-seq):** Waddington-OT uses Sinkhorn to interpolate between cell distributions at different time points in single-cell RNA sequencing data. The entropic regularization smooths the transport plan, preventing overfitting to the noisy observed cell distributions. This is a major ML application in computational biology.
+- **Domain Adaptation with Sinkhorn:** The Sinkhorn distance provides a differentiable objective for domain adaptation: minimize $S_\varepsilon(\mu_\text{source}, \mu_\text{target})$ over the feature extractor parameters. Automatic Differentiation through Sinkhorn iterations (using `torch.autograd`) enables end-to-end training.
+- **Fair Allocation in Federated Learning:** Entropic OT is used to fairly distribute data across federated clients: the transport plan $\pi^\varepsilon$ between the global data distribution and each client's local distribution determines how to balance the data. The entropy regularization ensures no client receives too homogeneous a subset.
+
+> **Key insight:** Sinkhorn's two key properties — GPU parallelism (matrix operations on the Gibbs kernel $K_{ij} = e^{-C_{ij}/\varepsilon}$) and automatic differentiability (through the scaling iterations) — are what make OT practical in deep learning. Without entropic regularization, OT would remain a theoretical tool; with it, it becomes a trainable loss function.
 
 ## Python: Sinkhorn in Standard and Log-Domain
 
@@ -176,6 +194,8 @@ def sinkhorn_log(r, c, C, eps, n_iter=100, return_history=False):
         # f_i = eps * log(r_i) + softmin_j(C_ij - g_j) * eps
         # softmin_eps(h)_i = -eps * log sum_j exp(-h_j / eps)
         M_f = (g[None, :] - C) / eps           # shape (m, n)
+        # Log-sum-exp trick: log(sum(exp(x))) = max(x) + log(sum(exp(x - max(x))))
+        # This prevents overflow/underflow when entries of log_K are very negative (large C/eps)
         f = eps * log_r + eps * np.log(np.sum(np.exp(M_f - M_f.max(axis=1, keepdims=True)), axis=1)) + M_f.max(axis=1)
 
         M_g = (f[:, None] - C) / eps           # shape (m, n)
@@ -321,6 +341,8 @@ print(f"Exact LP cost:       {lp_cost:.5f}  (time: {t_lp*1000:.1f} ms)")
 print(f"Sinkhorn cost:       {sink_cost:.5f}  (time: {t_sink*1000:.1f} ms, eps=0.05)")
 print(f"Relative error: {abs(lp_cost - sink_cost)/lp_cost * 100:.3f}%")
 ```
+
+> **Note:** The `ot` library ([Python Optimal Transport](https://pythonot.github.io/)) provides production-quality implementations of Sinkhorn, Sinkhorn divergence, Gromov-Wasserstein, and sliced Wasserstein: `pip install POT`. In practice, use `ot.sinkhorn(a, b, M, reg)` and `ot.sliced_wasserstein_distance()` rather than the from-scratch implementations above. The from-scratch code here is for understanding the algorithm; POT is for building pipelines.
 
 :::quiz
 question: "The entropic OT problem adds $-\\varepsilon H(\\pi)$ to the Kantorovich objective. What is the closed-form structure of the unique optimal solution $\\pi^\\varepsilon$?"

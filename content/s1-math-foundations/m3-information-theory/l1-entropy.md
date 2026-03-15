@@ -126,6 +126,18 @@ This is exactly the negative log-likelihood of the true class. Minimizing cross-
 
 > **Key insight:** Cross-entropy loss in ML is not an arbitrary choice. It is the unique loss function that corresponds to maximum likelihood estimation for categorical distributions, and it has the information-theoretic interpretation of minimizing the coding overhead of using your model instead of the true distribution.
 
+## ML Connections
+
+Entropy is the fundamental quantity in information-theoretic machine learning — it appears in every loss function that involves probability distributions.
+
+- **Cross-Entropy Loss:** The standard classification loss $L = -\sum_c y_c \log \hat{p}_c$ is the cross-entropy $H(y, \hat{p})$ between the true label distribution and the predicted distribution. Minimizing cross-entropy is equivalent to maximum likelihood estimation. The gap $H(y, \hat{p}) - H(y)$ measures the KL divergence from true to predicted distribution.
+- **Maximum Entropy Language Models:** Before neural LMs, maximum entropy models (MaxEnt) were the dominant NLP approach. They find the distribution with maximum entropy subject to feature expectation constraints — the logistic regression classifier is a MaxEnt model. This principle still underlies the log-linear structure of neural softmax outputs.
+- **Entropy Regularization in RL:** Soft actor-critic (SAC) maximizes expected reward plus entropy: $J(\pi) = \sum_t \mathbb{E}[r_t + \alpha H(\pi(\cdot|s_t))]$. The entropy bonus $\alpha H(\pi)$ encourages exploration and prevents premature convergence to a deterministic policy. Adjusting $\alpha$ trades off exploration vs exploitation.
+- **Information Bottleneck and Representation Learning:** The information bottleneck objective $\min I(Z;X) - \beta I(Z;Y)$ explicitly trades off compression (minimizing $H(Z|Y=y)$) against prediction (maximizing $I(Z;Y)$). Mutual information is the difference of entropies: $I(Z;Y) = H(Z) - H(Z|Y)$.
+- **Neural Data Compression:** Learned image codecs (BPG, JPEG-like neural codecs, Ballé et al.) are trained to minimize $R + \lambda D$ where $R = -\mathbb{E}[\log p(z)]$ is the entropy of the quantized representation and $D$ is distortion. Entropy coding (Huffman, arithmetic coding) converts this theoretical entropy into actual compressed bits.
+
+> **Key insight:** Cross-entropy is not just a "standard loss" — it is the information-theoretic measure of how surprised your model is by the data. Every classification model, language model, and generative model trained with maximum likelihood is minimizing surprise, measured in bits. This is why entropy is the foundation of ML theory.
+
 ## Python Example: Entropy and Cross-Entropy
 
 ```python

@@ -125,6 +125,18 @@ This separates the regret analysis into a deterministic component (handled by th
 
 > **Key insight:** Martingale concentration inequalities are the bridge between worst-case online learning (where regret bounds are deterministic) and stochastic settings (where high-probability bounds are needed). They let us analyze adaptive, sequential processes without assuming independence.
 
+## ML Connections
+
+Martingales formalize "fair processes" and "information accumulation" — the exact structure underlying temporal credit assignment in reinforcement learning and convergence proofs for stochastic optimization.
+
+- **Temporal Difference (TD) Learning:** The TD error $\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)$ is a martingale difference sequence: $\mathbb{E}[\delta_t | \mathcal{F}_{t-1}] = 0$ at convergence. The Robbins-Monro convergence theorem for TD learning uses the martingale convergence theorem — the conditions are exactly the bounded-increments conditions of Azuma-Hoeffding.
+- **SGD Convergence Analysis:** Stochastic gradient descent uses a noisy gradient $\tilde{g}_t = \nabla L + \varepsilon_t$ where $\varepsilon_t$ is a noise term with $\mathbb{E}[\varepsilon_t | \mathcal{F}_{t-1}] = 0$. This makes $\varepsilon_t$ a martingale difference, and the SGD iterate is a (super)martingale under standard conditions. Convergence proofs use the martingale convergence and optional stopping theorems.
+- **Q-Learning and Bellman Operators:** The Bellman residual at each state is a conditional expectation $\mathbb{E}[r + \gamma \max_{a'} Q(s',a') | s, a]$. The process of iterating Bellman operators builds a martingale — the convergence of Q-learning follows from Watkins' theorem, which uses the Bellman martingale structure.
+- **Doob's Optional Stopping in Early Stopping:** The Optional Stopping Theorem underpins why early stopping with a validation loss criterion is valid: the validation loss process is a supermartingale under certain conditions, meaning stopping when it increases is an asymptotically valid strategy.
+- **Attention as Conditional Expectation:** Attention output $\text{Att}(Q,K,V)_i = \sum_j \alpha_{ij} V_j$ is a weighted sum that approximates $\mathbb{E}[V | Q_i]$. Given a filtration representing "context seen so far," attention computes a martingale-like estimate of the relevant value.
+
+> **Key insight:** Reinforcement learning is martingale theory in action. TD errors, Bellman residuals, Q-learning updates — they are all martingale difference sequences, and their convergence follows from the optional stopping and martingale convergence theorems. Understanding this connects RL theory to the broader framework of stochastic processes.
+
 ## Python: Simulating Martingales and the Optional Stopping Theorem
 
 ```python

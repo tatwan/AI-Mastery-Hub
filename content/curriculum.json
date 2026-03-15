@@ -62,9 +62,14 @@
           "id": "m5-optimal-transport",
           "title": "Optimal Transport",
           "description": "Wasserstein distances, displacement interpolation, generative modeling applications.",
-          "status": "coming-soon",
-          "releaseNote": "Coming soon",
-          "lessons": []
+          "status": "available",
+          "lessons": [
+            { "id": "l1-kantorovich-problem", "title": "The Kantorovich Problem & Wasserstein Distances", "estimatedMinutes": 35 },
+            { "id": "l2-dual-theory", "title": "Dual Theory & the Brenier Map", "estimatedMinutes": 35 },
+            { "id": "l3-sinkhorn-algorithm", "title": "Sinkhorn Algorithm & Entropic Regularization", "estimatedMinutes": 35 },
+            { "id": "l4-displacement-interpolation", "title": "Displacement Interpolation & Wasserstein Geometry", "estimatedMinutes": 35 },
+            { "id": "l5-ot-in-ml", "title": "Optimal Transport in Machine Learning", "estimatedMinutes": 40 }
+          ]
         },
         {
           "id": "m6-functional-analysis",

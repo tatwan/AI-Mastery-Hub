@@ -190,6 +190,18 @@ The variance is reduced by a factor of $B$ compared to single-sample SGD. The tr
 
 For strongly convex problems, mini-batch SGD can match full-batch GD's iteration complexity while being parallelizable. For non-convex problems (e.g., neural nets), large batches $B \gg 1$ reduce gradient noise, which can actually *hurt* generalization — the "large batch generalization gap" is an empirical phenomenon explained by the implicit regularization of gradient noise. This degradation can be mitigated with the **linear scaling rule** (multiply learning rate proportionally to batch size) and linear **warmup** — large-batch training can match small-batch generalization with careful hyperparameter tuning.
 
+## ML Connections
+
+Gradient descent convergence theory explains why every design choice in deep learning training — learning rate, batch size, normalization, momentum — works the way it does.
+
+- **Learning Rate Scheduling:** The optimal step size $\eta = 1/L$ (L-smooth functions) and warmup schedules derive from convergence theory. Too large $\eta$ diverges; too small gives $O(1/T)$ convergence that's impractically slow. Cosine decay with warmup navigates the sharp early landscape (high L) before settling into the smooth basin.
+- **Batch Normalization and Layer Normalization:** These operations reduce the condition number $\kappa = L/\mu$ of the loss Hessian. When $\kappa$ is large, gradient descent oscillates — normalization equalizes curvature across parameter directions, making training faster and more stable. BatchNorm was originally motivated empirically; the $\kappa$-reduction explains it theoretically.
+- **SGD vs Adam for Generalization:** SGD's $O(\sigma/\sqrt{T})$ convergence with noise scale $\sigma^2$ is not just a limitation — the noise implicitly regularizes training by preferring flat minima (Langevin SDE interpretation). Adam adapts learning rates per coordinate, converging faster but with less noise, which can lead to sharper minima and worse generalization on some tasks.
+- **Gradient Clipping in LLM Training:** The PL condition gives linear convergence when $\|\nabla f\|^2 \geq 2\mu(f - f^*)$. When this fails (near saddle points or cliffs), gradients become very large. Gradient clipping enforces an implicit L-smoothness-like constraint by bounding $\|\nabla f\|$, preventing gradient explosions in transformer training.
+- **Neural Network Convergence via PL:** Overparameterized networks satisfy the PL condition in a neighborhood of the initialization, which is why gradient descent reliably finds global minima despite non-convexity. The PL condition explains the empirical observation that training loss reaches near-zero for sufficiently large models.
+
+> **Key insight:** The entire design space of neural network optimizers — learning rates, momentum, normalization, clipping — maps directly onto convergence theory. L-smoothness gives the safe step size; strong convexity/PL gives the convergence rate; condition number explains why normalization helps. Knowing the theory lets you diagnose training failures and tune hyperparameters from first principles rather than grid search.
+
 ## Python: GD, SGD, and Mini-Batch GD on Logistic Regression
 
 ```python

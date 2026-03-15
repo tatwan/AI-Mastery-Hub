@@ -107,6 +107,18 @@ The exact SVD costs $O(mn^2)$ for an $m \times n$ matrix ($m \geq n$) — prohib
 
 > **Key insight:** You don't need the full SVD — you need the top-$k$ singular vectors, and a random projection finds them with high probability. `sklearn.utils.extmath.randomized_svd` and PyTorch's `torch.svd_lowrank` both implement this.
 
+## ML Connections
+
+SVD and low-rank structure are the invisible backbone of modern ML — they appear wherever high-dimensional data needs to be compressed, adapted, or understood.
+
+- **LoRA (Low-Rank Adaptation):** Fine-tuning a 7B-parameter LLM by updating only two small matrices $B \in \mathbb{R}^{d \times r}$ and $A \in \mathbb{R}^{r \times k}$ with $r = 4$–$64$. The product $BA$ is a rank-$r$ update to each weight matrix. LoRA is now the default method for efficient fine-tuning of GPT-4, LLaMA, and Gemini.
+- **Multi-Head Attention:** Each attention head computes $QK^\top \in \mathbb{R}^{T \times T}$ which is rank at most $d_k$. The entire attention mechanism is a structured low-rank decomposition of token-token interactions, where $d_k$ is the rank budget per head.
+- **PCA for Representation Analysis:** Researchers use SVD of activation matrices to understand what features a neural network has learned — the top singular vectors reveal the dominant directions of variation. This is the basis of "linear representation hypotheses" in mechanistic interpretability.
+- **Randomized SVD in Training:** PyTorch's `torch.svd_lowrank` and scikit-learn's `TruncatedSVD` are used in spectral normalization (GANs), nuclear norm regularization (matrix completion), and computing the Fisher information matrix approximations.
+- **Knowledge Distillation:** Compressing a teacher model into a student by finding a low-rank approximation of teacher weight matrices — the SVD directly identifies which directions carry the most information.
+
+> **Key insight:** Low-rank structure is not a trick — it reflects a fundamental property of learned representations. The effective rank of a weight matrix reveals how "complex" the transformation is; most useful transformations in deep learning turn out to be surprisingly low-rank, which is why LoRA, attention, and PCA all work.
+
 ## Python: SVD in Practice
 
 ```python

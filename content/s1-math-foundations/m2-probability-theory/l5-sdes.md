@@ -157,6 +157,18 @@ The full pipeline of a diffusion model, viewed through the SDE lens:
 
 The probability flow ODE — an alternative to the reverse SDE with the same marginals but no stochasticity — is obtained by removing the diffusion term and adjusting the drift: $dX_t = [f - \frac{1}{2}g^2 \nabla_x \log p_t] dt$. This deterministic trajectory provides exact likelihood computation via the instantaneous change of variables formula (a consequence of the Fokker-Planck equation). DDIM is a discrete approximation to this ODE.
 
+## ML Connections
+
+Stochastic differential equations are the continuous-time language of diffusion models, Langevin sampling, and neural ODEs — the theoretical backbone of a generation of state-of-the-art generative models.
+
+- **Diffusion Models (DDPM, Score Matching):** The forward process of a diffusion model is the Ornstein-Uhlenbeck SDE $dx_t = -\frac{1}{2}\beta_t x_t \, dt + \sqrt{\beta_t} \, dW_t$, which gradually destroys signal. The reverse SDE $dx_t = [-\frac{1}{2}\beta_t x_t - \beta_t \nabla_x \log p_t(x_t)] \, dt + \sqrt{\beta_t} \, d\bar{W}_t$ generates samples. Score matching trains $s_\theta(x_t, t) \approx \nabla_x \log p_t(x_t)$ — the score function needed to run the reverse SDE.
+- **Langevin MCMC for Sampling:** Unadjusted Langevin Algorithm (ULA): $x_{t+1} = x_t + \eta \nabla \log p(x_t) + \sqrt{2\eta} \varepsilon_t$ is the Euler-Maruyama discretization of the Langevin SDE $dx_t = \nabla \log p(x_t) \, dt + \sqrt{2} \, dW_t$. The Fokker-Planck equation shows the stationary distribution is $p(x) \propto e^{-f(x)}$ — making Langevin dynamics exact for sampling from energy-based models.
+- **Neural SDEs:** Neural SDEs parameterize the drift and diffusion functions with neural networks: $dx_t = f_\theta(t, x_t) \, dt + g_\phi(t, x_t) \, dW_t$. They generalize latent ODEs to stochastic dynamics, useful for time series with uncertainty, financial modeling, and physics simulations.
+- **Flow Matching and Probability Paths:** Continuous Normalizing Flows (CNFs) parameterize a vector field $v_\theta(x, t)$ such that the ODE $dx_t = v_\theta(x_t, t) \, dt$ transforms a simple distribution into the data distribution. When stochastic, this becomes a CNF-SDE, where Itô's lemma gives the log-likelihood change along the trajectory.
+- **SAM and Gradient Noise:** Sharpness-Aware Minimization (SAM) can be interpreted through the SDE lens: the SGD noise acts as a Brownian perturbation, and the stationary distribution of the resulting Langevin SDE concentrates around flat minima. The noise scale $\eta/B$ directly controls which minima are preferred.
+
+> **Key insight:** Diffusion models are applied SDE theory: the forward process is a known SDE (Ornstein-Uhlenbeck), and the reverse is derived using time-reversal of SDEs (Anderson, 1982). Score matching is equivalent to learning the drift of the reverse SDE. The entire DDPM/score-based generative modeling framework reduces to two equations: the forward SDE and its time-reversal.
+
 ## Python: Forward Noising and Score Estimation
 
 ```python

@@ -125,6 +125,18 @@ correct: 1
 explanation: "High $\\beta$ penalizes rate (KL divergence) heavily, forcing the encoder to transmit very little information. This leads to highly compressed, disentangled latent codes — but the decoder has less information to work with, producing blurry reconstructions. This is the high-compression end of the R-D curve."
 :::
 
+## ML Connections
+
+Rate-distortion theory gives precise predictions for the fundamental limits of lossy compression — and neural compression has become the leading practical implementation of these theoretical bounds.
+
+- **Neural Image Compression (Ballé et al., 2018+):** The state-of-the-art learned image codecs (used in practice at Google, Meta) optimize $R + \lambda D$ where $R = \mathbb{E}[-\log p_\phi(\hat{z})]$ (entropy model, measured in bits) and $D$ is distortion (MSE or perceptual). The network learns the rate-distortion optimal transform — outperforming JPEG/HEVC at the same bitrate.
+- **Vector Quantized VAE (VQ-VAE):** VQ-VAE quantizes the latent space into a discrete codebook, directly implementing a lossy coder. The codebook size determines the rate (log₂(codebook size) bits per token), and the reconstruction quality determines distortion. VQ-VAE-2 and DALL-E use this to compress images into discrete tokens for autoregressive generation.
+- **Perception-Distortion Tradeoff:** Blau & Michaeli (2018) showed that optimizing for perceptual quality (realism) conflicts with minimizing pixel-level distortion — this is a fundamental tradeoff beyond the classic rate-distortion curve. Diffusion-based super-resolution (e.g., StableSR) trades pixel accuracy for perceptual quality, operating on a different point of the perception-distortion curve.
+- **LLM Quantization:** Post-training quantization (GPTQ, AWQ, QLoRA) reduces model weights from float32 to 4-bit integers — a rate-distortion problem where "rate" is bits per weight and "distortion" is increase in perplexity. The rate-distortion curve predicts the accuracy-compression tradeoff for each quantization scheme.
+- **Token Merging and Attention Compression:** Vision transformers merge redundant tokens (ToMe, EViT) to reduce compute — this is rate-distortion applied to token sequences. The optimal merging strategy minimizes information loss (distortion) at a given compute budget (rate).
+
+> **Key insight:** Neural compression is the modern engineering of rate-distortion theory. Every compression pipeline — image codecs, video compression, model quantization, token merging — is navigating the rate-distortion curve. The theory tells you the limits; neural networks give you a way to approach them. The remaining gap between neural codec performance and the Shannon limit is a measure of how far learning-based methods still have to go.
+
 ## Python Example: Gaussian Rate-Distortion Curve
 
 ```python

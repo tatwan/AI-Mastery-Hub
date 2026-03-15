@@ -144,6 +144,18 @@ The deep structures of modern ML are inherently tensorial:
 
 4. **Attention patterns**: Across layers ($L$), heads ($H$), and positions ($T \times T$), the full attention pattern of a transformer is a high-order tensor. Analyzing its decomposition reveals redundancy across heads and layers.
 
+## ML Connections
+
+Tensor algebra is the native language of deep learning: weights, activations, and attention patterns are all multi-dimensional arrays, and the operations that transform them are tensor contractions.
+
+- **Multi-Head Attention as Tensor Operation:** The full multi-head attention can be written as a single tensor contraction: stack all $H$ heads' Q, K, V projections into 3D tensors, batch-matmul to get $H$ attention matrices simultaneously, then project back. Modern frameworks use `torch.einsum` to express this as a tensor network, achieving GPU efficiency through batched matrix operations.
+- **Tucker Decomposition for Model Compression:** Large convolutional filters $W \in \mathbb{R}^{C_\text{out} \times C_\text{in} \times k \times k}$ can be Tucker-decomposed into a small core tensor plus factor matrices. This reduces inference FLOPS by 2–5× with minimal accuracy loss. Companies use this for deploying models on edge devices.
+- **Tensor Train for Embedding Compression:** LLMs maintain embedding tables of size $V \times d$ (vocabulary × dimension), which can be 500M+ parameters. TT-decomposition represents this as a chain of small 3D tensors, reducing the parameter count by 10–100× while preserving lookup efficiency. Used in Yandex's recommendation systems and speech models.
+- **Higher-Order Singular Value Decomposition (HOSVD):** The Tucker decomposition is equivalent to HOSVD — applying SVD along each mode. This is used in video understanding (spatial × spatial × temporal × channel), medical imaging (3D scans + channel), and spatiotemporal forecasting.
+- **Tensor Networks in Quantum ML:** Tensor train networks are the classical simulation of quantum circuits — both are chains of low-rank 3D tensors. This connection has inspired tensor-network-based neural architectures that can exactly represent certain quantum states, relevant for quantum chemistry applications of ML.
+
+> **Key insight:** Every deep learning operation is a tensor contraction. Understanding the algebraic structure of tensors — modes, unfolding, rank — lets you reason about memory, compute, and compression systematically. The difference between an efficient and an inefficient implementation often comes down to whether you've expressed the computation as the right tensor contraction.
+
 ## Python: Tensor Decompositions
 
 ```python

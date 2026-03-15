@@ -150,6 +150,18 @@ Warmup is critical: at the start of training, the second moment estimate $v_t$ i
 - **Vision CNNs** (ResNet, EfficientNet): SGD + momentum ($0.9$) + cosine decay often competitive with Adam; weight decay $5\text{e-}4$
 - **Large-scale training**: Lion + cosine decay for memory efficiency
 
+## ML Connections
+
+Adaptive gradient methods are the workhorses of modern deep learning — AdamW trains virtually every large language model, and understanding their theory explains the most important hyperparameter choices in ML practice.
+
+- **Large Language Model Training (AdamW + Cosine Decay):** GPT-4, LLaMA, Gemini, and Claude are all trained with AdamW + linear warmup + cosine decay schedule. The warmup addresses Adam's bias correction instability in early steps; cosine decay anneals the learning rate as training converges; AdamW's decoupled weight decay provides uniform regularization across all coordinates.
+- **Vision Model Training (SGD + Momentum):** ResNet, EfficientNet, and most CNN-based classifiers use SGD with momentum (not Adam) because empirical evidence shows SGD finds flatter minima and generalizes better for image classification. The implicit noise of SGD (proportional to learning rate / batch size) provides regularization that adaptive methods reduce.
+- **LoRA and Adapter Training:** Fine-tuning with LoRA uses AdamW on only the low-rank matrices B, A. The decoupled weight decay is critical — with Adam+L2, large-gradient coordinates (common in B matrices initialized as Gaussian) would receive weaker regularization, causing overfitting to small fine-tuning datasets.
+- **Reward Model Training (RLHF Pipeline):** Reward models in RLHF use AdamW with small learning rates (1e-5 to 1e-6) and aggressive warmup (10% of steps). The very small learning rate compensates for the small, noisy preference datasets; warmup prevents early divergence from the pretrained checkpoint.
+- **Diffusion Model Training:** Diffusion models (DDPM, Stable Diffusion, FLUX) use AdamW with β₁=0.9, β₂=0.999 and a constant or cosine learning rate (no warmup needed as the score matching objective is relatively smooth). The ε=1e-8 term prevents division by zero in the early steps when second moment estimates are near zero.
+
+> **Key insight:** AdamW + warmup + cosine decay is the de facto standard for training transformers because it solves three problems simultaneously: bias correction instability (warmup), non-uniform regularization (decoupled weight decay), and learning rate annealing (cosine). Every component has a theoretical motivation — this is not a heuristic but an engineered solution to known optimization problems.
+
 ## Python: Adam and AdamW from Scratch
 
 ```python

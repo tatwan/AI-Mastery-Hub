@@ -51,13 +51,17 @@ $$\text{OT}(\mu, \nu) = \max_{u} \left[ \int_{\mathcal{X}} u(x) \, d\mu(x) + \in
 
 This is the **semi-dual** formulation — one unconstrained function $u$, no inequality constraints.
 
-> **Key insight:** The semi-dual collapses the entire optimal transport problem — finding a joint distribution over $\mathcal{X} \times \mathcal{Y}$ — into the problem of finding a single scalar function $u$ on $\mathcal{X}$. This is the mathematical insight that makes neural OT tractable: parameterize $u$ as a neural network, compute $u^c$ by a softmin operation, and maximize the semi-dual objective.
+> **Key insight:** The semi-dual collapses the entire optimal transport problem — finding a joint distribution over $\mathcal{X} \times \mathcal{Y}$ — into the problem of finding a single scalar function $u$ on $\mathcal{X}$. This is the mathematical insight that makes neural OT tractable: parameterize $u$ as a neural network, compute $u^c$ by a min-pooling operation over finitely many source samples ($u^c(y) = \min_i\{c(x_i, y) - u(x_i)\}$ in the discrete setting), and maximize the semi-dual objective. In continuous settings, this is approximated via sampling or entropic regularization.
 
 **c-concavity.** A function $u$ is **c-concave** if $u = (u^c)^c$, i.e., $u(x) = \inf_y \{c(x,y) - u^c(y)\}$. The optimal dual potential $u^*$ is always c-concave. For the quadratic cost $c(x,y) = \frac{1}{2}\|x-y\|^2$, the c-transform is:
 
 $$u^c(y) = \inf_x \left\{ \frac{1}{2}\|x-y\|^2 - u(x) \right\} = -\sup_x \left\{ u(x) - \frac{1}{2}\|x-y\|^2 \right\}$$
 
-The Legendre transform of $u$ is $u^*(y) = \sup_x \{x \cdot y - u(x)\}$, so $u^c(y) = -u^*(-y) + \frac{1}{2}\|y\|^2$ (up to constants). For the quadratic cost, **c-concave = convex**: the optimal dual potential is a convex function.
+For the quadratic cost, define $v(x) = \frac{1}{2}\|x\|^2 - u(x)$ (so that $v$ is the "Legendre-shifted" version of $u$). Then:
+$$u^c(y) = \inf_x\!\left\{\tfrac{1}{2}\|x-y\|^2 - u(x)\right\} = \tfrac{1}{2}\|y\|^2 - \sup_x\!\left\{x \cdot y - v(x)\right\} = \tfrac{1}{2}\|y\|^2 - v^*(y)$$
+where $v^*(y) = \sup_x\{x \cdot y - v(x)\}$ is the Legendre transform of $v$. This is the precise connection: the c-transform under quadratic cost is $u^c(y) = \frac{1}{2}\|y\|^2 - v^*(y)$ where $v = \frac{1}{2}\|\cdot\|^2 - u$. For the quadratic cost, **c-concave = convex**: the optimal dual potential is a convex function.
+
+> **Intuition:** The c-transform is the OT analogue of the Legendre transform. Just as Legendre duality pairs a convex function with its "slope-indexed" version, the c-transform pairs a Kantorovich potential with its "cost-subtracted" counterpart. Sinkhorn (Lesson 3) can be seen as iteratively computing c-transforms: each scaling update is exactly one c-transform step.
 
 ## Brenier's Theorem
 
@@ -87,6 +91,8 @@ This is the **Monge-Ampère equation** — a fully nonlinear elliptic PDE for th
 $$W_2^2(\mu, \nu) = \|m_0 - m_1\|^2 + \mathcal{B}^2(\Sigma_0, \Sigma_1)$$
 
 where $\mathcal{B}^2(\Sigma_0, \Sigma_1) = \text{tr}(\Sigma_0) + \text{tr}(\Sigma_1) - 2\, \text{tr}\!\left((\Sigma_0^{1/2} \Sigma_1 \Sigma_0^{1/2})^{1/2}\right)$ is the **Bures metric** between covariance matrices.
+
+> **Remember:** The Gaussian Brenier map is $T(x) = A_{\text{opt}}(x - m_0) + m_1$ where $A_{\text{opt}} = \Sigma_0^{-1/2}(\Sigma_0^{1/2}\Sigma_1\Sigma_0^{1/2})^{1/2}\Sigma_0^{-1/2}$. The $W_2^2$ distance decomposes as mean displacement $\|m_0 - m_1\|^2$ plus covariance mismatch (Bures metric). This closed form is used in style transfer, domain adaptation, and latent space geometry.
 
 ## The Semi-Dual in Practice
 

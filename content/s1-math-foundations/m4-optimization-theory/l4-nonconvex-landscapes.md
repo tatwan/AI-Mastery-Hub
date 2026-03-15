@@ -149,6 +149,18 @@ The double descent curve has been observed for linear models, decision trees, an
 
 > **Key insight:** Double descent overturns classical bias-variance tradeoff for modern overparameterized models — using far more parameters than samples can improve generalization, as long as implicit regularization (minimum norm, gradient noise) selects well-behaved solutions.
 
+## ML Connections
+
+Understanding non-convex loss landscapes is the key to understanding why modern training works despite the theoretical pessimism about non-convex optimization — and why certain design choices (batch size, learning rate, SAM) affect generalization.
+
+- **Sharpness-Aware Minimization (SAM) in Practice:** SAM is used to train the state-of-the-art vision models (ViT, EfficientNet-V2) and improves BLEU scores on translation tasks. The minimax formulation finds flat minima that generalize better, especially with limited data or when training with large batch sizes that normally degrade generalization.
+- **Large Batch Training and Generalization Gap:** The empirical observation that large batches (B > 1024) hurt generalization is explained by the SDE-noise model: large B reduces the noise scale $\eta/B$, pushing the Langevin stationary distribution toward sharper minima. The linear scaling rule (multiply $\eta$ by $B/B_\text{ref}$) partially compensates but cannot fully recover the noise regularization.
+- **Model Merging via SWA:** Stochastic Weight Averaging averages checkpoints along the training trajectory to find flatter minima. This is used in model soups (Wortsman et al.) and task arithmetic — the SWA barycenter of multiple fine-tuned models often outperforms any individual model, consistent with the flat-minima hypothesis.
+- **Double Descent in LLM Scaling:** The double descent curve appears in scaling laws for language models: the interpolation threshold (where the model can fit all training data) corresponds to a local peak in test loss, after which more data or parameters improve performance. This is the basis for "compute-optimal" scaling (Chinchilla) — operating in the modern (over-parameterized) regime.
+- **NTK and Feature Learning:** In wide networks, the NTK predicts that training changes parameters minimally (kernel regime). Practical networks (narrow by NTK standards) exhibit "feature learning" — representations evolve significantly during training. This is why transfer learning and fine-tuning are effective: the features learned in pretraining are not fixed but evolved to be maximally useful.
+
+> **Key insight:** Non-convex optimization in deep learning is not a problem to be solved — it is a feature to be understood. The landscape's structure (saddle points escapable, flat minima reachable, double descent recovery) is what makes deep learning work. Every training trick — batch size, noise, SAM, SWA — is navigating this landscape, and knowing the theory tells you which trick applies in which regime.
+
 ## Python: Loss Landscape Visualization and SAM vs SGD
 
 ```python

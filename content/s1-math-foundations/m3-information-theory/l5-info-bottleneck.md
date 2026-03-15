@@ -148,6 +148,18 @@ correct: 2
 explanation: "Saxe et al. demonstrated that networks with saturating activations (tanh) exhibit apparent compression, while ReLU networks do not. The compression was linked to the activation function's effect on the binning-based MI estimator, not to a universal learning dynamic."
 :::
 
+## ML Connections
+
+The information bottleneck principle formalizes the goal of representation learning: extract only the task-relevant information from the data, discard the rest. This goal is implicit in nearly every modern deep learning architecture.
+
+- **β-VAE and Disentanglement:** β-VAE modifies the VAE objective to $\mathcal{L} = \mathbb{E}[\log p(x|z)] - \beta D_{\text{KL}}(q(z|x) \| p(z))$. The KL term is a bound on $I(Z;X)$, so increasing β forces $Z$ to be more compressed and encourages disentanglement. This is the variational information bottleneck applied to generative modeling.
+- **Supervised Contrastive Learning:** Methods like SupCon maximize $I(Z;Y)$ (representation carries class information) while implicitly minimizing $I(Z;X)$ (by ignoring class-irrelevant variation through augmentation). This is exactly the IB tradeoff — high β means aggressive augmentation (more compression), low β means keeping more raw information.
+- **Masked Autoencoders (MAE):** MAE forces the encoder to predict masked patches from unmasked ones — minimizing the representation needed to recover the image (compression) while maximizing reconstruction quality (prediction). The masking ratio is the β parameter: higher masking → more compression → more abstract representations.
+- **Minimal Sufficient Statistics in Feature Engineering:** A sufficient statistic $T(X)$ for parameter $\theta$ satisfies $I(T(X); X | \theta) = 0$ — it discards only information irrelevant to $\theta$. The IB solution $Z$ is the minimal sufficient statistic for $Y$ given $X$. This is why IB representations are theoretically optimal for classification.
+- **LLM Compression and Chain-of-Thought:** Chain-of-thought reasoning can be viewed through the IB lens: the reasoning trace $Z$ increases $I(Z;Y)$ (makes the answer more predictable) while potentially increasing $I(Z;X)$ (less compressed). Prompt compression methods (LLMLingua) reduce $I(Z;X)$ while preserving $I(Z;Y)$ — minimizing prompt length while maintaining answer quality.
+
+> **Key insight:** The IB principle is the theoretical unification of representation learning: the goal is always to find the minimal representation that retains maximal task-relevant information. β-VAE, MAE, contrastive learning, and prompt compression are all implementations of the same IB tradeoff with different parameterizations of β. When you tune a regularization coefficient in a representation learning system, you are navigating the IB curve.
+
 ## Python Example: Toy IB Optimization
 
 ```python

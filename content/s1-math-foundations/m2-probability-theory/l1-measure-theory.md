@@ -126,6 +126,18 @@ Geometrically, $\mathbb{E}[X|\mathcal{G}]$ is the **orthogonal projection** of $
 
 > **Key insight:** Conditional expectation is not a number — it is a random variable. It depends on the conditioning information $\mathcal{G}$, which itself may be random. The familiar $\mathbb{E}[X|Y=y]$ is the special case where $\mathcal{G} = \sigma(Y)$.
 
+## ML Connections
+
+Measure theory provides the formal foundation that makes probability over continuous spaces — the natural home of neural network weights and data distributions — mathematically rigorous.
+
+- **Variational Inference:** The ELBO $\mathbb{E}_{q(z|x)}[\log p(x|z)] - D_{\text{KL}}(q(z|x) \| p(z))$ involves expectations over probability measures on latent space $\mathcal{Z}$. Measure theory ensures these integrals are well-defined even when $q$ and $p$ are parameterized by neural networks with no closed-form density.
+- **Diffusion Models:** The forward process $q(x_t | x_0)$ and reverse process $p_\theta(x_{t-1} | x_t)$ are probability measures on $\mathbb{R}^d$. The DDPM training objective — the ELBO — requires computing $D_{\text{KL}}$ between Gaussians, which is valid because both measures are absolutely continuous w.r.t. Lebesgue measure.
+- **Reinforcement Learning (Filtrations):** The filtration $(\mathcal{F}_t)_{t \geq 0}$ formalizes the information structure of a Markov decision process: $\mathcal{F}_t$ captures everything the agent observes up to step $t$. Policies $\pi(a_t | \mathcal{F}_t)$ are formally $\mathcal{F}_t$-measurable, making the RL framework mathematically precise.
+- **Generative Models and Absolute Continuity:** A generator $G: \mathbb{R}^d \to \mathbb{R}^D$ pushes forward a latent measure $\mu_Z$ to an image measure $\mu_X = G_\# \mu_Z$. Whether this measure is absolutely continuous w.r.t. the data measure determines whether standard divergences (KL, JS) are well-defined — or whether Wasserstein distance is needed instead.
+- **Dominated Convergence in Training:** The DCT justifies swapping expectation and gradient under standard regularity conditions: $\nabla_\theta \mathbb{E}_{p(x)}[L(\theta, x)] = \mathbb{E}_{p(x)}[\nabla_\theta L(\theta, x)]$. This is the theoretical basis for why stochastic gradient descent computes unbiased gradient estimates.
+
+> **Key insight:** Measure theory is not abstract formalism — it is the precise language for asking "does this probability integral converge?", "can I swap this expectation and gradient?", and "are these two distributions comparable?" Every time you write a loss function with an expectation, measure theory is guaranteeing the computation is valid.
+
 ## Python: Simulating Measure-Theoretic Concepts
 
 The following code demonstrates the Dominated Convergence Theorem numerically. We construct a sequence of random variables that converge pointwise and verify that the expectations converge accordingly.

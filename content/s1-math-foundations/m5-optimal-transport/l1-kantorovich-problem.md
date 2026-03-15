@@ -56,9 +56,13 @@ The metric properties are:
 - *Symmetry:* $W_p(\mu,\nu) = W_p(\nu,\mu)$ (take $\pi^*(x,y) \mapsto \pi^*(y,x)$).
 - *Triangle inequality:* $W_p(\mu,\rho) \leq W_p(\mu,\nu) + W_p(\nu,\rho)$ (gluing lemma).
 
-**$W_2$ and Riemannian structure.** The Wasserstein-2 distance is the most important in machine learning. It metrizes weak convergence plus convergence of second moments — a strictly stronger topology than total variation when distributions have different supports. The space $(\mathcal{P}_2(\mathbb{R}^d), W_2)$ admits a formal Riemannian structure (Otto calculus) with geodesics, gradients, and curvature that makes it the natural setting for analyzing diffusion models, generative flows, and distribution evolution.
+**$W_2$ and Riemannian structure.** The Wasserstein-2 distance is the most important in machine learning. It metrizes weak convergence plus convergence of second moments — a strictly weaker topology than total variation (TV convergence implies $W_p$ convergence, but not vice versa; $W_p$ permits sequences with shifting supports to converge). The space $(\mathcal{P}_2(\mathbb{R}^d), W_2)$ admits a formal Riemannian structure (Otto calculus) with geodesics, gradients, and curvature that makes it the natural setting for analyzing diffusion models, generative flows, and distribution evolution.
 
 > **Remember:** $W_p(\mu,\nu) = \left(\min_{\pi \in \Pi(\mu,\nu)} \mathbb{E}_{(x,y)\sim\pi}[\|x-y\|^p]\right)^{1/p}$ — the $p$-th root of the minimum expected $p$-th power displacement under the optimal coupling.
+
+**Curse of dimensionality.** The empirical Wasserstein distance between two distributions with $n$ i.i.d. samples converges at rate $O(n^{-1/d})$ in $d$ dimensions — exponentially slow in high dimensions. In $d = 2$, you need $O(n)$ samples; in $d = 100$, you need $O(n^{-0.01})$ which is essentially useless. This explains why entropic regularization (Sinkhorn), sliced Wasserstein, and other approximations are not mere computational shortcuts — they are necessities for high-dimensional ML applications.
+
+> **Intuition:** The $O(n^{-1/d})$ convergence rate means doubling the samples only improves the estimate by a factor of $2^{1/d}$. In $d = 100$, you would need $10^{30}$ samples to match the accuracy of $10^3$ samples in 1D. This is why Sinkhorn, sliced Wasserstein, and other approximations are essential for high-dimensional ML — they are not computational shortcuts, they are survival tools.
 
 **1D closed form.** For distributions on $\mathbb{R}$, the Wasserstein-$p$ distance admits a closed form via quantile functions. Let $F$ and $G$ be the CDFs of $\mu$ and $\nu$ with quantile (inverse CDF) functions $F^{-1}$ and $G^{-1}$. Then:
 
@@ -78,7 +82,7 @@ where $\|f\|_{\text{Lip}} = \sup_{x \neq y} |f(x) - f(y)| / \|x-y\|$ is the Lips
 
 > **Key insight:** The dual formulation of $W_1$ makes it estimable from samples using a neural network as the witness function $f$. Instead of solving the LP, parameterize $f$ as a neural network, enforce the Lipschitz constraint, and maximize the empirical expectation difference. This is precisely the Wasserstein GAN.
 
-**Proof sketch of duality.** By LP strong duality (Fenchel-Rockafellar), the dual of minimizing $\langle C, \pi \rangle$ over the marginal constraints is a maximization over dual variables $(u,v)$ with $u(x) + v(y) \leq c(x,y) = \|x-y\|$. Setting $v(y) = -u(y)$ and using $\|u\|_{\text{Lip}} \leq 1$ recovers the Kantorovich-Rubinstein form.
+**Proof sketch of duality.** By LP strong duality (Fenchel-Rockafellar), the dual of minimizing $\langle C, \pi \rangle$ over the marginal constraints is a maximization over dual variables $(u,v)$ with $u(x) + v(y) \leq c(x,y) = \|x-y\|$. Setting $v(y) = -u(y)$ and using $\|u\|_{\text{Lip}} \leq 1$ recovers the Kantorovich-Rubinstein form. The function $u^c(y) = \inf_x \{ \|x-y\| - u(x) \}$ that appears in Lesson 2's c-transform theory is exactly the optimal $v$ here: the dual constraint $u(x) + v(y) \leq \|x-y\|$ is tightest when $v = u^c$.
 
 ## Discrete Optimal Transport as a Linear Program
 
@@ -95,6 +99,8 @@ $$\mathbf{U}(r,c) = \{ P \in \mathbb{R}^{m \times n}_{\geq 0} : P\mathbf{1}_n = 
 > **Refresher:** This is a standard linear program: linear objective, linear equality/inequality constraints. The feasible set $\mathbf{U}(r,c)$ is a polytope (bounded, since all entries are bounded by $\min(r_i,c_j)$). The LP always has a solution at a vertex of the polytope. The network simplex algorithm solves it in $O(n^3 \log n)$ time.
 
 **Connection to the assignment problem.** When $r = c = \mathbf{1}_n / n$ (uniform distributions over $n$ points each), the transport matrix $P$ is a doubly stochastic matrix scaled by $1/n$. By Birkhoff's theorem, the vertices of the doubly stochastic polytope are permutation matrices. The optimal transport plan at a vertex is a deterministic assignment — an $n$-to-$n$ matching. This is the linear assignment problem, solvable by the Hungarian algorithm in $O(n^3)$.
+
+> **Remember:** The Kantorovich LP always has a solution (the transport polytope is compact). The solution is sparse: at most $m+n-1$ nonzero entries despite the full $m \times n$ matrix. This sparsity is the LP vertex structure — exactly what makes network simplex fast in practice.
 
 **Sparsity.** An optimal LP solution (vertex of $\mathbf{U}(r,c)$) has at most $m+n-1$ nonzero entries. For $n = 1000$ points, the transport plan is nearly empty — most mass moves along only $\sim 2000$ edges — even though the full matrix has $10^6$ entries.
 

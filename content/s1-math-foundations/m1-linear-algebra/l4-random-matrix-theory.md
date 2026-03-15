@@ -126,6 +126,18 @@ The MP distribution predicts exactly where this threshold occurs: at $\gamma = m
 
 > **Key insight:** Double descent is not a mystery — it is a direct consequence of the spectral properties of random matrices at the interpolation threshold. RMT predicts the exact location and severity of the peak, and explains why overparameterized models generalize well: they interpolate with spectrally regular solutions.
 
+## ML Connections
+
+Random matrix theory provides the theoretical lens for understanding what happens to neural networks at scale — when width, depth, and dataset size are all large, RMT gives precise predictions where classical statistics fails.
+
+- **Weight Initialization:** Kaiming (He) initialization sets weight variance to $2/n_\text{in}$ for ReLU networks, ensuring the activation variance stays at 1 through each layer. This is derived from RMT: without this, the spectral radius of the weight matrix grows with depth and gradients explode or vanish. PyTorch uses Kaiming init by default for Conv layers.
+- **Neural Tangent Kernel (NTK) Theory:** In the infinite-width limit, a neural network's behavior is governed by its NTK matrix $K_{ij} = \langle \nabla_\theta f(x_i), \nabla_\theta f(x_j) \rangle$. RMT characterizes the eigenspectrum of this kernel, predicting training dynamics and generalization. The NTK eigenspectrum determines which frequencies are learned first (spectral bias).
+- **Double Descent:** The interpolation threshold occurs when the number of parameters equals the number of training examples — precisely the regime studied by Marchenko-Pastur (aspect ratio $\gamma = n/p \to 1$). RMT predicts the divergence of the minimum singular value at this threshold, explaining the generalization cliff and recovery.
+- **Hessian Spectral Analysis:** The Hessian of a neural network loss at a critical point is (approximately) a random matrix. RMT predicts the Marchenko-Pastur bulk of "noise" eigenvalues plus outliers corresponding to task-relevant directions. This decomposition guides step-size selection and identifies "flat" vs "sharp" minima.
+- **Free Probability and Layer Composition:** When computing the spectral distribution of a product of random weight matrices $W_L \cdots W_1$, free probability (not classical probability) applies. The $S$-transform multiplicativity theorem predicts the depth-dependent spectral distribution, explaining why very deep networks behave differently from shallow ones.
+
+> **Key insight:** RMT is the physics of large neural networks. As width and dataset size grow, the exact values of individual parameters matter less than their collective spectral properties — and RMT gives exact predictions for these in the infinite-size limit. Every empirical "rule of thumb" in deep learning (Kaiming init, batch size scaling, double descent) has an RMT explanation.
+
 ## Python: Marchenko-Pastur in Practice
 
 ```python

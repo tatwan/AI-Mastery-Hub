@@ -115,6 +115,18 @@ A companion result to Radon-Nikodym: any measure $P$ can be uniquely decomposed 
 
 > **Key insight:** Variational inference, importance sampling, and off-policy RL all share the same mathematical skeleton: reweight samples from one distribution to compute expectations under another, using the Radon-Nikodym derivative as the reweighting factor.
 
+## ML Connections
+
+The Radon-Nikodym theorem is the mathematical engine behind likelihood ratios, importance weighting, and the connection between different probability distributions that permeates modern ML.
+
+- **Importance Sampling in RL and Offline Learning:** Off-policy learning estimates $\mathbb{E}_\mu[f]$ from data collected under a different policy $\nu$: $\mathbb{E}_\mu[f(x)] = \mathbb{E}_\nu[f(x) \frac{d\mu}{d\nu}(x)]$. The likelihood ratio $\frac{d\mu}{d\nu}$ is exactly the Radon-Nikodym derivative. PPO's clipped surrogate objective bounds this ratio to prevent large policy updates.
+- **Variational Autoencoders:** The ELBO derivation uses $\log p(x) \geq \mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x|z)] - D_{\text{KL}}(q_\phi \| p)$. The KL term is $\mathbb{E}_{q_\phi}[\log \frac{dq_\phi}{dp}]$ — the Radon-Nikodym derivative of $q_\phi$ w.r.t. $p$. When $q_\phi = \mathcal{N}(\mu_\phi, \sigma_\phi^2)$ and $p = \mathcal{N}(0,1)$, the RN derivative is Gaussian ratio, giving the closed-form KL.
+- **Diffusion Model Reverse Process:** Girsanov's theorem underlies diffusion model training: the score function $\nabla_x \log p_t(x)$ is the key quantity needed to reverse the forward SDE. The score is the gradient of the log Radon-Nikodym derivative between $p_t$ and the reference measure. Score matching directly estimates this.
+- **Reward Modeling via DPO:** Direct Preference Optimization (DPO) implicitly trains a reward model $r(x,y) \propto \log \frac{d\pi_\theta}{d\pi_\text{ref}}(y|x)$ — the log Radon-Nikodym derivative of the policy w.r.t. a reference policy. This connects RLHF to density ratio estimation.
+- **GAN Discriminator:** An optimal GAN discriminator $D^*(x) = \frac{p_\text{data}(x)}{p_\text{data}(x) + p_G(x)}$ is a function of the density ratio $\frac{dp_\text{data}}{dp_G}$. Training the discriminator is implicitly estimating the Radon-Nikodym derivative from samples.
+
+> **Key insight:** Likelihood ratios are everywhere in ML: importance weights in RL, KL terms in VAEs, score functions in diffusion models, DPO reward models, GAN discriminators. They are all Radon-Nikodym derivatives. Understanding this unifies what appear to be unrelated techniques into one framework: density ratio estimation.
+
 ## Python: Importance Sampling for Tail Probabilities
 
 Estimating tail probabilities like $P(X > 4)$ under $X \sim \mathcal{N}(0,1)$ is notoriously difficult with naive Monte Carlo because the event is rare. Importance sampling with a shifted proposal dramatically reduces variance.

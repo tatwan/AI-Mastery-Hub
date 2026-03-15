@@ -138,6 +138,18 @@ correct: 2
 explanation: "The InfoNCE lower bound is capped at $\\log N$. With $N=64$, the maximum is $\\ln 64 \\approx 4.16$ nats. Even if the true MI is higher, InfoNCE cannot detect it with this batch size. This is a fundamental limitation: larger batches are needed to estimate larger MI values."
 :::
 
+## ML Connections
+
+Mutual information formalizes "what information does X carry about Y?" — the central question in representation learning, feature selection, and any system that must extract task-relevant information.
+
+- **Contrastive Learning (SimCLR, CLIP):** InfoNCE loss maximizes a lower bound on $I(Z_1; Z_2)$ between two views of the same image. CLIP maximizes $I(\text{image embedding}; \text{text embedding})$ for matched pairs. The contrastive objective is a variational lower bound on MI — mutual information maximization is the theoretical explanation for why contrastive learning learns good representations.
+- **MINE for GAN Training:** Generative models can be trained by maximizing $I(X; Z)$ between data $X$ and latent code $Z$ (InfoGAN). MINE estimates this MI using a neural discriminator, providing gradients for training. This enforces that the latent code is used to generate diverse outputs (preventing mode collapse).
+- **Feature Selection and Mutual Information:** Classical MI-based feature selection selects features $X_i$ that maximize $I(X_i; Y)$ while minimizing redundancy $I(X_i; X_j)$ (mRMR criterion). Modern neural feature selection methods parameterize the selection mask and optimize MI estimates end-to-end.
+- **Neural Network Compression via IB:** The information bottleneck objective $\min_\phi I(Z;X) - \beta I(Z;Y)$ applied to neural network activations finds the minimum representation needed to predict the output. This motivates layer-wise pruning based on MI and is the theoretical foundation of "compression" in distillation.
+- **RLHF Reward Learning:** Reward models in RLHF must capture $I(\text{reward}; \text{quality})$ — if the proxy reward has low MI with human preference, reward hacking is inevitable. Data Processing Inequality provides a formal lower bound on how much information can be preserved through the reward model bottleneck.
+
+> **Key insight:** Contrastive learning is mutual information maximization. SimCLR, MoCo, CLIP, and their variants all optimize a lower bound on the MI between two views or modalities. The DPI explains why representations degrade through compression: information can only be lost, never gained. This makes MI the right metric for measuring representation quality.
+
 ## Python Example: MINE Estimator
 
 ```python

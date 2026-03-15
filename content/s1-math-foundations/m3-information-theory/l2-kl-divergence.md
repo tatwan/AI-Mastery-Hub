@@ -162,6 +162,18 @@ correct: 1
 explanation: "If $D_{\text{KL}}(q(z|x) \\| p(z)) = 0$, then $q(z|x) = p(z)$ for all $x$ — the encoder's output doesn't depend on $x$. This is posterior collapse: the latent code carries zero information about the input, and the decoder must generate outputs from the prior alone."
 :::
 
+## ML Connections
+
+KL divergence is the central dissimilarity measure for comparing probability distributions in ML — appearing in every variational method, generative model, and alignment technique.
+
+- **Variational Autoencoders (VAEs):** The ELBO $\mathcal{L} = \mathbb{E}_{q_\phi}[\log p_\theta(x|z)] - D_{\text{KL}}(q_\phi(z|x) \| p(z))$ directly minimizes the KL divergence between the approximate posterior $q_\phi$ and the prior $p$. The KL term regularizes the latent space, preventing posterior collapse. β-VAE multiplies the KL term by β > 1 to encourage disentanglement.
+- **RLHF and KL Penalties:** Reinforcement learning from human feedback trains a policy $\pi_\theta$ to maximize reward while staying close to a reference policy $\pi_\text{ref}$: $\max_\theta \mathbb{E}_\pi[r(x,y)] - \beta D_{\text{KL}}(\pi_\theta \| \pi_\text{ref})$. The KL penalty prevents reward hacking and is the central mechanism in InstructGPT, GPT-4, and Claude's training.
+- **Wasserstein GAN vs JS GAN:** Standard GAN training minimizes JS divergence, which saturates to $\log 2$ when supports don't overlap (vanishing gradients). Wasserstein GAN replaces JS with W1 (estimated via the Kantorovich-Rubinstein dual) — the key improvement is that W1 gives meaningful gradients even when generated and real distributions have disjoint support.
+- **Knowledge Distillation:** Training a student model to match a teacher's soft outputs: $L = D_{\text{KL}}(\text{teacher}(\cdot|x) \| \text{student}(\cdot|x))$ (forward KL). Forward KL is "mean-seeking" — the student spreads probability across all modes the teacher assigns mass to. This preserves the teacher's uncertainty, unlike matching hard labels.
+- **Diffusion Model Training (ELBO):** The DDPM training objective is a sum of KL divergences between the true reverse process and the parameterized reverse: $\sum_t D_{\text{KL}}(q(x_{t-1}|x_t, x_0) \| p_\theta(x_{t-1}|x_t))$. Each term is a KL between two Gaussians, which has a closed form — simplifying to the noise prediction objective $\|\varepsilon - \varepsilon_\theta(x_t, t)\|^2$.
+
+> **Key insight:** KL divergence is the universal "distribution fitting" objective. VAEs, RLHF, diffusion models, knowledge distillation — they all reduce to minimizing a KL divergence in some form. The direction of KL (forward vs reverse) determines the qualitative behavior: forward KL covers all modes, reverse KL mode-seeks. This choice determines whether your model is conservative or sharp.
+
 ## Python Example: Forward vs Reverse KL
 
 ```python

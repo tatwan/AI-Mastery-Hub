@@ -129,6 +129,18 @@ A large condition number means the matrix is nearly singular — small perturbat
 
 > **Key insight:** Ill-conditioned weight matrices create a vicious cycle: gradients along the smallest singular direction are amplified relative to the largest, causing oscillation. Preconditioning (Adam, natural gradient) and normalization (BatchNorm, LayerNorm) both attack this problem by reshaping the spectrum.
 
+## ML Connections
+
+Eigendecomposition underlies the spectral theory that connects neural network architectures to graph structure, explains why normalization works, and determines the stability of optimization.
+
+- **Graph Neural Networks (GNNs):** The Graph Convolutional Network (GCN) layer $H^{(l+1)} = \sigma(\hat{A} H^{(l)} W)$ uses the normalized graph Laplacian $\hat{A} = D^{-1/2}AD^{-1/2}$. The eigenvectors of the Laplacian define the "graph Fourier basis" — spectral GNNs like ChebNet and GCN are essentially polynomial filters in the Laplacian eigenspectrum.
+- **LayerNorm and BatchNorm:** Normalization layers reduce the condition number $\kappa(H)$ of the Hessian of the loss by equalizing the curvature across directions. When $\kappa$ is large (extreme eigenvalue ratio), gradient descent oscillates; normalization collapses the eigenvalue spread, accelerating convergence.
+- **Hessian Analysis:** The Hessian of the loss at a local minimum has eigenvalues that reveal sharpness (largest eigenvalue) and effective dimensionality (number of significant eigenvalues). Tools like PyHessian compute the Hessian spectrum to understand generalization and guide learning rate selection.
+- **Spectral Normalization for GANs:** Constraining each weight matrix to have spectral norm (largest singular value) ≤ 1 enforces Lipschitz continuity on the discriminator — essential for Wasserstein GANs and stable GAN training.
+- **PSD Matrices in Gaussian Processes:** The kernel matrix $K$ in a Gaussian process is required to be positive semidefinite; its eigendecomposition determines the principal modes of variation in the prior. Choosing a good kernel means designing a PSD matrix with the right eigenspectrum.
+
+> **Key insight:** The eigenspectrum of key matrices — Hessians, Laplacians, kernel matrices, weight matrices — is a diagnostic tool for understanding deep learning. Sharpness, effective rank, connectivity, and convergence speed all reduce to questions about eigenvalues.
+
 ## Python: Spectral Methods in Practice
 
 ```python

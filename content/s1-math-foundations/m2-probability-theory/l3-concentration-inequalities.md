@@ -144,6 +144,18 @@ where $d = \text{VC-dim}(\mathcal{H})$. The proof combines McDiarmid's inequalit
 
 > **Key insight:** Concentration inequalities do not just tell us that averages converge — they tell us *how fast*, as a function of $n$. The rate $O(1/\sqrt{n})$ for bounded losses is a direct consequence of sub-Gaussian concentration. Faster rates ($O(1/n)$) are possible when the loss has low variance near the optimum (via Bernstein-type arguments), which is why "fast rates" in learning theory are intimately connected to noise conditions.
 
+## ML Connections
+
+Concentration inequalities provide the theoretical guarantees that turn empirical observations on training data into principled statements about generalization — the mathematical backbone of learning theory.
+
+- **PAC Learning and Generalization Bounds:** Hoeffding's inequality gives: with probability $\geq 1-\delta$, the true risk $R(\theta) \leq \hat{R}(\theta) + \sqrt{\frac{\log(|\mathcal{H}|/\delta)}{2n}}$ for a finite hypothesis class $\mathcal{H}$. This is the basic PAC bound — it says the empirical loss approximates the true loss when $n$ is large relative to the complexity of the model class.
+- **Rademacher Complexity:** McDiarmid's inequality is used to show that empirical Rademacher complexity concentrates around its expectation, which then bounds the generalization gap. This framework covers neural networks via norm-based bounds on the weights.
+- **Confidence Intervals for RL:** In contextual bandits and online RL, concentration bounds (especially Bernstein's inequality for sub-exponential rewards) are used to construct upper confidence bounds (UCB). The UCB policy selects actions whose upper confidence bound is highest — the fundamental principle of optimistic exploration.
+- **Differentially Private Training:** DP-SGD clips per-sample gradients and adds Gaussian noise. The privacy guarantee follows from concentration bounds on the noise-to-signal ratio — specifically, the moments accountant uses MGF bounds (sub-Gaussian / sub-exponential tails) to track cumulative privacy loss.
+- **Sample Complexity of Neural Networks:** Modern generalization bounds for overparameterized networks use McDiarmid's inequality on the empirical process indexed by the network's function class. The stability condition (how much the output changes when one training point changes) directly maps to McDiarmid's bounded differences.
+
+> **Key insight:** Every ML system that claims to generalize is implicitly relying on concentration inequalities. The training-test gap, sample complexity, confidence intervals, privacy bounds — all reduce to: "a function of many independent random variables is concentrated near its mean." Concentration inequalities make "it works in practice" into a theorem.
+
 ## Python: Empirical Verification of Hoeffding's Bound
 
 ```python

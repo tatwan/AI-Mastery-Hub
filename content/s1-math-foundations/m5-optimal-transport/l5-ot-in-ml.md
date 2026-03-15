@@ -33,6 +33,8 @@ $$\frac{\partial W_1}{\partial \theta} = -\mathbb{E}_{z \sim p_z}\left[\nabla_\t
 
 Since $D_\phi$ is 1-Lipschitz (bounded gradient norm), this gradient is always well-defined and bounded, regardless of overlap.
 
+> **Intuition:** Think of $W_1$ as measuring "how far apart" two distributions are even when they live on different continents. JS divergence says "are they touching?" — if not, it just returns $\log 2$ and stops. $W_1$ says "how many miles apart?" and keeps a useful gradient no matter how far. For a generator that starts from random noise, $W_1$ provides meaningful signal from the very first iteration.
+
 > **Key insight:** $W_1$ is finite and smooth even when $p_{\text{data}}$ and $p_\theta$ have disjoint supports. The Kantorovich-Rubinstein dual makes it estimable from samples. These two properties, absent in JS divergence, are why WGAN training is more stable.
 
 **WGAN-GP: gradient penalty for Lipschitz constraint.** The original WGAN used weight clipping $|w| \leq c$, which is too coarse (it forces the critic to be near-linear). Gulrajani et al. (2017) derived the gradient penalty:
@@ -65,6 +67,8 @@ $$\frac{\partial \text{OT}_\varepsilon}{\partial y_j} = \sum_i \pi_{ij}^* \nabla
 
 where $\pi^*$ is the optimal transport plan from Sinkhorn and $\nabla_{y_j} C_{ij} = \frac{y_j - x_i}{\|y_j - x_i\|}$ for the Euclidean cost. Intuitively: each generated point $y_j$ is pulled toward its source counterparts $x_i$, weighted by the transport mass $\pi_{ij}^*$.
 
+> **Key insight:** The Sinkhorn loss gives each generated point a "gravitational pull" toward specific data points, weighted by transport mass. Unlike GAN training where the discriminator gradient says "you're fake, become more real" (one direction), Sinkhorn says "you're 30% like data point $x_3$, 50% like $x_7$, move in the weighted combination of those directions." This specificity makes Sinkhorn-based training more stable than adversarial training.
+
 **Advantages over GAN:**
 - No discriminator training, no min-max instability.
 - Differentiable end-to-end with a simple formula.
@@ -84,11 +88,13 @@ Training via maximum likelihood requires computing the log-determinant of the Ja
 
 $$v_t(x) = \mathbb{E}[u_t(x | x_0, x_1) | x_t = x]$$
 
-where $u_t(x | x_0, x_1)$ is a conditional velocity field. The flow matching objective:
+where $u_t(x | x_0, x_1)$ is a conditional velocity field.
+
+**Theorem (Flow Matching Equivalence, Lipman et al. 2022).** The flow matching objective
 
 $$\mathcal{L}_{\text{FM}}(\theta) = \mathbb{E}_{t, (x_0, x_1) \sim \pi, x_t \sim p_t(\cdot | x_0, x_1)}\left[\|v_\theta(x_t, t) - u_t(x_t | x_0, x_1)\|^2\right]$$
 
-is equivalent to matching the marginal velocity field $v_t$ (no log-determinant needed).
+has the same gradient as the objective of matching the marginal velocity $v_t$ directly. This equivalence is the key insight: instead of integrating over all $x_t$ in $\mathbb{R}^d$ (intractable), we can train by sampling conditional pairs $(x_0, x_1) \sim \pi$ and forming $x_t \sim p_t(\cdot | x_0, x_1)$ — no log-determinant computation needed.
 
 **OT-conditional flow matching.** Choose the coupling $\pi^* = \text{OT}(\pi_0, \pi_1)$ (the Kantorovich optimal coupling) and the straight-line conditional path $x_t = (1-t)x_0 + tx_1$ (Wasserstein geodesic). Then:
 
@@ -103,6 +109,8 @@ $$\mathcal{L}_{\text{OT-FM}}(\theta) = \mathbb{E}_{t \sim U[0,1], (x_0, x_1) \si
 **Why OT coupling helps.** Using the OT coupling instead of independent coupling $\pi_{\text{ind}} = \pi_0 \otimes \pi_1$ reduces the variance of the flow matching objective. With random coupling, paths from $x_0$ to $x_1$ can cross each other, requiring the learned velocity field to accommodate conflicting directions at the same $(x,t)$ point. The OT coupling minimizes crossing, making the velocity field simpler to learn.
 
 **Connection to diffusion models.** When $p_0 = \mathcal{N}(0, I)$ and $p_1 = p_{\text{data}}$, OT-FM is related to DDPM with straight paths instead of noise-perturbed paths. The score function $\nabla_x \log p_t(x)$ can be derived from the velocity field $v_\theta$, connecting flow matching and score-based diffusion.
+
+> **Refresher:** The Wasserstein geodesic from Lesson 4 says: move mass along straight lines. OT-conditional flow matching is exactly implementing this geodesic idea with a neural network. Sample start $x_0$, sample end $x_1$ from the OT coupling, and train the network to follow the straight line between them. At inference, the learned ODE follows these near-straight paths — fewer solver steps, faster generation.
 
 ## Domain Adaptation via Optimal Transport
 
@@ -131,11 +139,13 @@ where $\rho > 0$ defines the size of the Wasserstein ball. This is **Wasserstein
 
 $$\sup_{\mu : W_p(\mu, \hat{\mu}) \leq \rho} \mathbb{E}_\mu[\ell(\theta; x)] = \inf_{\lambda \geq 0} \left\{ \lambda \rho^p + \frac{1}{n}\sum_i \sup_x \left[ \ell(\theta; x) - \lambda \|x - x_i\|^p \right] \right\}$$
 
-For $p = 2$ and strongly concave $\ell$ in $x$, this inner supremum has a closed form (via the Fenchel conjugate), making the dual tractable.
+For $p = 2$ and strongly convex $\ell(\theta; \cdot)$ in $x$ (e.g., squared loss), the Fenchel conjugate of $\ell$ with respect to perturbations has a closed form, making the dual tractable.
 
 **Connection to adversarial training.** Adversarial training adds perturbations $\delta$ to inputs to maximize loss: $\min_\theta \frac{1}{n}\sum_i \max_{\|\delta\|_p \leq \varepsilon} \ell(\theta; x_i + \delta)$. This is exactly $W_\infty$ DRO (where $W_\infty$ uses the $\ell^\infty$ cost). Wasserstein DRO generalizes adversarial training to arbitrary probability distributions over perturbation patterns.
 
 **Sampleable adversarial examples.** The Wasserstein ball over distributions is richer than the $\ell_p$ ball over individual inputs. It can represent semantic perturbations (rotations, translations) that a pixel-$\ell_p$ ball cannot capture, leading to more meaningful adversarial robustness.
+
+> **Remember:** Wasserstein DRO with radius $\rho$ protects against any perturbation of the data distribution that costs at most $\rho$ in transport. At $\rho \to 0$, it reduces to empirical risk minimization. At $\rho \to \infty$, it becomes infinitely conservative. The choice of $\rho$ encodes how much distributional shift you expect between train and test — a principled alternative to ad hoc data augmentation.
 
 ## Sliced Wasserstein Distance
 
@@ -158,7 +168,7 @@ For $n$ sample points and $L$ random projections, each 1D $W_p$ costs $O(n \log 
 **Properties:**
 - *Metric:* $\text{SW}_p$ is a metric on $\mathcal{P}_p(\mathbb{R}^d)$.
 - *Metrization:* Metrizes weak convergence (same as $W_p$).
-- *Sample complexity:* $O(n^{-1/2})$ regardless of dimension (only 1D projections matter).
+- *Sample complexity:* $O(n^{-1/2})$ for estimating each 1D projection (dimension-free for the projection step); however, the number of projections $L$ needed to accurately approximate the spherical integral scales as $O(d/\varepsilon^2)$ for $\varepsilon$-accuracy in $d$ dimensions. The effective complexity is $O(dn\log n)$ for fixed accuracy.
 - *Differentiability:* Differentiable with respect to support points.
 
 **Limitation.** $\text{SW}_p$ loses geometric information: two distributions that differ only in high-dimensional structure (not captured by 1D projections) may appear close. For distributions with complex geometric structure, $\text{SW}_p$ is a loose approximation to $W_p$.
@@ -168,6 +178,18 @@ For $n$ sample points and $L$ random projections, each 1D $W_p$ costs $O(n \log 
 $$\text{Max-SW}_p(\mu,\nu) = \sup_{\theta \in \mathbb{S}^{d-1}} W_p(\theta_\# \mu, \theta_\# \nu)$$
 
 This is differentiable (via envelope theorem) and more geometrically discriminating than $\text{SW}_p$.
+
+## ML Connections
+
+This lesson is itself an ML Connections lesson — but here we consolidate the cross-cutting themes: how OT unifies generative modeling, domain adaptation, robustness, and flow-based methods.
+
+- **Flow Matching (Stable Diffusion 3, FLUX):** OT-conditional flow matching (used in Stable Diffusion 3, FLUX, and Stable Audio) selects the "straightest possible" paths from noise to data by solving a minibatch OT problem. The straight paths mean fewer ODE integration steps (2–4 vs 20–1000 for DDPM), dramatically accelerating inference. FLUX is the production model behind Midjourney and many image generation systems.
+- **Gromov-Wasserstein for Cross-Domain Alignment:** Gromov-Wasserstein distance aligns distributions in different metric spaces (e.g., aligning word embeddings from two languages without parallel corpus). Used in unsupervised machine translation and cross-modal retrieval.
+- **Wasserstein Distributionally Robust Optimization (DRO):** WRENCH (ICML 2022), Group DRO, and subpopulation shift methods use Wasserstein balls to define the uncertainty set. The minimax formulation provides guarantees that the model performs well under distributional shift — essential for ML safety and reliability.
+- **OT for Data Augmentation:** The Wasserstein barycenter of training classes defines natural "interpolation" augmentations. MixUp can be reinterpreted as OT between class distributions; geodesic MixUp uses displacement interpolation instead of linear interpolation, producing more realistic augmented samples.
+- **Reward Model Alignment via OT:** Human preference data defines an empirical distribution over (prompt, response) pairs. DPO and its variants align the policy distribution to the preference distribution — this can be formalized as an OT problem where the cost function reflects alignment quality.
+
+> **Key insight:** OT has become the unifying language for comparing and transforming distributions in ML. Flow matching, domain adaptation, DRO, and generative modeling all reduce to: "find the most efficient way to move probability mass from one distribution to another." The theory developed in M5 — Kantorovich, Sinkhorn, displacement interpolation — is the mathematical foundation that makes these applications principled rather than heuristic.
 
 ## Python: WGAN-GP and Sliced Wasserstein
 
@@ -264,6 +286,8 @@ for step in range(n_steps):
         x_hat = alpha * x_real + (1 - alpha) * x_fake   # (batch, 2)
         D_hat, h1h, h2h = mlp_forward(x_hat, Wc1, Wc2, Wc3)
 
+        # Note: Real implementations compute gradient_penalty using autograd (torch.autograd.grad).
+        # The finite-difference approximation here is for clarity in a numpy-only demo.
         # Compute gradient of D_hat w.r.t. x_hat numerically
         eps_fd = 1e-4
         grad_D_hat = np.zeros_like(x_hat)
@@ -406,6 +430,8 @@ print(f"Ring vs Ring:     SW_1 = {sliced_wasserstein(X_ring, sample_ring(n_pts))
 print(f"\n=== Final WGAN-GP Statistics ===")
 print(f"Last 100-step avg W1 estimate: {np.mean(wass_estimates[-100:]):.4f}")
 ```
+
+> **Note:** The `ot` library (`pip install POT`) provides `ot.sliced_wasserstein_distance()`, `ot.gromov.gromov_wasserstein()`, and `ot.dist()` for computing transport costs. For WGAN-GP and flow matching in PyTorch, the `geomloss` library provides GPU-accelerated Sinkhorn loss with automatic differentiation.
 
 :::quiz
 question: "OT-conditional flow matching uses the optimal coupling $\\pi^*$ between the source and target distributions. Compared to the independent coupling $\\pi_{\\text{ind}} = p_0 \\otimes p_1$, why does the OT coupling improve flow matching training?"

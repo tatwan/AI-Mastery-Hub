@@ -155,6 +155,18 @@ In practice, computing $F^{-1}$ is intractable for large models. K-FAC approxima
 
 > **Key insight:** The Fisher information matrix is simultaneously the Hessian of KL divergence, the curvature of the log-likelihood, and the metric tensor of the statistical manifold. Natural gradient descent follows this geometry, which is why it converges faster than vanilla SGD in theory — and why its approximations (Adam, K-FAC) work so well in practice.
 
+## ML Connections
+
+Matrix calculus is the mathematical language of neural network training — every gradient update, every backpropagation step, and every second-order method is matrix calculus in disguise.
+
+- **Backpropagation:** The chain rule for matrices is exactly backprop: each layer's Jacobian $\partial \text{output}/\partial \text{input}$ is the building block. The backward pass multiplies these Jacobians right-to-left: $\frac{\partial L}{\partial x} = J_1^\top J_2^\top \cdots J_n^\top \frac{\partial L}{\partial \hat{y}}$. Understanding this reveals why vanishing/exploding gradients occur (product of many Jacobians with small/large spectral norms).
+- **Transformer Attention Gradients:** The softmax Jacobian's off-diagonal structure means that the gradient through attention is not sparse — changing one key affects all query-key interactions. This is why attention is expensive to differentiate and why gradient checkpointing is needed for long sequences.
+- **Natural Gradient Descent:** Instead of gradient descent in Euclidean parameter space, natural gradient uses the Fisher information matrix $F = \mathbb{E}[\nabla \log p \, \nabla \log p^\top]$ as a metric: $\theta \leftarrow \theta - F^{-1}\nabla L$. This is the exact matrix calculus of information geometry — K-FAC approximates $F^{-1}$ to make it tractable.
+- **Second-Order Optimization:** Newton's method uses $\nabla^2 L$ (the Hessian), which is a $d \times d$ matrix. LBFGS approximates it implicitly; Gauss-Newton uses $J^\top J$ (where $J$ is the Jacobian of outputs w.r.t. parameters) as a PSD approximation.
+- **Automatic Differentiation:** PyTorch and JAX implement the chain rule via computational graph traversal. Every `.backward()` call is a sequence of vector-Jacobian products (VJPs), which is matrix calculus applied to composite functions.
+
+> **Key insight:** Every deep learning framework is a matrix calculus engine. The entire training process — forward pass, loss computation, backward pass, parameter update — is a sequence of Jacobians being multiplied together. Understanding this makes debugging gradient issues, implementing custom layers, and reading autodiff papers straightforward.
+
 ## Python: Gradient Verification
 
 ```python

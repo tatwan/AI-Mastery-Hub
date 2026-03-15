@@ -45,6 +45,8 @@ These are fundamentally different operations with different qualitative behavior
 
 > **Key insight:** Linear interpolation mixes mass — it creates a superposition of $\\mu_0$ and $\\mu_1$. Displacement interpolation moves mass — each particle travels along a straight path. When the two measures have disjoint supports, linear interpolation creates a bimodal distribution for all $t \\in (0,1)$, while displacement interpolation remains unimodal for $t$ away from the endpoints.
 
+> **Refresher:** The optimal coupling in 1D is always the monotone rearrangement: sort both distributions and match quantiles. For $\mu_0 = \mathcal{N}(-a, \sigma^2)$ and $\mu_1 = \mathcal{N}(+a, \sigma^2)$, the $t$-th quantile of $\mu_0$ maps to the $t$-th quantile of $\mu_1$ — this is just a translation by $2a$. The geodesic slides the entire distribution horizontally, keeping it Gaussian throughout.
+
 **The Gaussian case.** This difference is most vivid for $\mu_0 = \mathcal{N}(-a, \sigma^2)$ and $\mu_1 = \mathcal{N}(+a, \sigma^2)$ with $a \gg \sigma$.
 - *Linear interpolation:* $\mu_t^{\text{lin}} = (1-t)\mathcal{N}(-a,\sigma^2) + t\mathcal{N}(+a,\sigma^2)$, a bimodal Gaussian mixture for all $t \in (0,1)$.
 - *Displacement interpolation:* The optimal map is $T(x) = x + 2a$ (a translation), so $\pi^* = (\text{Id}, T)_\# \mu_0$ and $\mu_t^{\text{disp}} = \mathcal{N}((2t-1)a, \sigma^2)$, a unimodal Gaussian that slides from $-a$ to $+a$ at constant speed.
@@ -53,9 +55,13 @@ For two general Gaussians $\mathcal{N}(m_0, \Sigma_0)$ and $\mathcal{N}(m_1, \Si
 
 $$\mu_t = \mathcal{N}(m_t, \Sigma_t)$$
 
-$$m_t = (1-t)m_0 + tm_1, \qquad \Sigma_t = \left[(1-t)I + t \Sigma_0^{-1/2}(\Sigma_0^{1/2}\Sigma_1\Sigma_0^{1/2})^{1/2}\Sigma_0^{-1/2}\right]^2 \Sigma_0$$
+$$m_t = (1-t)m_0 + tm_1$$
 
-The interpolated covariance is **not** the linear interpolation $(1-t)\Sigma_0 + t\Sigma_1$ — it is the geodesic interpolation in the space of positive definite matrices.
+For the covariance, let $A = \Sigma_0^{-1/2}(\Sigma_0^{1/2}\Sigma_1\Sigma_0^{1/2})^{1/2}\Sigma_0^{-1/2}$ be the Brenier map matrix (the optimal linear map from $\mathcal{N}(0,\Sigma_0)$ to $\mathcal{N}(0,\Sigma_1)$). Define $A_t = (1-t)I + tA$. Then:
+
+$$\Sigma_t = A_t \Sigma_0 A_t^\top$$
+
+The interpolated covariance is **not** the linear interpolation $(1-t)\Sigma_0 + t\Sigma_1$ — it is the geodesic interpolation in the space of positive definite matrices. The quadratic dependence of $\Sigma_t$ on $t$ is explicit in the $A_t \Sigma_0 A_t^\top$ form.
 
 ## McCann's Theorem
 
@@ -77,6 +83,8 @@ since $T_t(x, y) = (1-t)x + ty$ applied to $(x, y) = (x, \nabla\phi(x))$ gives $
 
 > **Remember:** The Wasserstein geodesic from $\\mu_0$ to $\\mu_1$ is $\\mu_t = ((1-t)\\text{Id} + t\\nabla\\phi)_\\# \\mu_0$, where $\\nabla\\phi$ is the Brenier map from $\\mu_0$ to $\\mu_1$. The interpolation is linear on particles, not on densities.
 
+> **Intuition:** McCann's theorem says that each particle at $x$ in $\mu_0$ travels in a straight line to $\nabla\phi(x)$ in $\mu_1$. The geodesic at time $t$ places each particle at $(1-t)x + t\nabla\phi(x)$ — a linear interpolation of its start and end position. The "straightness" of the particle paths is exactly the zero-curvature (geodesic) property.
+
 ## The Wasserstein Barycenter
 
 The Wasserstein barycenter is the natural notion of "average distribution" in Wasserstein space. Given $K$ measures $\mu_1, \ldots, \mu_K \in \mathcal{P}_2(\mathbb{R}^d)$ with positive weights $w_k \geq 0$, $\sum_k w_k = 1$, the **Wasserstein barycenter** is:
@@ -91,13 +99,9 @@ This is the **Fréchet mean** of the measures $\mu_1, \ldots, \mu_K$ in the metr
 
 $$\bar{m} = \frac{1}{K}\sum_k m_k$$
 
-$$\bar{\Sigma} = \frac{1}{K^2} \sum_{k=1}^K \bar{\Sigma}^{1/2} \Sigma_k \bar{\Sigma}^{1/2} \cdot \bar{\Sigma}^{-1} \quad \text{(fixed-point equation)}$$
+$$\bar{\Sigma} = \frac{1}{K} \sum_{k=1}^K \left(\bar{\Sigma}^{1/2} \Sigma_k \bar{\Sigma}^{1/2}\right)^{1/2} \quad \text{(fixed-point equation, Alvarez-Esteban et al.\ 2016)}$$
 
-More precisely, $\bar{\Sigma}$ is the unique positive definite solution of the **Bures-Wasserstein fixed point equation**:
-
-$$\bar{\Sigma} = \frac{1}{K} \sum_{k=1}^K \left(\bar{\Sigma}^{1/2} \Sigma_k \bar{\Sigma}^{1/2}\right)^{1/2} \bar{\Sigma}^{-1/2} \cdot \bar{\Sigma}^{1/2}$$
-
-This simplifies to: $\bar{\Sigma} = \frac{1}{K} \sum_{k=1}^K (\bar{\Sigma}^{1/2} \Sigma_k \bar{\Sigma}^{1/2})^{1/2} \bar{\Sigma}^{-1}$... In practice, for uniform weights over isotropic Gaussians $\Sigma_k = \sigma_k^2 I$, the barycenter is $\bar{\Sigma} = \bar{\sigma}^2 I$ with $\bar{\sigma} = \frac{1}{K}\sum_k \sigma_k$ (arithmetic mean of standard deviations, not variances).
+This is the **Bures-Wasserstein fixed point equation**: $\bar{\Sigma}$ equals the average matrix square root, with no trailing $\bar{\Sigma}^{-1}$. The fixed point must be found iteratively (see algorithm below). For isotropic Gaussians $\Sigma_k = \sigma_k^2 I$, this simplifies to $\bar{\Sigma} = \bar{\sigma}^2 I$ with $\bar{\sigma} = \frac{1}{K}\sum_k \sigma_k$ (arithmetic mean of standard deviations, not variances).
 
 **Fixed-point characterization (general case).** The barycenter satisfies:
 
@@ -123,8 +127,11 @@ $$\mathcal{F}(\mu_t) \leq (1-t)\mathcal{F}(\mu_0) + t\mathcal{F}(\mu_1) \qquad \
 
 **Examples of displacement convex functionals:**
 - *Entropy:* $H(\mu) = \int \rho \log \rho \, dx$ — strictly displacement convex.
+- *KL divergence:* $D_{\text{KL}}(\mu \| \nu_V) = \int \rho \log(\rho / e^{-V}) \, dx$ where $\nu_V \propto e^{-V}$ — displacement convex when $V$ is convex. Its Wasserstein gradient flow is the Fokker-Planck / Langevin SDE $dx = -\nabla V(x)\,dt + \sqrt{2}\,dW_t$, the foundation of score-based generative modeling.
 - *Potential energy:* $V(\mu) = \int V(x) \, d\mu(x)$ for convex $V$ — displacement convex.
 - *Interaction energy:* $W(\mu) = \frac{1}{2}\int\!\!\int W(x-y) \, d\mu(x) \, d\mu(y)$ for convex $W$ — displacement convex.
+
+> **Key insight:** The KL divergence $D_{\text{KL}}(\mu \| \nu_V)$ being displacement convex is the mathematical justification for why score matching trains diffusion models. The score $\nabla \log p_t$ is the Wasserstein gradient of the KL divergence at time $t$, and score matching is gradient descent in Wasserstein space. This connection — displacement convexity of KL → convergence of diffusion — is one of the deepest results linking OT and generative modeling.
 
 **Connection to gradient flows and diffusion.** The heat equation $\partial_t \rho = \Delta \rho$ is the gradient flow of the entropy $H(\rho)$ in Wasserstein space (Jordan-Kinderlehrer-Otto, 1998). This is the Otto calculus interpretation: "entropy decreases as fast as possible in Wasserstein space" = diffusion. Displacement convexity ensures convergence to the unique minimizer (the Gaussian, for bounded domains).
 
