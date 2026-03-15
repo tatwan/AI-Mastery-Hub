@@ -67,6 +67,14 @@ $$d(W_t^2) = 2W_t \, dW_t + \frac{1}{2} \cdot 2 \cdot dt = 2W_t \, dW_t + dt$$
 
 Taking expectations: $\mathbb{E}[W_t^2] = t$, consistent with $W_t \sim \mathcal{N}(0, t)$. The extra $dt$ term — absent in ordinary calculus — is what makes $\mathbb{E}[W_t^2]$ grow linearly rather than remaining zero.
 
+### Multivariate Itô's Lemma
+
+For the practically important case of a vector process $\mathbf{X}_t \in \mathbb{R}^d$ satisfying $d\mathbf{X}_t = \mathbf{f}(\mathbf{X}_t, t)\,dt + G(\mathbf{X}_t, t)\,d\mathbf{W}_t$ (where $\mathbf{W}_t \in \mathbb{R}^m$ is an $m$-dimensional Brownian motion and $G \in \mathbb{R}^{d \times m}$), the Itô formula for $\phi(\mathbf{X}_t, t)$ is:
+
+$$d\phi = \left(\frac{\partial \phi}{\partial t} + (\nabla_x \phi)^T \mathbf{f} + \frac{1}{2}\text{tr}\!\left(G G^T \nabla_x^2 \phi\right)\right)dt + (\nabla_x \phi)^T G \, d\mathbf{W}_t$$
+
+The Itô correction term $\frac{1}{2}\text{tr}(GG^T H_\phi)$ involves the **Hessian** of $\phi$ contracted with the diffusion covariance $GG^T$. This is exactly what appears in the Fokker-Planck equation for multivariate diffusion processes — and what makes the score-matching objective in diffusion models tractable when $GG^T = \sigma_t^2 I$ (isotropic noise).
+
 > **Key insight:** Itô's lemma is the workhorse of SDE computations. Any time you need to find the SDE for a transformed process — log-prices in finance, log-densities in diffusion models — you apply Itô's lemma and collect the correction term.
 
 ## The Fokker-Planck Equation

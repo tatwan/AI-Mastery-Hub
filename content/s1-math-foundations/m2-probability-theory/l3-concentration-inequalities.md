@@ -58,6 +58,8 @@ Key examples of sub-Gaussian variables:
 - Bounded: if $X \in [a, b]$ a.s. and $\mathbb{E}[X] = 0$, then $X$ is sub-Gaussian with parameter $(b-a)/2$ (Hoeffding's lemma)
 - Rademacher: $X \in \{-1, +1\}$ with equal probability, sub-Gaussian with parameter 1
 
+Convention note: we use the **variance proxy** convention — $X$ is sub-Gaussian with parameter $\sigma$ means the MGF bound is $e^{\lambda^2\sigma^2/2}$, so $\sigma$ has units of standard deviation. Some texts (e.g., Wainwright's *High-Dimensional Statistics*) use variance proxy $\nu = \sigma^2$ in $e^{\lambda^2\nu/2}$. By Hoeffding's Lemma, a bounded variable $X \in [a,b]$ is sub-Gaussian with $\sigma = (b-a)/2$.
+
 The crucial algebraic property: **sums of independent sub-Gaussians are sub-Gaussian**, with $\sigma^2$ parameters adding. If $X_1, \ldots, X_n$ are independent sub-Gaussian with parameters $\sigma_1, \ldots, \sigma_n$, then $\sum X_i$ is sub-Gaussian with parameter $\sqrt{\sum \sigma_i^2}$.
 
 Plugging the sub-Gaussian MGF bound into the Chernoff bound and optimizing over $\lambda$:
@@ -191,12 +193,12 @@ explanation: "McDiarmid requires the random variables X₁,...,Xₙ to be indepe
 :::
 
 :::quiz
-question: "In the PAC learning bound, the sample complexity for a finite hypothesis class |H| scales as O(log|H|/ε²). The logarithmic dependence on |H| arises from:"
+question: "In the PAC learning bound, the sample complexity for a finite hypothesis class $|\\mathcal{H}|$ scales as $O(\\log|\\mathcal{H}|/\\epsilon^2)$. The logarithmic dependence on $|\\mathcal{H}|$ arises from:"
 options:
   - "The central limit theorem applied to the empirical risk"
   - "A union bound over hypotheses combined with exponential concentration for each individual hypothesis"
   - "The VC dimension being at most log₂|H|"
   - "McDiarmid's bounded difference constant being inversely proportional to |H|"
 correct: 1
-explanation: "We apply a union bound: P(∃h: |R̂(h)-R(h)| > ε) ≤ |H| · P(|R̂(h)-R(h)| > ε for one h). The exponential concentration gives exp(-Cnε²) for each h, so we need |H|·exp(-Cnε²) ≤ δ, giving n = O(log(|H|/δ)/ε²). The log comes from inverting the exponential after multiplying by |H|. Option C is a fact but not the mechanism; option D is incorrect."
+explanation: "We apply a union bound: $P(\\exists h: |\\hat{R}(h) - R(h)| > \\epsilon) \\leq |\\mathcal{H}| \\cdot P(|\\hat{R}(h) - R(h)| > \\epsilon$ for one $h)$. The exponential concentration gives $\\exp(-Cn\\epsilon^2)$ for each $h$, so we need $|\\mathcal{H}|\\cdot\\exp(-Cn\\epsilon^2) \\leq \\delta$, giving $n = O(\\log(|\\mathcal{H}|/\\delta)/\\epsilon^2)$. The log comes from inverting the exponential after multiplying by $|\\mathcal{H}|$. Option C is a fact but not the mechanism; option D is incorrect."
 :::

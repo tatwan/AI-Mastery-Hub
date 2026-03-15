@@ -192,8 +192,8 @@ question: "The optional stopping theorem states E[M_τ] = E[M_0] for a martingal
 options:
   - "The coin flips are not independent"
   - "The stopping time τ is not measurable with respect to the filtration"
-  - "The stopping time has infinite expectation, violating the integrability conditions"
+  - "The martingale increments are unbounded (bets grow as 2^t), violating the conditions of the OST"
   - "The game is not actually fair — the house has an edge"
 correct: 2
-explanation: "In the doubling strategy, you bet 1, 2, 4, 8, ... until you win. The stopping time (first heads) has E[τ] = 2 (geometric), but the martingale increments grow exponentially: the bet at step t is 2^t. The stopped process M_{t∧τ} is not uniformly integrable, violating condition 3 of the OST. Equivalently, the required wealth grows unboundedly, so the integrability conditions fail."
+explanation: "The stopping time itself has *finite* expectation ($\\mathbb{E}[\\tau] = 2$ for the geometric distribution). The doubling strategy fails because the **martingale increments are unbounded** — the bet at step $t$ is $2^t$, growing exponentially. This violates the bounded increments condition required by the Optional Stopping Theorem. The stopped process $M_{t \\wedge \\tau}$ is not uniformly integrable, so none of the sufficient conditions for $\\mathbb{E}[M_\\tau] = \\mathbb{E}[M_0]$ are satisfied."
 :::

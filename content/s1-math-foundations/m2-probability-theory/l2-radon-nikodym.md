@@ -67,6 +67,8 @@ $$\frac{dQ}{dP}\bigg|_{\mathcal{F}_T} = \exp\left(-\int_0^T \theta_t \, dW_t - \
 
 then under $Q$, the process $\tilde{W}_t = W_t + \int_0^t \theta_s \, ds$ is a Brownian motion.
 
+**Novikov's condition** provides a practical sufficient guarantee that $Z_t = \exp\!\left(\int_0^t \theta_s \, dW_s - \frac{1}{2}\int_0^t \theta_s^2 \, ds\right)$ is a true martingale (not merely a local martingale): if $\mathbb{E}\!\left[\exp\!\left(\frac{1}{2}\int_0^T \theta_s^2 \, ds\right)\right] < \infty$, then $Z_T$ defines a valid probability measure change. Without this condition, Girsanov's exponential can fail to integrate to 1.
+
 The practical implication: changing the measure amounts to changing the drift of a stochastic process while preserving the diffusion structure. This is exactly the mechanism behind the reverse-time SDE in diffusion models — the score function $\nabla_x \log p_t(x)$ enters as a drift correction under a change of measure.
 
 In reinforcement learning, the ratio $\frac{d P_\pi}{d P_\mu}$ between the trajectory distributions under a target policy $\pi$ and a behavior policy $\mu$ is a product of per-step importance weights — this is the foundation of off-policy methods like V-trace and retrace.
@@ -81,7 +83,7 @@ This estimator is **unbiased**: $\mathbb{E}_Q[\hat{\mu}_{\text{IS}}] = \mathbb{E
 
 $$\text{Var}_Q[\hat{\mu}_{\text{IS}}] = \frac{1}{n}\left(\mathbb{E}_Q\left[f(X)^2 \frac{p(X)^2}{q(X)^2}\right] - \mathbb{E}_P[f(X)]^2\right)$$
 
-When $p/q$ varies widely (i.e., $P$ and $Q$ are poorly matched), a few samples receive enormous weights, inflating variance. The variance is related to the $\chi^2$-divergence: $\text{Var}_Q[p/q] = \chi^2(P \| Q)$. This is why self-normalized importance sampling (dividing by the sum of weights) often works better in practice — it trades a small bias for substantially lower variance.
+When $p/q$ varies widely (i.e., $P$ and $Q$ are poorly matched), a few samples receive enormous weights, inflating variance. The variance is related to the $\chi^2$-divergence: $\text{Var}_Q[p/q] = \chi^2(P \| Q)$. This is why self-normalized importance sampling (dividing by the sum of weights) often works better in practice — it trades a small bias for substantially lower variance. The self-normalized IS estimator $\hat{\mu}_{SN} = \sum_i w(X_i) f(X_i) / \sum_i w(X_i)$ is consistent but biased at finite $n$ — the bias is $O(1/n)$. The unnormalized estimator $\frac{1}{n}\sum_i w(X_i)f(X_i)$ is unbiased but has higher variance.
 
 The **optimal proposal** that minimizes IS variance for estimating $\mathbb{E}_P[f(X)]$ is $q^*(x) \propto |f(x)| p(x)$. This concentrates samples where the integrand is large, but it requires knowing the very integral we are trying to compute — so in practice, we settle for proposals that approximate this distribution.
 
@@ -96,6 +98,10 @@ Applying Jensen's inequality ($\log$ is concave):
 $$\log p(x) \geq \mathbb{E}_{q(z|x)}\left[\log \frac{p(x,z)}{q(z|x)}\right] = \text{ELBO}(q)$$
 
 The gap between $\log p(x)$ and the ELBO is exactly $D_{\text{KL}}(q(z|x) \| p(z|x))$. Maximizing the ELBO over $q$ simultaneously tightens this bound and makes $q$ a better approximation to the true posterior. The ratio $\frac{p(x,z)}{q(z|x)}$ inside the logarithm is the Radon-Nikodym derivative of the joint distribution with respect to the variational approximation — the same object that appears in importance sampling.
+
+### Lebesgue Decomposition Theorem
+
+A companion result to Radon-Nikodym: any measure $P$ can be uniquely decomposed as $P = P_{ac} + P_s$ where $P_{ac} \ll Q$ (absolutely continuous part, admitting an RN derivative) and $P_s \perp Q$ (singular part, living on a $Q$-null set). This decomposition is the mathematical basis for understanding GAN training: the generator's distribution $P_G$ is initially singular with respect to the data distribution $P_{data}$ (they live on different manifolds), making the JS divergence undefined as a density ratio. This singularity problem motivates Wasserstein GANs (Semester 5), which use a distance that remains well-defined even for mutually singular measures.
 
 > **Key insight:** Variational inference, importance sampling, and off-policy RL all share the same mathematical skeleton: reweight samples from one distribution to compute expectations under another, using the Radon-Nikodym derivative as the reweighting factor.
 

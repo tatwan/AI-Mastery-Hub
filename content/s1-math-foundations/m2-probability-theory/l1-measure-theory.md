@@ -9,7 +9,7 @@ prerequisites: []
 
 ## Why Measure Theory?
 
-If you have only worked with discrete distributions (PMFs) and continuous distributions (PDFs), you might wonder why anyone would bother with the abstraction of measure theory. The answer becomes clear the moment you encounter a distribution that is neither purely discrete nor purely continuous — a mixture model with point masses and a smooth component, for instance, or the output distribution of a ReLU network (which places positive probability on exactly zero and spreads the rest continuously over $(0, \infty)$).
+If you have only worked with discrete distributions (PMFs) and continuous distributions (PDFs), you might wonder why anyone would bother with the abstraction of measure theory. The answer becomes clear the moment you encounter a distribution that is neither purely discrete nor purely continuous — a mixture model with point masses and a smooth component, for instance, or the output distribution of a ReLU network (which places positive probability on exactly zero and spreads the rest continuously over $(0, \infty)$ for a symmetric input distribution such as a Gaussian, for example).
 
 Classical probability, built on counting arguments for discrete spaces and Riemann integration for continuous ones, cannot handle such objects cleanly. Measure theory provides a single framework that subsumes both cases and every hybrid in between. More practically, the convergence theorems of Lebesgue integration (dominated convergence, monotone convergence) are the formal engine behind differentiating under the integral sign — the operation you invoke every time you compute a gradient of an expected loss. PAC learning bounds, variational inference, and the entire theory of diffusion models all rest on this foundation.
 
@@ -79,6 +79,16 @@ $$\nabla_\theta \mathbb{E}_{p_\theta}[f(X)] = \mathbb{E}_{p_\theta}[f(X) \nabla_
 (the REINFORCE / score function estimator), the interchange of $\nabla_\theta$ and $\mathbb{E}$ is valid precisely because the DCT conditions hold. Without this, the gradients used in policy gradient methods and variational inference would be formally unjustified.
 
 The closely related **Monotone Convergence Theorem** handles the case where $X_n$ is non-decreasing: if $0 \leq X_1 \leq X_2 \leq \ldots$ and $X_n \to X$ a.s., then $\mathbb{E}[X_n] \to \mathbb{E}[X]$ (possibly $+\infty$). No dominating function is needed, but monotonicity is required.
+
+### Fatou's Lemma
+
+Completing the convergence trilogy, **Fatou's Lemma** provides a lower bound without requiring a dominating function:
+
+$$\mathbb{E}\left[\liminf_{n \to \infty} X_n\right] \leq \liminf_{n \to \infty} \mathbb{E}[X_n]$$
+
+for any sequence of non-negative random variables $X_n \geq 0$.
+
+Unlike DCT, Fatou's Lemma requires no integrability condition — only non-negativity. The inequality can be strict: the limit of expectations can exceed the expectation of the limit (probability "leaks to infinity"). Together with MCT and DCT, Fatou's Lemma covers the full landscape of when limits and expectations can be exchanged — a question that arises constantly in ML when analyzing convergence of stochastic algorithms.
 
 ## Filtrations and Information
 
