@@ -9,24 +9,106 @@
         {
           "id": "m3-information-theory",
           "title": "Information Theory for ML",
-          "description": "Entropy, KL divergence, mutual information, and connections to modern ML.",
+          "description": "Entropy, KL divergence, mutual information, rate-distortion, and the information bottleneck.",
           "status": "available",
           "lessons": [
-            {
-              "id": "l1-entropy",
-              "title": "Shannon Entropy & Information Content",
-              "estimatedMinutes": 25,
-              "status": "available"
-            },
-            {
-              "id": "l2-kl-divergence",
-              "title": "KL Divergence & f-Divergences",
-              "estimatedMinutes": 30,
-              "status": "available"
-            }
+            { "id": "l1-entropy", "title": "Shannon Entropy & Information Content", "estimatedMinutes": 25, "status": "available" },
+            { "id": "l2-kl-divergence", "title": "KL Divergence & f-Divergences", "estimatedMinutes": 30, "status": "available" },
+            { "id": "l3-mutual-information", "title": "Mutual Information & Data Processing Inequality", "estimatedMinutes": 35, "status": "available" },
+            { "id": "l4-rate-distortion", "title": "Rate-Distortion Theory", "estimatedMinutes": 30, "status": "available" },
+            { "id": "l5-info-bottleneck", "title": "The Information Bottleneck Principle", "estimatedMinutes": 35, "status": "available" }
           ]
+        },
+        {
+          "id": "m1-linear-algebra",
+          "title": "Advanced Linear Algebra & Matrix Theory",
+          "description": "SVD, random matrix theory, tensor algebra, matrix calculus.",
+          "status": "coming-soon",
+          "releaseNote": "Coming soon",
+          "lessons": []
+        },
+        {
+          "id": "m2-probability-theory",
+          "title": "Measure-Theoretic Probability",
+          "description": "Sigma-algebras, Lebesgue integration, martingales, stochastic processes.",
+          "status": "coming-soon",
+          "releaseNote": "Coming soon",
+          "lessons": []
+        },
+        {
+          "id": "m4-optimization-theory",
+          "title": "Optimization Theory",
+          "description": "Convex analysis, duality, proximal methods, non-convex landscapes.",
+          "status": "coming-soon",
+          "releaseNote": "Coming soon",
+          "lessons": []
+        },
+        {
+          "id": "m5-optimal-transport",
+          "title": "Optimal Transport",
+          "description": "Wasserstein distances, displacement interpolation, generative modeling applications.",
+          "status": "coming-soon",
+          "releaseNote": "Coming soon",
+          "lessons": []
+        },
+        {
+          "id": "m6-functional-analysis",
+          "title": "Functional Analysis & Operator Theory",
+          "description": "Hilbert spaces, RKHS, spectral theory — foundations of kernel methods and attention.",
+          "status": "coming-soon",
+          "releaseNote": "Coming soon",
+          "lessons": []
         }
       ]
+    },
+    {
+      "id": "s2-classical-ml",
+      "title": "Semester 2: Advanced Classical ML",
+      "description": "Probabilistic graphical models, kernel methods, Gaussian processes, generalization theory.",
+      "status": "coming-soon",
+      "modules": []
+    },
+    {
+      "id": "s3-deep-learning",
+      "title": "Semester 3: Deep Learning Theory & Practice",
+      "description": "Optimization landscapes, expressivity, normalization, attention, scaling laws.",
+      "status": "coming-soon",
+      "modules": []
+    },
+    {
+      "id": "s4-deep-rl",
+      "title": "Semester 4: Deep Reinforcement Learning",
+      "description": "Policy gradients, actor-critic, model-based RL, offline RL, RLHF.",
+      "status": "coming-soon",
+      "modules": []
+    },
+    {
+      "id": "s5-generative-ai",
+      "title": "Semester 5: Generative AI",
+      "description": "VAEs, normalizing flows, GANs, diffusion models — theory and applications.",
+      "status": "coming-soon",
+      "modules": []
+    },
+    {
+      "id": "s6-llms",
+      "title": "Semester 6: Large Language Models",
+      "description": "Transformer architecture, pretraining, instruction tuning, RLHF, inference, deployment.",
+      "status": "coming-soon",
+      "modules": []
+    },
+    {
+      "id": "s7-gnns-causal-mlops",
+      "title": "Semester 7: Graph Networks, Causality & MLOps",
+      "description": "GNNs, causal inference for ML, production systems, monitoring.",
+      "status": "coming-soon",
+      "modules": []
+    },
+    {
+      "id": "s8-frontier-topics",
+      "title": "Semester 8: Frontier Topics",
+      "description": "World models, embodied AI, AI safety, mechanistic interpretability, research frontiers.",
+      "status": "coming-soon",
+      "modules": []
     }
   ]
 }
