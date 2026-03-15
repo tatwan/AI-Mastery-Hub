@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, #root {
+    @apply h-full overflow-hidden;
+  }
+  body {
+    @apply bg-slate-900 text-slate-100;
+  }
+}
+
+.katex-display {
+  @apply my-6 overflow-x-auto;
+}
