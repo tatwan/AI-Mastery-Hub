@@ -55,6 +55,14 @@ Unlike discrete entropy, differential entropy can be negative. For example, a un
 
 Differential entropy lacks some properties of its discrete counterpart (e.g., it is not invariant under change of variables), but *differences* of differential entropies — such as MI and KL divergence — remain well-behaved and coordinate-invariant.
 
+More precisely, if $Y = g(X)$ for a differentiable bijection $g$:
+
+$$h(Y) = h(X) + \mathbb{E}_X\!\left[\log|g'(X)|\right]$$
+
+This is the **log-Jacobian correction** — the entropy changes by the expected log-volume of the transformation. For a linear scaling $Y = cX$: $h(cX) = h(X) + \log|c|$, which gives the negative entropy of a distribution with very small support.
+
+> **Key insight for normalizing flows:** A normalizing flow transforms a simple base distribution $p_z(z)$ via $x = g_\theta(z)$. The log-likelihood of $x$ is $\log p_x(x) = \log p_z(g^{-1}(x)) + \log|\det J_{g^{-1}}(x)|$ — exactly this Jacobian correction. This is why flow-based models require invertible transformations with tractable Jacobian determinants.
+
 ## Joint and Conditional Entropy
 
 For two random variables $X$ and $Y$:
@@ -96,7 +104,7 @@ Cross-entropy measures the average number of bits needed to encode samples from 
 
 $$H(p, q) \geq H(p)$$
 
-The gap $H(p, q) - H(p) = D_{KL}(p \| q)$ is the KL divergence (next lesson). Minimizing cross-entropy is therefore equivalent to minimizing KL divergence to the true distribution.
+The gap $H(p, q) - H(p) = D_{\text{KL}}(p \| q)$ is the KL divergence (next lesson). Minimizing cross-entropy is therefore equivalent to minimizing KL divergence to the true distribution.
 
 ### Why Cross-Entropy Is the Classification Loss
 
@@ -149,7 +157,7 @@ options:
   - "It maximizes the entropy of $q$"
   - "It minimizes the variance of $q$"
 correct: 1
-explanation: "$H(p, q) = H(p) + D_{KL}(p \\| q)$. Since $H(p)$ is constant with respect to $q$, minimizing cross-entropy is equivalent to minimizing $D_{KL}(p \\| q)$, making $q$ as close to $p$ as possible in the KL sense."
+explanation: "$H(p, q) = H(p) + D_{\\text{KL}}(p \\| q)$. Since $H(p)$ is constant with respect to $q$, minimizing cross-entropy is equivalent to minimizing $D_{\text{KL}}(p \\| q)$, making $q$ as close to $p$ as possible in the KL sense."
 :::
 
 :::quiz

@@ -19,7 +19,7 @@ The first form says: MI is the reduction in uncertainty about $X$ after observin
 
 Perhaps most illuminating is the KL divergence form:
 
-$$I(X;Y) = D_{KL}\!\left(p(x,y) \,\|\, p(x)p(y)\right)$$
+$$I(X;Y) = D_{\text{KL}}\left(p(x,y) \,\|\, p(x)p(y)\right)$$
 
 MI measures how far the joint distribution is from the product of marginals — how far $X$ and $Y$ are from independence.
 
@@ -40,7 +40,7 @@ $$I(X; Y, Z) = I(X; Z) + I(X; Y | Z)$$
 
 where the **conditional mutual information** is:
 
-$$I(X; Y | Z) = H(X|Z) - H(X|Y,Z) = \mathbb{E}_Z\left[D_{KL}(p(x,y|z) \| p(x|z)p(y|z))\right]$$
+$$I(X; Y | Z) = H(X|Z) - H(X|Y,Z) = \mathbb{E}_Z\left[D_{\text{KL}}(p(x,y|z) \| p(x|z)p(y|z))\right]$$
 
 This measures the dependence between $X$ and $Y$ that remains after accounting for $Z$. It can be zero even when $I(X;Y) > 0$ (if all dependence was mediated through $Z$), and it can be positive even when $I(X;Y) = 0$ (if conditioning on $Z$ reveals a relationship).
 
@@ -91,7 +91,7 @@ The challenge is that MI is notoriously difficult to compute in high dimensions.
 
 The **Mutual Information Neural Estimation (MINE)** framework (Belghazi et al., 2018) applies the Donsker-Varadhan representation of KL divergence to MI:
 
-$$I(X;Y) = D_{KL}(p(x,y) \| p(x)p(y)) = \sup_T \left[\mathbb{E}_{p(x,y)}[T(x,y)] - \log \mathbb{E}_{p(x)p(y)}[e^{T(x,y)}]\right]$$
+$$I(X;Y) = D_{\text{KL}}(p(x,y) \| p(x)p(y)) = \sup_T \left[\mathbb{E}_{p(x,y)}[T(x,y)] - \log \mathbb{E}_{p(x)p(y)}[e^{T(x,y)}]\right]$$
 
 A neural network $T_\theta(x,y)$ parameterizes the test function. Joint samples $(x, y) \sim p(x,y)$ come from the data; marginal (independent) samples are obtained by shuffling $y$ values across the batch. The MINE estimator:
 
@@ -100,6 +100,8 @@ $$\hat{I}_{\text{MINE}}(X;Y) = \sup_\theta \left[\frac{1}{N}\sum_{i=1}^N T_\thet
 where $(x_i, y_i)$ are joint samples and $(x_i, y'_i)$ are created by independently sampling $y'_i$ from the marginal.
 
 MINE is consistent (converges to the true MI) but suffers from high variance, especially when MI is large. The $\log$-sum-exp term requires careful handling to avoid numerical instability.
+
+**Practical note on MINE bias:** The naive MINE gradient estimator is biased because it takes gradients through the denominator $\log \mathbb{E}_{p(x)p(y)}[e^{T_\theta}]$. The standard fix is an **exponential moving average (EMA)** of the denominator: maintain $\bar{e}_t = (1-\alpha)\bar{e}_{t-1} + \alpha \cdot \mathbb{E}[e^{T_\theta}]$ and use $\bar{e}_t$ (treated as a constant) in the gradient. This reduces bias at the cost of introducing a tunable EMA coefficient $\alpha \in (0,1)$.
 
 ### The InfoNCE Connection
 

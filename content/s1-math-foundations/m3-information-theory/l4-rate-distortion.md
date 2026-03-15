@@ -21,8 +21,7 @@ This is a constrained optimization: among all conditional distributions $p(\hat{
 
 The rate-distortion function has key properties:
 
-- **Monotonically non-increasing:** lower distortion tolerance requires higher rate.
-- **Convex:** the marginal cost of reducing distortion increases as distortion decreases.
+- R(D) is a **convex, non-increasing** function of $D$: increasing distortion tolerance always reduces the required rate, and the marginal savings in rate diminish as $D$ increases (i.e., $R''(D) \geq 0$).
 - $R(0) = H(X)$ for discrete sources with Hamming distortion (lossless requires full entropy).
 - $R(D) = 0$ for $D \geq D_{\max}$, where $D_{\max}$ is the distortion achieved by ignoring $X$ entirely.
 
@@ -42,7 +41,7 @@ The optimal test channel is $\hat{X} = X + Z$ where $Z \sim \mathcal{N}(0, D)$ i
 
 For a Gaussian vector $X \sim \mathcal{N}(0, \Sigma)$ with eigenvalues $\sigma_1^2 \geq \sigma_2^2 \geq \cdots \geq \sigma_n^2$, the optimal rate allocation across components follows the **reverse water-filling** algorithm:
 
-$$D_i = \min(\theta, \sigma_i^2), \qquad R_i = \max\!\left(0, \frac{1}{2}\log_2 \frac{\sigma_i^2}{\theta}\right)$$
+$$D_i = \min(\theta, \sigma_i^2), \qquad R_i = \max\left(0, \frac{1}{2}\log_2 \frac{\sigma_i^2}{\theta}\right)$$
 
 where $\theta$ is chosen so that $\sum_i D_i = D$ (the total distortion budget). The intuition: components with variance below the "water level" $\theta$ are not encoded at all — they're too expensive per unit of distortion reduction. High-variance components receive more bits because they're more cost-effective to compress.
 
@@ -65,13 +64,13 @@ explanation: "$R(D) = \\frac{1}{2}\\log_2(\\sigma^2/D) = \\frac{1}{2}\\log_2(16/
 
 The connection between VAEs and rate-distortion theory is not merely analogical — it is exact. The negative ELBO decomposes as:
 
-$$-\text{ELBO} = \underbrace{D_{KL}(q_\phi(z|x) \| p(z))}_{R \text{ (rate)}} + \underbrace{\left(-\mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x|z)]\right)}_{D \text{ (distortion)}}$$
+$$-\text{ELBO} = \underbrace{D_{\text{KL}}(q_\phi(z|x) \| p(z))}_{R \text{ (rate)}} + \underbrace{\left(-\mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x|z)]\right)}_{D \text{ (distortion)}}$$
 
-The **rate** $R = D_{KL}(q(z|x) \| p(z))$ measures how many nats of information the encoder transmits about $x$ through the latent code $z$. The **distortion** $D = -\mathbb{E}[\log p_\theta(x|z)]$ measures the reconstruction quality (negative log-likelihood under the decoder).
+The **rate** $R = D_{\text{KL}}(q(z|x) \| p(z))$ measures how many nats of information the encoder transmits about $x$ through the latent code $z$. The **distortion** $D = -\mathbb{E}[\log p_\theta(x|z)]$ measures the reconstruction quality (negative log-likelihood under the decoder).
 
 Minimizing the ELBO is equivalent to minimizing $R + D$, a specific point on the rate-distortion trade-off. The $\beta$-VAE (Higgins et al., 2017) generalizes this by minimizing $\beta R + D$:
 
-$$\mathcal{L}_{\beta\text{-VAE}} = \beta \cdot D_{KL}(q_\phi(z|x) \| p(z)) - \mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x|z)]$$
+$$\mathcal{L}_{\beta\text{-VAE}} = \beta \cdot D_{\text{KL}}(q_\phi(z|x) \| p(z)) - \mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x|z)]$$
 
 - $\beta > 1$: aggressive compression, disentangled but blurry representations.
 - $\beta < 1$: generous rate budget, sharp reconstructions but entangled latents.

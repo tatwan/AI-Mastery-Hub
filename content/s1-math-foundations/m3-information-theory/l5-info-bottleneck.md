@@ -32,7 +32,7 @@ Sweeping $\beta$ from $0$ to $\infty$ traces out the **IB curve** in the $(I(X;T
 - At $\beta \to \infty$: relevance dominates. $T$ captures all information about $Y$, with $I(T;Y)$ approaching $I(X;Y)$.
 - Intermediate $\beta$: the interesting regime where $T$ selectively preserves task-relevant information.
 
-The IB curve is **concave** (or more precisely, the achievable region is convex), and any representation not on this curve is suboptimal — it either wastes bits on irrelevant features or discards useful ones.
+The IB curve — $I(T;Y)$ as a function of $I(X;T)$ — is **concave**. The achievable region is the convex set of $(I(X;T), I(T;Y))$ pairs lying below and to the right of the IB curve. Any representation not on this curve is suboptimal — it either wastes bits on irrelevant features or discards useful ones.
 
 This mirrors the rate-distortion framework (Lesson 4). In fact, the IB can be viewed as a rate-distortion problem where the "distortion" is the loss of predictive information $I(X;Y) - I(T;Y)$, and the "rate" is $I(X;T)$.
 
@@ -40,7 +40,7 @@ This mirrors the rate-distortion framework (Lesson 4). In fact, the IB can be vi
 
 For discrete variables, the IB optimal encoder $p(t|x)$ satisfies self-consistency equations analogous to the Blahut-Arimoto algorithm for rate-distortion:
 
-$$p(t|x) = \frac{p(t)}{Z(x, \beta)} \exp\!\left(-\beta \, D_{KL}\!\left(p(y|x) \,\|\, p(y|t)\right)\right)$$
+$$p(t|x) = \frac{p(t)}{Z(x, \beta)} \exp\left(-\beta \, D_{\text{KL}}\left(p(y|x) \,\|\, p(y|t)\right)\right)$$
 
 where $Z(x, \beta)$ is a normalization constant, and $p(y|t) = \sum_x p(y|x) p(x|t)$ is the prediction from the bottleneck representation.
 
@@ -60,6 +60,8 @@ They argued that the compression phase is essential for generalization: by shedd
 This would have been a profound result — an information-theoretic explanation of *why* deep learning generalizes. The trajectory of each layer through the information plane $(I(X; H_l), I(H_l; Y))$ would trace a path toward the IB curve, with depth providing successive refinement.
 
 > **Key insight:** The IB perspective reframes deep learning as progressive information refinement: each layer should discard more irrelevant information while preserving (or even concentrating) task-relevant information. This is consistent with the DPI, which guarantees that $I(X; H_1) \geq I(X; H_2) \geq \cdots$ for deterministic layers.
+
+**Important exception:** DPI applies to Markov chains under stochastic mappings. For **deterministic invertible** transformations (e.g., a lossless bijective layer), $I(X;T) = I(X;X) = H(X)$ — information is perfectly preserved. Compression only occurs when layers are either stochastic or non-injective (many-to-one). This is why normalizing flow models, which use invertible layers throughout, do not compress information — they rearrange it.
 
 :::quiz
 question: "In the IB Lagrangian $\\mathcal{L}_{IB} = I(X;T) - \\beta \\cdot I(T;Y)$, what happens at $\\beta = 0$?"
@@ -103,7 +105,7 @@ Despite the theoretical debates, the IB principle has concrete applications.
 
 The $\beta$-VAE loss is:
 
-$$\mathcal{L}_{\beta\text{-VAE}} = \beta \cdot D_{KL}(q(z|x) \| p(z)) - \mathbb{E}_q[\log p(x|z)]$$
+$$\mathcal{L}_{\beta\text{-VAE}} = \beta \cdot D_{\text{KL}}(q(z|x) \| p(z)) - \mathbb{E}_q[\log p(x|z)]$$
 
 If we have labeled data, replacing the reconstruction term with a classification term gives:
 
