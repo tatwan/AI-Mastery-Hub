@@ -270,6 +270,8 @@ The equivalence of (3) and (4) follows because $\|x - S_N\|^2 = \|x\|^2 - \sum_{
 
 (A Hilbert space is **separable** if it has a countable dense subset. All Hilbert spaces appearing in ML — $L^2$ with standard measures, $\ell^2$, RKHS of most kernels — are separable.)
 
+> **Key insight:** All separable infinite-dimensional Hilbert spaces are isometrically isomorphic to $\ell^2$ — there is, up to isomorphism, exactly one separable infinite-dimensional Hilbert space. This means $\ell^2$, $L^2([0,1])$, and any separable RKHS share the same abstract Hilbert space structure; their differences lie only in how elements are labeled (as sequences, as functions, as kernel evaluations), not in the geometry. This is why algorithms developed for $\ell^2$ (e.g., conjugate gradient) work identically in any separable Hilbert space.
+
 ### Fourier Series in $L^2([-\pi, \pi])$
 
 The functions

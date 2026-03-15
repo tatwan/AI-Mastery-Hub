@@ -235,6 +235,8 @@ $$\sup_{|\alpha| \leq k} \|D^\alpha f\|_{L^\infty} \leq C_{s,d,k} \|f\|_{H^s}$$
 
 for a constant depending only on $s$, $d$, $k$.
 
+This embedding requires $\Omega$ to be bounded with Lipschitz boundary (or $\Omega = \mathbb{R}^d$ for the version $H^s(\mathbb{R}^d) \hookrightarrow C_0(\mathbb{R}^d)$ — continuous functions vanishing at infinity). For neural network function approximation over all of $\mathbb{R}^d$, the relevant spaces are $H^s(\mathbb{R}^d)$, and the embedding $H^s(\mathbb{R}^d) \hookrightarrow C_0(\mathbb{R}^d)$ holds for $s > d/2$ by Plancherel and Cauchy-Schwarz on the Fourier side.
+
 **Proof sketch.** For $k = 0$: write $f(x) = \int \hat{f}(\xi) e^{2\pi i \xi \cdot x}\,d\xi$. By Cauchy-Schwarz:
 
 $$|f(x)| \leq \int |\hat{f}(\xi)|\,d\xi = \int (1+\|\xi\|^2)^{s/2}|\hat{f}(\xi)| \cdot (1+\|\xi\|^2)^{-s/2}\,d\xi$$
@@ -248,6 +250,10 @@ The second factor is finite if and only if $s > d/2$, giving the threshold. For 
 **Optimality.** The condition $s > d/2 + k$ is sharp. For $s = d/2 + k$, the embedding $H^s \hookrightarrow C^k$ fails; there are $H^{d/2}$ functions that are unbounded (e.g., $f(x) = \log|\log\|x\||$ near the origin in $d = 2$). The threshold $d/2$ is dimension-dependent — higher dimensions require more Sobolev regularity to guarantee continuity, reflecting the fact that singularities are harder to "spread out" in higher dimensions.
 
 **Compact embeddings (Rellich-Kondrachov).** On a bounded domain $\Omega$, the embedding $H^s(\Omega) \hookrightarrow H^{s'}(\Omega)$ is **compact** for $s > s'$. This means that a bounded set in $H^s$ is precompact in $H^{s'}$, i.e., any bounded sequence has a convergent subsequence in the weaker norm. Compact embeddings are used to prove existence of solutions to variational problems (via weak compactness arguments) and appear in the analysis of neural network function classes.
+
+**Trace theorem.** For $\Omega$ bounded with Lipschitz boundary, the restriction operator $\gamma_0: H^1(\Omega) \to L^2(\partial\Omega)$ is bounded and surjects onto $H^{1/2}(\partial\Omega)$ — the fractional Sobolev space defined via the Fourier characterization in Section 5 (functions whose Fourier transform has $(1+|\xi|^2)^{1/2}$ integrability on the boundary). Roughly: $H^1$ functions on the interior have $H^{1/2}$ regularity on the boundary — half a derivative is lost in the restriction.
+
+Note: this requires $\Omega$ to be bounded with Lipschitz boundary. For $\Omega = \mathbb{R}^d$, the analogous statement is $H^1(\mathbb{R}^d) \hookrightarrow H^{1/2}(\mathbb{R}^{d-1})$ via restriction to hyperplanes.
 
 **The Matérn connection (revisited).** The Matérn-$\nu$ kernel gives an RKHS equal to $H^{\nu+d/2}$. For this to be an RKHS (point evaluation bounded), we need $H^{\nu+d/2} \hookrightarrow C^0$, i.e., $\nu + d/2 > d/2$, which is $\nu > 0$. Hence every Matérn kernel with $\nu > 0$ has a well-defined RKHS with bounded point evaluations. For $k$-times differentiable functions in the RKHS, we need $\nu + d/2 > d/2 + k$, i.e., $\nu > k$.
 

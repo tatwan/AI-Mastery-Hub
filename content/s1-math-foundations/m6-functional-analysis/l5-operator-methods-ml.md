@@ -57,13 +57,9 @@ This is a linear ODE! Let $\Theta^\infty(X,X) = V \Lambda V^\top$ be the eigende
 
 $$\frac{d}{dt}(v_i^\top \hat{f}) = -\lambda_i (v_i^\top \hat{f} - v_i^\top y)$$
 
-Each mode decays as $e^{-\lambda_i t}$. The solution for the training residual is:
-
-$$\hat{f}(t) - y = (I - e^{-\Theta^\infty t})(f_0 - y) - (I - e^{-\Theta^\infty t})y + (f_0 - y)$$
-
-More precisely, if we set $f_0 = 0$ at initialization:
-
-$$\hat{f}(t) = (I - e^{-\Theta^\infty(X,X) t}) y$$
+Each mode decays as $e^{-\lambda_i t}$. The ODE $\frac{d\hat{f}}{dt} = -\Theta^\infty(\hat{f} - y)$ with $\hat{f}(0) = 0$ has solution:
+$$\hat{f}(t) = (I - e^{-\Theta^\infty t})y$$
+Verification by differentiation: $\frac{d}{dt}(I - e^{-\Theta^\infty t})y = \Theta^\infty e^{-\Theta^\infty t}y = -\Theta^\infty(\hat{f}(t) - y)$. $\checkmark$
 
 As $t \to \infty$, $\hat{f}(t) \to y$ on the training set. The **eigenvalue ordering** is critical: the mode corresponding to eigenvalue $\lambda_i$ is learned at rate $\lambda_i$. High-eigenvalue modes (smooth, low-frequency functions in the NTK's spectral ordering) are learned first; high-frequency modes come later. This is **spectral bias** or the **frequency principle**.
 
@@ -241,7 +237,7 @@ The estimator is:
 
 $$\widehat{\text{KSD}}^2(q \| p) = \frac{1}{n(n-1)} \sum_{i \neq j} \kappa_p(x_i, x_j), \qquad \{x_i\}_{i=1}^n \sim q$$
 
-This is computable from samples of $q$ alone, requiring only $\nabla \log p$ at those points.
+KSD allows goodness-of-fit testing against $p$ using only $\nabla \log p$ (the score function of the target — available for energy-based models without knowing the normalizing constant) and samples from the model $q$. KSD does NOT require samples from $p$ or the normalizing constant $Z = \int e^{-E(x)} dx$, which is precisely what makes it tractable for unnormalized models.
 
 > **Intuition:** The Stein operator "pushes" test functions through $p$, and if $q = p$ the expected output is zero. The kernelized version finds the best test function in the RKHS — by Mercer's theorem, the optimal test is the Stein kernel evaluated at the data points. The resulting discrepancy is a valid hypothesis test for $H_0 : q = p$ without samples from $p$.
 
@@ -295,11 +291,12 @@ $$K_\mathcal{H} = (G')^\top G^{-1}$$
 
 where $G_{ij} = k(x_i, x_j)$ and $G'_{ij} = k(x_i, x_{j+1})$ are Gram matrices of the data and its one-step successor. This connects Koopman theory directly to RKHS theory from L3.
 
-**Continuous-time Koopman.** For flows $\dot{x} = f(x)$, the Koopman generator is:
-
-$$\mathcal{L} g = f \cdot \nabla g$$
-
-with $\mathcal{K}^t = e^{t \mathcal{L}}$ (operator exponential). Eigenvalues of $\mathcal{L}$ are the Lyapunov exponents of the system.
+**The Koopman generator (continuous time).** For a continuous-time system $\dot{x} = f(x)$, the Koopman operator becomes infinitesimal: the **Koopman generator** is:
+$$\mathcal{L}g = \nabla g \cdot f = \sum_i f_i(x) \frac{\partial g}{\partial x_i}$$
+This is the directional derivative of $g$ along the flow. The generator satisfies $\frac{d}{dt}[\mathcal{K}^t g] = \mathcal{L}\mathcal{K}^t g$, the infinite-dimensional analogue of $\dot{x} = Ax$. Key connections:
+- **Fokker-Planck:** For the SDE $dx = f(x)\,dt + \sqrt{2}\,dW_t$, the Koopman generator is $\mathcal{L}g = \nabla g \cdot f + \Delta g$ — the adjoint of the Fokker-Planck operator, directly connecting to L4's distributional derivatives and M2's SDEs.
+- **Neural ODEs:** Learning the generator $\mathcal{L}$ is equivalent to learning the vector field $f$ — neural ODEs parameterize $f$ and integrate the generator.
+- **Hamiltonian systems:** For $\dot{q} = \partial_p H$, $\dot{p} = -\partial_q H$, the generator is the Poisson bracket $\mathcal{L}g = \{g, H\}$, preserving energy.
 
 **Connection to reinforcement learning.** In RL, the value function $V^\pi(s) = \mathbb{E}[\sum_{t=0}^\infty \gamma^t r_t | s_0 = s]$ satisfies the Bellman equation $V^\pi = r + \gamma P^\pi V^\pi$ where $P^\pi$ is the state transition operator. $P^\pi$ is exactly the Koopman operator for the stochastic dynamics under policy $\pi$! The Bellman equation is $(I - \gamma \mathcal{K}_{P^\pi}) V^\pi = r$, a resolvent equation for the Koopman operator. The spectral decomposition of $\mathcal{K}_{P^\pi}$ — proto-value functions (Mahadevan, 2005) — gives an efficient basis for value function approximation. This connects M4 (optimization, dynamic programming) to operator theory.
 

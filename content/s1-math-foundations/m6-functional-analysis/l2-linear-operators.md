@@ -29,6 +29,13 @@ $$\|T\| = \sup_{\|x\| = 1} \|Tx\| = \sup_{x \neq 0} \frac{\|Tx\|}{\|x\|}.$$
 
 - **Multiplication operators.** On $L^2([0,1])$, fix $m \in L^\infty([0,1])$ and define $(M_m f)(x) = m(x) f(x)$. Then $\|M_m\| = \|m\|_{L^\infty}$, which is finite. The eigenvalue equation $M_m f = \lambda f$ becomes $m(x)f(x) = \lambda f(x)$, so $f$ must be supported on the level set $\{m = \lambda\}$ — in general, there are no $L^2$ eigenfunctions, only a **continuous spectrum**.
 
+The **spectrum** $\sigma(T)$ of a bounded operator $T$ is $\{\lambda : T - \lambda I \text{ is not invertible}\}$, decomposed into three parts:
+- **Point spectrum** $\sigma_p(T)$: $\lambda$ is an eigenvalue ($\ker(T - \lambda I) \neq 0$).
+- **Continuous spectrum** $\sigma_c(T)$: $T - \lambda I$ is injective with dense range but is not surjective.
+- **Residual spectrum** $\sigma_r(T)$: $T - \lambda I$ is injective but does not have dense range.
+
+For compact self-adjoint operators, $\sigma(T) = \sigma_p(T) \cup \{0\}$ — the continuous and residual spectra are empty except possibly at $\lambda = 0$. This is precisely why the spectral theorem for compact operators is so clean: every nonzero spectral value is an eigenvalue with a genuine eigenvector, unlike the multiplication operator where most spectral values have no eigenvector.
+
 - **Integral operators.** Define $(Tf)(x) = \int_\Omega K(x,y) f(y) \, dy$ for a kernel $K: \Omega \times \Omega \to \mathbb{R}$. Under mild conditions on $K$ (e.g., $K \in L^2(\Omega \times \Omega)$), $T$ is bounded on $L^2(\Omega)$. The kernel $K(x,y) = \min(x,y)$ on $[0,1]$ is the covariance function of Brownian motion and defines a canonical bounded integral operator.
 
 - **Differentiation.** The operator $T = d/dx$ on $L^2([0,1])$ is **unbounded**: the functions $f_n(x) = \sin(n\pi x)/\sqrt{2}$ are unit vectors with $\|f_n'\|^2 = n^2\pi^2/2 \to \infty$. Differential operators are the principal example of unbounded operators; they require careful domain specification and are the subject of spectral theory for PDEs.
@@ -110,6 +117,8 @@ $$Tf = \sum_{n=1}^\infty \lambda_n \langle f, \phi_n \rangle \phi_n.$$
 **Proof sketch (Rayleigh quotient argument).**
 
 *Step 1: Existence of a first eigenvector.* Define the Rayleigh quotient $R(f) = \langle Tf, f \rangle / \|f\|^2$ and set $\lambda_1 = \sup_{\|f\|=1} \langle Tf, f \rangle$ (the spectral radius equals $\|T\|$ for self-adjoint operators). Take a maximizing sequence $\|f_n\| = 1$ with $\langle Tf_n, f_n \rangle \to \lambda_1$. Since $T$ is compact, pass to a subsequence so $Tf_n \to g$ for some $g \in H$. A calculation shows $Tf_n - \lambda_1 f_n \to 0$ in norm, so $f_n \to g/\lambda_1 =: \phi_1$ and $T\phi_1 = \lambda_1\phi_1$. The infimum similarly yields an eigenvector with eigenvalue $\lambda_0 = \inf_{\|f\|=1} \langle Tf, f \rangle$; the first eigenvalue extracted is whichever of $\lambda_1, \lambda_0$ has larger absolute value.
+
+> **Remember:** The attainment of the Rayleigh quotient supremum requires compactness. Take a maximizing sequence $\|f_n\| = 1$ with $\langle Tf_n, f_n\rangle \to \lambda_1 = \|T\|$. By compactness of $T$, $\{Tf_n\}$ has a convergent subsequence. Using the identity $\|Tf - \lambda_1 f\|^2 = \|Tf\|^2 - 2\lambda_1\langle Tf, f\rangle + \lambda_1^2$, one can show the limit point is an eigenvector with eigenvalue $\lambda_1$. This is one of two places in the proof where compactness is genuinely used.
 
 *Step 2: Induction on the orthogonal complement.* Let $H_1 = (\text{span}\{\phi_1\})^\perp$. Since $T$ is self-adjoint, $T$ maps $H_1$ to $H_1$ (self-adjoint operators preserve orthogonal complements of their eigenspaces). The restriction $T|_{H_1}$ is again compact and self-adjoint on $H_1$. Apply Step 1 to obtain $\phi_2 \perp \phi_1$ with $T\phi_2 = \lambda_2 \phi_2$ and $|\lambda_2| \leq |\lambda_1|$.
 
