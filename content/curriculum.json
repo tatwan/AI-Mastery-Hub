@@ -22,10 +22,15 @@
         {
           "id": "m1-linear-algebra",
           "title": "Advanced Linear Algebra & Matrix Theory",
-          "description": "SVD, random matrix theory, tensor algebra, matrix calculus.",
-          "status": "coming-soon",
-          "releaseNote": "Coming soon",
-          "lessons": []
+          "description": "SVD, low-rank approximations, matrix calculus, spectral theory, random matrix theory, and tensor algebra — the linear algebra behind modern ML.",
+          "status": "available",
+          "lessons": [
+            { "id": "l1-svd-low-rank", "title": "SVD & Low-Rank Approximations", "estimatedMinutes": 30, "status": "available" },
+            { "id": "l2-eigendecomposition", "title": "Eigendecomposition & Spectral Theory", "estimatedMinutes": 25, "status": "available" },
+            { "id": "l3-matrix-calculus", "title": "Matrix Calculus for Deep Learning", "estimatedMinutes": 35, "status": "available" },
+            { "id": "l4-random-matrix-theory", "title": "Random Matrix Theory", "estimatedMinutes": 30, "status": "available" },
+            { "id": "l5-tensor-algebra", "title": "Tensor Algebra & Decompositions", "estimatedMinutes": 30, "status": "available" }
+          ]
         },
         {
           "id": "m2-probability-theory",

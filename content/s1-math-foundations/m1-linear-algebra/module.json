@@ -1,1 +1,5 @@
-{ "id": "m1-linear-algebra", "title": "Advanced Linear Algebra & Matrix Theory", "status": "coming-soon" }
+{
+  "id": "m1-linear-algebra",
+  "title": "Advanced Linear Algebra & Matrix Theory",
+  "status": "available"
+}
