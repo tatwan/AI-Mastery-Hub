@@ -14,6 +14,8 @@ We want a representation $T$ that satisfies two competing objectives:
 1. **Compression:** $T$ should be a compact summary of $X$, meaning $I(X; T)$ should be small.
 2. **Relevance:** $T$ should retain information about $Y$, meaning $I(T; Y)$ should be large.
 
+> **Intuition:** The IB compresses $X$ into $Z$ to retain information about $Y$ (task-relevant) while discarding information about $X$ (irrelevant details). The tradeoff parameter $\beta$ controls how much to compress: small $\beta$ means "keep everything," large $\beta$ means "keep only what helps predict $Y$." This is the information-theoretic formalization of the idea that a good feature extractor retains signal and discards noise, where "signal" is defined by what predicts the target.
+
 The IB Lagrangian combines these:
 
 $$\mathcal{L}_{IB} = I(X; T) - \beta \cdot I(T; Y)$$
@@ -34,9 +36,13 @@ Sweeping $\beta$ from $0$ to $\infty$ traces out the **IB curve** in the $(I(X;T
 
 The IB curve — $I(T;Y)$ as a function of $I(X;T)$ — is **concave**. The achievable region is the convex set of $(I(X;T), I(T;Y))$ pairs lying below and to the right of the IB curve. Any representation not on this curve is suboptimal — it either wastes bits on irrelevant features or discards useful ones.
 
+> **Remember:** The IB curve plots $I(T;Y)$ (relevance, vertical axis) vs $I(T;X)$ (compression, horizontal axis) — the frontier is concave. Increasing $\beta$ makes the encoder more compressed (moves left along the curve) and less informative about $Y$ (moves down). A good representation sits on the frontier; a representation strictly inside the achievable region is suboptimal because it uses more bits of $I(T;X)$ than necessary for the level of relevance $I(T;Y)$ it achieves.
+
 This mirrors the rate-distortion framework (Lesson 4). In fact, the IB can be viewed as a rate-distortion problem where the "distortion" is the loss of predictive information $I(X;Y) - I(T;Y)$, and the "rate" is $I(X;T)$.
 
 ## IB Self-Consistency Equations
+
+> **Refresher:** The Markov condition $X \to Z \to Y$ means $Z$ is computed from $X$ only — $Z$ is a "sufficient statistic" for $Y$ when $I(X;Y|Z) = 0$, meaning knowing $Z$ makes $Y$ independent of $X$. This is the boundary where compression is lossless with respect to the task: $Z$ carries everything $X$ knew about $Y$, and nothing more is gained by looking at $X$ directly. IB seeks representations that approach this sufficient statistic condition while using as few bits as possible.
 
 For discrete variables, the IB optimal encoder $p(t|x)$ satisfies self-consistency equations analogous to the Blahut-Arimoto algorithm for rate-distortion:
 
@@ -49,6 +55,8 @@ The encoder assigns $x$ to representation $t$ based on how similar the label dis
 These equations must be solved iteratively (alternating updates of $p(t|x)$, $p(t)$, and $p(y|t)$), and the algorithm is guaranteed to converge to a local optimum. The number of effective clusters in $T$ undergoes phase transitions as $\beta$ increases: below a critical $\beta_c$, a single cluster suffices, and new clusters emerge discontinuously as $\beta$ grows.
 
 ## Deep Learning and the IB: Tishby's Claim
+
+> **Intuition:** Tishby's controversial claim: neural networks first "fit" (increase $I(Z;Y)$, moving up on the IB plane) then "compress" (decrease $I(Z;X)$, moving left on the IB plane) during training — as if the network converges toward the IB frontier from the interior. The empirical evidence is debated (the compression phase appears only with saturating activations and specific MI estimators), but the framework is insightful: it suggests that generalization arises from discarding input information irrelevant to the task, not just from fitting the training labels.
 
 In a influential 2017 paper, Shwartz-Ziv and Tishby made a bold claim about deep neural networks. By estimating $I(X; H_l)$ and $I(H_l; Y)$ for each hidden layer $H_l$, they observed two distinct phases during training:
 

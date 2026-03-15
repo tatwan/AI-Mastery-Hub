@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { QuizBlock } from '../../types.ts';
+import { MathText } from './MathText.tsx';
 
 interface Props {
   quizIndex: number;
@@ -19,18 +20,35 @@ export function InlineQuiz({ block, savedAnswer, onAnswer }: Props) {
     onAnswer(idx);
   };
 
+  const handleReset = () => {
+    setSelected(undefined);
+    onAnswer(-1); // -1 clears the saved answer on the backend
+  };
+
   return (
     <div className="my-8 p-6 rounded-xl bg-slate-800/60 border border-white/8">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="w-5 h-5 rounded bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
-          <span className="text-indigo-400 text-xs font-bold">?</span>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <div className="w-5 h-5 rounded bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
+            <span className="text-indigo-400 text-xs font-bold">?</span>
+          </div>
+          <span className="text-xs font-semibold text-indigo-400 uppercase tracking-wider">
+            Knowledge Check
+          </span>
         </div>
-        <span className="text-xs font-semibold text-indigo-400 uppercase tracking-wider">
-          Knowledge Check
-        </span>
+        {answered && (
+          <button
+            onClick={handleReset}
+            className="text-xs text-slate-500 hover:text-slate-300 transition-colors flex items-center gap-1"
+          >
+            <span>↺</span> Try again
+          </button>
+        )}
       </div>
 
-      <p className="text-slate-200 font-medium mb-4">{block.question}</p>
+      <p className="text-slate-200 font-medium mb-4">
+        <MathText>{block.question}</MathText>
+      </p>
 
       <div className="space-y-2">
         {block.options.map((option, idx) => {
@@ -51,7 +69,7 @@ export function InlineQuiz({ block, savedAnswer, onAnswer }: Props) {
               <span className="font-mono text-xs mr-3 opacity-60">
                 {String.fromCharCode(65 + idx)}.
               </span>
-              {option}
+              <MathText>{option}</MathText>
             </button>
           );
         })}
@@ -66,7 +84,7 @@ export function InlineQuiz({ block, savedAnswer, onAnswer }: Props) {
           }`}
         >
           <span className="font-semibold mr-1">{isCorrect ? 'Correct!' : 'Not quite.'}</span>
-          {block.explanation}
+          <MathText>{block.explanation}</MathText>
         </div>
       )}
     </div>

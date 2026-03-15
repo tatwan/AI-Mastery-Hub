@@ -49,9 +49,14 @@
           "id": "m4-optimization-theory",
           "title": "Optimization Theory",
           "description": "Convex analysis, duality, proximal methods, non-convex landscapes.",
-          "status": "coming-soon",
-          "releaseNote": "Coming soon",
-          "lessons": []
+          "status": "available",
+          "lessons": [
+            { "id": "l1-convex-analysis", "title": "Convex Analysis & Optimality Conditions", "estimatedMinutes": 30 },
+            { "id": "l2-gradient-methods", "title": "Gradient Descent & Convergence Theory", "estimatedMinutes": 30 },
+            { "id": "l3-adaptive-optimizers", "title": "Adaptive Gradient Methods", "estimatedMinutes": 35 },
+            { "id": "l4-nonconvex-landscapes", "title": "Non-Convex Landscapes & Implicit Regularization", "estimatedMinutes": 35 },
+            { "id": "l5-proximal-methods", "title": "Proximal Methods & Constrained Optimization", "estimatedMinutes": 35 }
+          ]
         },
         {
           "id": "m5-optimal-transport",

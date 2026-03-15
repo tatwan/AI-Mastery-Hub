@@ -9,6 +9,8 @@ prerequisites: ["l1-entropy", "l2-kl-divergence"]
 
 **Mutual information** (MI) quantifies the statistical dependence between two random variables — the amount of information that observing one reveals about the other:
 
+> **Intuition:** $I(X;Y)$ measures how much knowing $Y$ reduces uncertainty about $X$. It is zero if and only if $X$ and $Y$ are independent (knowing $Y$ tells you nothing), and it equals $H(X)$ if $Y$ fully determines $X$ (knowing $Y$ removes all uncertainty). Unlike correlation, MI captures any form of dependence — linear, nonlinear, or categorical — because it compares the joint distribution to the product of marginals rather than measuring linear co-variation.
+
 $$I(X;Y) = \sum_{x,y} p(x,y) \log \frac{p(x,y)}{p(x)p(y)}$$
 
 This definition admits several equivalent forms, each revealing a different facet:
@@ -48,6 +50,8 @@ This measures the dependence between $X$ and $Y$ that remains after accounting f
 
 The **data processing inequality (DPI)** is one of the most consequential results in information theory. If $X \to Y \to Z$ forms a Markov chain (meaning $Z$ is conditionally independent of $X$ given $Y$: $p(z|x,y) = p(z|y)$), then:
 
+> **Refresher:** If $X \to Y \to Z$ is a Markov chain, then $I(X;Z) \leq I(X;Y)$ — processing can only lose information, never create it. Any deterministic function $Z = f(Y)$ satisfies this: compression, hashing, rounding, and every layer in a neural network all form valid Markov chains. Equality holds only when $Z$ is a *sufficient statistic* of $Y$ for $X$ — that is, when $Z$ retains every bit of information that $Y$ carried about $X$.
+
 $$I(X; Z) \leq I(X; Y)$$
 
 **Proof sketch:** By the chain rule, $I(X; Y, Z) = I(X; Y) + I(X; Z|Y)$. But the Markov condition $X \to Y \to Z$ implies $I(X; Z|Y) = 0$ (once you know $Y$, $Z$ adds nothing about $X$). Also, $I(X; Y, Z) = I(X; Z) + I(X; Y|Z) \geq I(X; Z)$. Combining: $I(X; Y) = I(X; Y, Z) \geq I(X; Z)$.
@@ -83,11 +87,15 @@ Channel capacity has a natural analog in ML: the **capacity** of a representatio
 
 ## MI in Representation Learning
 
+> **Intuition:** Good representations maximize $I(Z;Y)$ (predictive of labels) while minimizing $I(Z;X)$ (compact). This is the information bottleneck objective stated in MI terms: keep what is relevant for the task, discard everything else. A representation that memorizes the training set has high $I(Z;X)$ but may not generalize; a representation that captures only task-relevant structure has lower $I(Z;X)$ and often generalizes better because it has shed the idiosyncratic details of specific training examples.
+
 Given input $X$ and target $Y$, a representation $T = f_\theta(X)$ is useful if $I(T; Y)$ is large — the representation retains information about the target. The DPI constrains $I(T; Y) \leq I(X; Y)$, but within this bound, we want $T$ to maximize task-relevant information.
 
 The challenge is that MI is notoriously difficult to compute in high dimensions. The joint density $p(x, y)$ is unknown, and density estimation in high dimensions is unreliable. This motivated a series of *neural MI estimators*.
 
 ### The MINE Estimator
+
+> **Remember:** MINE estimates $I(X;Y)$ by optimizing a neural network over the Donsker-Varadhan representation — the network learns the log density ratio $\log p(x,y)/p(x)p(y)$ by distinguishing joint samples from independently shuffled marginal samples. MINE is consistent but biased with small batch sizes because the log-mean-exp in the denominator is a concave function of its argument; the standard fix is an exponential moving average of the denominator treated as a constant during gradient computation.
 
 The **Mutual Information Neural Estimation (MINE)** framework (Belghazi et al., 2018) applies the Donsker-Varadhan representation of KL divergence to MI:
 

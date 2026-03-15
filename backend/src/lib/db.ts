@@ -184,7 +184,12 @@ export function saveQuizAnswer(
   const answers: Record<string, number> = existing?.quiz_answers
     ? (JSON.parse(existing.quiz_answers) as Record<string, number>)
     : {};
-  answers[String(quizIndex)] = selectedOption;
+  // selectedOption === -1 signals "clear this answer" (quiz reset)
+  if (selectedOption === -1) {
+    delete answers[String(quizIndex)];
+  } else {
+    answers[String(quizIndex)] = selectedOption;
+  }
   const answersJson = JSON.stringify(answers);
 
   if (!existing) {

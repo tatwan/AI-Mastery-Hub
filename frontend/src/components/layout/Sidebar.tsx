@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useCurriculum } from '../../hooks/useCurriculum.ts';
 import type { SemesterMeta, ModuleMeta, LessonMeta } from '../../types.ts';
@@ -60,6 +61,8 @@ function ModuleSection({
   activeLessonId?: string;
   completedLessons: Set<string>;
 }) {
+  const [open, setOpen] = useState(true);
+
   if (mod.status !== 'available') {
     return (
       <div className="flex items-center justify-between px-3 py-1.5 mb-1">
@@ -75,10 +78,16 @@ function ModuleSection({
 
   return (
     <div className="mb-2">
-      <div className="px-3 py-1 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-        {mod.title}
-      </div>
-      {mod.lessons.map(lesson => (
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="w-full px-3 py-1 flex items-center justify-between text-xs font-semibold text-slate-400 uppercase tracking-wider hover:text-slate-200 transition-colors group"
+      >
+        <span>{mod.title}</span>
+        <span className={`transition-transform text-slate-600 group-hover:text-slate-400 ${open ? '' : '-rotate-90'}`}>
+          ▾
+        </span>
+      </button>
+      {open && mod.lessons.map(lesson => (
         <LessonItem
           key={lesson.id}
           lesson={lesson}
@@ -96,28 +105,43 @@ function SemesterSection({
   sem,
   activeLessonId,
   completedLessons,
+  defaultOpen,
 }: {
   sem: SemesterMeta;
   activeLessonId?: string;
   completedLessons: Set<string>;
+  defaultOpen: boolean;
 }) {
+  const [open, setOpen] = useState(defaultOpen);
+
   return (
-    <div className="mb-5">
-      <div className="px-3 py-2 flex items-center justify-between">
+    <div className="mb-3">
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="w-full px-3 py-2 flex items-center justify-between group"
+      >
         <span
-          className={`text-sm font-bold ${
-            sem.status === 'available' ? 'text-slate-200' : 'text-slate-600'
+          className={`text-sm font-bold transition-colors ${
+            sem.status === 'available'
+              ? 'text-slate-200 group-hover:text-white'
+              : 'text-slate-600'
           }`}
         >
           {sem.title}
         </span>
-        {sem.status !== 'available' && (
-          <span className="text-[10px] text-slate-700 bg-slate-800/80 px-1.5 py-0.5 rounded flex-shrink-0 ml-2">
-            coming soon
+        <div className="flex items-center gap-1.5">
+          {sem.status !== 'available' && (
+            <span className="text-[10px] text-slate-700 bg-slate-800/80 px-1.5 py-0.5 rounded">
+              soon
+            </span>
+          )}
+          <span className={`text-slate-600 group-hover:text-slate-400 transition-transform text-xs ${open ? '' : '-rotate-90'}`}>
+            ▾
           </span>
-        )}
-      </div>
-      {sem.status === 'available' &&
+        </div>
+      </button>
+
+      {open && sem.status === 'available' &&
         sem.modules.map(mod => (
           <ModuleSection
             key={mod.id}
@@ -141,12 +165,13 @@ export function Sidebar({ completedLessons = new Set<string>() }: { completedLes
         {isLoading && (
           <div className="px-4 text-slate-600 text-sm animate-pulse">Loading…</div>
         )}
-        {curriculum?.semesters.map(sem => (
+        {curriculum?.semesters.map((sem, idx) => (
           <SemesterSection
             key={sem.id}
             sem={sem}
             activeLessonId={params.lessonId}
             completedLessons={completedLessons}
+            defaultOpen={idx === 0}
           />
         ))}
       </div>

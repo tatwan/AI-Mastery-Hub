@@ -9,6 +9,8 @@ prerequisites: ["l1-entropy"]
 
 The **Kullback-Leibler divergence** measures how one probability distribution differs from another:
 
+> **Intuition:** $D_{\text{KL}}(P \| Q)$ measures the extra bits needed to encode $P$-distributed data using a code optimized for $Q$. If you design a Huffman code for $Q$ but the data actually comes from $P$, you pay $D_{\text{KL}}(P \| Q)$ extra bits per symbol on average. This asymmetry is why $D_{\text{KL}}(P \| Q) \neq D_{\text{KL}}(Q \| P)$: the "direction" specifies which distribution generates the data and which provides the code.
+
 $$D_{\text{KL}}(P \| Q) = \sum_{x} p(x) \log \frac{p(x)}{q(x)} = \mathbb{E}_{X \sim P}\left[\log \frac{p(X)}{q(X)}\right]$$
 
 For continuous distributions, the sum becomes an integral. The KL divergence has a clean operational interpretation: it is the **expected extra cost** (in nats or bits) of encoding samples from $P$ using a code optimized for $Q$ instead of $P$. Equivalently, from the cross-entropy decomposition:
@@ -31,6 +33,8 @@ Despite measuring "distance" between distributions, KL divergence fails two metr
 
 1. **Asymmetry:** $D_{\text{KL}}(P \| Q) \neq D_{\text{KL}}(Q \| P)$ in general. The direction matters enormously.
 2. **No triangle inequality:** There exist $P, Q, R$ where $D_{\text{KL}}(P \| R) > D_{\text{KL}}(P \| Q) + D_{\text{KL}}(Q \| R)$.
+
+> **Refresher:** $D_{\text{KL}}(P \| Q) \neq D_{\text{KL}}(Q \| P)$ in general — the two directions are called "forward KL" and "reverse KL" and they lead to qualitatively different fitting behavior in variational inference. Forward KL ($D_{\text{KL}}(P \| Q)$, minimized over $Q$) is mode-covering: $Q$ must spread to cover every mode of $P$. Reverse KL ($D_{\text{KL}}(Q \| P)$, minimized over $Q$) is mode-seeking: $Q$ locks onto a single mode to avoid placing mass outside $P$'s support.
 
 This asymmetry is not a defect — it reflects genuinely different optimization problems, as we'll see next.
 
@@ -73,6 +77,8 @@ explanation: "Forward KL is mode-covering: $q$ must place mass wherever $p$ has 
 
 ## The f-Divergence Family
 
+> **Refresher:** KL, total variation, $\chi^2$, and Hellinger are all special cases of f-divergences: $D_f(P \| Q) = \mathbb{E}_Q[f(dP/dQ)]$ for a convex $f$ with $f(1) = 0$. Different choices of $f$ give different "shapes" of probability comparison — KL is unbounded and sensitive to distribution tails; total variation is bounded and cares about the worst-case event; $\chi^2$ is unbounded and over-sensitive to regions where $Q$ is small. The choice of divergence encodes an implicit assumption about which differences between $P$ and $Q$ matter most.
+
 KL divergence is one member of a broader family. An **f-divergence** is defined for any convex function $f$ with $f(1) = 0$:
 
 $$D_f(P \| Q) = \sum_x q(x) \, f\left(\frac{p(x)}{q(x)}\right)$$
@@ -105,6 +111,8 @@ where $f^*$ is the convex conjugate of $f$. This unifies many GAN variants: the 
 
 ## Jensen-Shannon Divergence: The Symmetric Alternative
 
+> **Intuition:** JSD is the symmetrized, bounded version of KL — it compares each distribution to their mixture $M = (P+Q)/2$ rather than directly to each other. Its square root $\sqrt{\text{JSD}(P \| Q)}$ is a true metric on distributions, so you can meaningfully compare JSD values across different pairs. JSD connects directly to GAN training: the optimal GAN discriminator minimizes $2\,\text{JSD}(P_{\text{data}} \| P_G) - \log 4$, meaning GAN training is literally minimizing this symmetric distance between the data distribution and the generator.
+
 The **Jensen-Shannon divergence** symmetrizes KL by averaging both directions through a mixture:
 
 $$\text{JSD}(P \| Q) = \frac{1}{2}D_{\text{KL}}(P \| M) + \frac{1}{2}D_{\text{KL}}(Q \| M), \quad M = \frac{P+Q}{2}$$
@@ -129,6 +137,8 @@ where the supremum is over all measurable functions $T$. The optimal $T^*(x) = \
 > **Key insight:** The Donsker-Varadhan bound turns KL estimation into an optimization problem over function space — exactly the kind of problem neural networks can approximate. This is why we can estimate divergences between complex, high-dimensional distributions using learned discriminators.
 
 ## KL Divergence in VAEs: The ELBO
+
+> **Remember:** $\log Z = \max_Q \{\mathbb{E}_Q[\log p] + H(Q)\}$ — the log partition function equals the maximum of a variational objective (the ELBO). This is the Gibbs variational principle: the free energy is minimized by the Boltzmann distribution, and the ELBO is tight when $Q$ equals the true posterior. Every VAE, every variational inference algorithm, and every energy-based model training procedure is an application of this single identity.
 
 The variational autoencoder provides the most important application of KL divergence in modern deep learning. For a latent variable model $p_\theta(x) = \int p_\theta(x|z) p(z) \, dz$, the log-evidence decomposes as:
 

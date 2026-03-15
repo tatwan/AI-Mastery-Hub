@@ -7,6 +7,8 @@ prerequisites: ["l1-entropy", "l2-kl-divergence", "l3-mutual-information"]
 
 ## The Rate-Distortion Trade-off
 
+> **Refresher:** In lossless compression, you need $H(X)$ bits on average and cannot do better (Shannon's source coding theorem). In lossy compression, you accept distortion $D$ to reduce the rate below $H(X)$ — the $R(D)$ function tells you the optimal tradeoff: the minimum bits per sample needed to achieve average distortion at most $D$. Every practical compression system (JPEG, MP3, neural codecs) trades off these two quantities; the $R(D)$ curve is the hard theoretical frontier they can approach but never cross.
+
 Lossless compression has a hard floor: you need at least $H(X)$ bits per symbol. But what if we tolerate some distortion? **Rate-distortion theory** characterizes the fundamental trade-off between the **rate** $R$ (bits used) and the **distortion** $D$ (fidelity loss accepted).
 
 This trade-off is inescapable. Every compression system — JPEG, neural codecs, quantized neural networks, even biological sensory systems — operates somewhere on the rate-distortion curve. The theory tells us the *best possible* trade-off; practical systems can only do worse.
@@ -14,6 +16,8 @@ This trade-off is inescapable. Every compression system — JPEG, neural codecs,
 ## The Rate-Distortion Function
 
 Given a source $X \sim p(x)$ and a distortion measure $d(x, \hat{x})$ (e.g., squared error, Hamming distance), the **rate-distortion function** is:
+
+> **Intuition:** $R(D)$ is the minimum mutual information $I(X;\hat{X})$ over all "test channels" $p(\hat{x}|x)$ that achieve distortion $\leq D$. The test channel models the stochastic relationship between the source and its reconstruction — think of it as a noisy transmission line. Lower $R$ means fewer bits needed per sample. The minimization over test channels finds the most efficient such channel for a given distortion budget.
 
 $$R(D) = \min_{\substack{p(\hat{x}|x): \\ \mathbb{E}[d(X, \hat{X})] \leq D}} I(X; \hat{X})$$
 
@@ -30,6 +34,8 @@ The rate-distortion function has key properties:
 ## Gaussian Rate-Distortion: The Closed-Form Case
 
 For a Gaussian source $X \sim \mathcal{N}(0, \sigma^2)$ with squared error distortion $d(x, \hat{x}) = (x - \hat{x})^2$, the rate-distortion function has a beautiful closed form:
+
+> **Remember:** For a Gaussian source with variance $\sigma^2$, the optimal distortion at rate $R$ is $D^*(R) = \sigma^2 \cdot 2^{-2R}$ — each additional bit halves the standard deviation of the error, or equivalently, each extra bit reduces distortion by a factor of 4. This is the tightest possible result: no encoder/decoder pair, regardless of complexity, can beat this curve for a Gaussian source under MSE distortion.
 
 $$R(D) = \begin{cases} \frac{1}{2} \log_2 \frac{\sigma^2}{D} & \text{if } D < \sigma^2 \\ 0 & \text{if } D \geq \sigma^2 \end{cases}$$
 
@@ -61,6 +67,8 @@ explanation: "$R(D) = \\frac{1}{2}\\log_2(\\sigma^2/D) = \\frac{1}{2}\\log_2(16/
 :::
 
 ## VAEs as Rate-Distortion Optimization
+
+> **Intuition:** Variational autoencoders are implementing rate-distortion theory in disguise: the KL divergence term in the ELBO is the rate (how many nats of information the encoder transmits about $x$ through the bottleneck $z$), and the reconstruction loss is the distortion (how faithfully the decoder recovers $x$ from $z$). Minimizing the ELBO is therefore minimizing $R + D$, a specific operating point on the rate-distortion curve. The $\beta$-VAE simply changes the Lagrange multiplier to select a different point on that curve.
 
 The connection between VAEs and rate-distortion theory is not merely analogical — it is exact. The negative ELBO decomposes as:
 

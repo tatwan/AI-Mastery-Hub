@@ -9,6 +9,8 @@ prerequisites: []
 
 The foundation of information theory rests on a deceptively simple question: how much *information* does an event carry? Shannon's answer begins with **self-information** (also called surprisal):
 
+> **Refresher:** $\log(1/p)$ is the natural unit of surprise — an event with probability 1 gives $\log(1) = 0$ bits (no surprise), while an event with probability $1/2$ gives $\log_2(2) = 1$ bit, and an event with probability $1/1024$ gives 10 bits. The logarithm turns multiplicative probabilities into additive information: the information from two independent events adds because $\log(1/p_1 p_2) = \log(1/p_1) + \log(1/p_2)$.
+
 $$I(x) = -\log_2 p(x)$$
 
 This measures the information content of observing outcome $x$ in bits. An event with probability $p(x) = 1$ carries zero information — it was certain to happen. An event with $p(x) = 1/1024$ carries $\log_2(1024) = 10$ bits — highly surprising, highly informative.
@@ -26,6 +28,8 @@ The logarithm is the only function satisfying all three. The base determines the
 ## Shannon Entropy: Average Information
 
 Given a discrete random variable $X$ with distribution $p$, the **Shannon entropy** is the expected self-information:
+
+> **Intuition:** Entropy measures average surprise — rare events carry more information than common ones, and $p(x) \log(1/p(x))$ is exactly the "surprise" of the event weighted by how often it occurs. A coin flip (two equally likely outcomes) has 1 bit of entropy; a loaded coin that always lands heads has 0 bits. The formula averages these per-event surprises over the whole distribution.
 
 $$H(X) = -\sum_{x \in \mathcal{X}} p(x) \log p(x) = \mathbb{E}_{X \sim p}\left[-\log p(X)\right]$$
 
@@ -46,6 +50,8 @@ Shannon's first major theorem gives entropy an operational meaning: $H(X)$ is th
 This connects directly to ML: when we train a model to predict tokens, the cross-entropy loss measures how many bits our model needs per token. A perfect model achieving the entropy of the true distribution is the theoretical optimum. The perplexity of a language model is $2^{H(p,q)}$ (or $e^{H(p,q)}$ in nats) — a direct exponentiation of the cross-entropy, measuring the effective vocabulary size the model is "confused" among at each step.
 
 ### Differential Entropy: The Continuous Case
+
+> **Intuition:** Differential entropy is the continuous analog of entropy, but it can be negative and is not invariant to reparameterization — it measures entropy relative to the Lebesgue measure (uniform density on the real line). Squeezing a distribution into a very small interval makes it highly concentrated, so its density is large, and the log of a large density is positive; averaging $-f \log f$ can then go negative. What is invariant is the *difference* of differential entropies, which is why KL divergence and mutual information remain well-defined for continuous variables.
 
 For continuous random variables $X$ with density $f(x)$, the **differential entropy** is:
 
@@ -81,6 +87,8 @@ $$H(X, Y) = H(X) + H(Y|X) = H(Y) + H(X|Y)$$
 
 This is the information-theoretic analog of the probability chain rule $p(x,y) = p(x)p(y|x)$. It decomposes the total uncertainty of $(X,Y)$ into the uncertainty of $X$ plus the residual uncertainty of $Y$ given $X$.
 
+> **Remember:** $H(X,Y) = H(X) + H(Y|X)$ — the chain rule for entropy. Conditioning can only reduce or preserve entropy, never increase it: $H(Y|X) \leq H(Y)$, with equality iff $X$ and $Y$ are independent. This is the information-theoretic reason that observing more data cannot make you less certain on average.
+
 > **Key insight:** Conditioning always reduces entropy on average: $H(X|Y) \leq H(X)$, with equality iff $X$ and $Y$ are independent. Observation can only resolve uncertainty, never increase it.
 
 :::quiz
@@ -95,6 +103,8 @@ explanation: "When all $n$ outcomes have probability $1/n$, entropy is $-\\sum_{
 :::
 
 ## Cross-Entropy: The ML Loss Function
+
+> **Intuition:** The maximum entropy principle says: among all distributions consistent with your constraints, choose the one with the highest entropy. This is the "most honest" distribution — it assumes nothing beyond what the constraints tell you. A distribution with lower entropy would be implicitly claiming more certainty than your constraints justify. This principle uniquely selects the uniform distribution when you have no constraints, the Gaussian when you know only the mean and variance, and the Boltzmann distribution in statistical physics.
 
 The **cross-entropy** between a true distribution $p$ and a model distribution $q$ is:
 

@@ -1,10 +1,20 @@
+import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
+import remarkGfm from 'remark-gfm';
 import rehypeKatex from 'rehype-katex';
 import type { Components } from 'react-markdown';
 import { CodeBlock } from './CodeBlock.tsx';
 import { InlineQuiz } from './InlineQuiz.tsx';
 import type { ContentBlock, Lesson } from '../../types.ts';
+
+function extractText(node: React.ReactNode): string {
+  if (typeof node === 'string') return node;
+  if (typeof node === 'number') return String(node);
+  if (Array.isArray(node)) return node.map(extractText).join('');
+  if (React.isValidElement(node)) return extractText((node.props as { children?: React.ReactNode }).children);
+  return '';
+}
 
 const mdComponents: Components = {
   code({ className, children }) {
@@ -37,11 +47,63 @@ const mdComponents: Components = {
     return <ol className="list-decimal pl-6 text-slate-300 mb-4 space-y-1">{children}</ol>;
   },
   blockquote({ children }) {
+    // Detect callout type by keyword prefix in the rendered text.
+    // Content convention: > **Refresher:** | > **Intuition:** | > **Remember:** | > **Key insight:**
+    const text = extractText(children).trim();
+
+    if (text.startsWith('Refresher:')) {
+      return (
+        <blockquote className="border-l-4 border-orange-500/70 pl-4 my-6 text-slate-300 bg-orange-500/5 py-3 rounded-r-lg">
+          {children}
+        </blockquote>
+      );
+    }
+    if (text.startsWith('Intuition:')) {
+      return (
+        <blockquote className="border-l-4 border-emerald-500/70 pl-4 my-6 text-slate-300 bg-emerald-500/5 py-3 rounded-r-lg">
+          {children}
+        </blockquote>
+      );
+    }
+    if (text.startsWith('Remember:') || text.startsWith('Note:')) {
+      return (
+        <blockquote className="border-l-4 border-yellow-500/70 pl-4 my-6 text-slate-300 bg-yellow-500/5 py-3 rounded-r-lg">
+          {children}
+        </blockquote>
+      );
+    }
+    // Default: Key insight / general callouts → indigo
     return (
       <blockquote className="border-l-4 border-indigo-500 pl-4 my-6 text-slate-300 bg-indigo-500/5 py-3 rounded-r-lg">
         {children}
       </blockquote>
     );
+  },
+  table({ children }) {
+    return (
+      <div className="my-6 overflow-x-auto">
+        <table className="w-full text-sm border-collapse">{children}</table>
+      </div>
+    );
+  },
+  thead({ children }) {
+    return <thead className="border-b border-white/10">{children}</thead>;
+  },
+  tbody({ children }) {
+    return <tbody className="divide-y divide-white/5">{children}</tbody>;
+  },
+  tr({ children }) {
+    return <tr className="hover:bg-white/2 transition-colors">{children}</tr>;
+  },
+  th({ children }) {
+    return (
+      <th className="px-4 py-2.5 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
+        {children}
+      </th>
+    );
+  },
+  td({ children }) {
+    return <td className="px-4 py-2.5 text-slate-300">{children}</td>;
   },
 };
 
@@ -52,8 +114,6 @@ interface Props {
 }
 
 export function LessonReader({ lesson, quizAnswers, onQuizAnswer }: Props) {
-  // quizCount tracks index among quiz blocks only (not the full content array index)
-  // so quizAnswers keys "0","1",... always refer to the Nth quiz in the lesson
   let quizCount = 0;
 
   return (
@@ -63,7 +123,7 @@ export function LessonReader({ lesson, quizAnswers, onQuizAnswer }: Props) {
           return (
             <ReactMarkdown
               key={i}
-              remarkPlugins={[remarkMath]}
+              remarkPlugins={[remarkMath, remarkGfm]}
               rehypePlugins={[rehypeKatex]}
               components={mdComponents}
             >
