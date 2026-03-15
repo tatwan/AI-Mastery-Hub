@@ -74,10 +74,15 @@
         {
           "id": "m6-functional-analysis",
           "title": "Functional Analysis & Operator Theory",
-          "description": "Hilbert spaces, RKHS, spectral theory — foundations of kernel methods and attention.",
-          "status": "coming-soon",
-          "releaseNote": "Coming soon",
-          "lessons": []
+          "description": "Hilbert spaces, compact operators, RKHS, Sobolev spaces, and operator methods — the infinite-dimensional mathematics behind kernels, Gaussian processes, and modern deep learning theory.",
+          "status": "available",
+          "lessons": [
+            { "id": "l1-banach-hilbert-spaces", "title": "Banach Spaces & Hilbert Spaces", "estimatedMinutes": 35, "status": "available" },
+            { "id": "l2-linear-operators", "title": "Linear Operators & the Spectral Theorem", "estimatedMinutes": 35, "status": "available" },
+            { "id": "l3-rkhs", "title": "Reproducing Kernel Hilbert Spaces", "estimatedMinutes": 40, "status": "available" },
+            { "id": "l4-sobolev-spaces", "title": "Distributions & Sobolev Spaces", "estimatedMinutes": 35, "status": "available" },
+            { "id": "l5-operator-methods-ml", "title": "Operator Methods in Modern ML", "estimatedMinutes": 40, "status": "available" }
+          ]
         }
       ]
     },
